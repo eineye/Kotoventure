@@ -24,7 +24,7 @@ export function Login({ onLogin }: { onLogin: (u: { email: string }) => void }) 
   return (
     <div className="login">
       <form onSubmit={submit} className="login-card">
-        <img src="/favicon.png" alt="" width={56} height={56} />
+        <img src={`${import.meta.env.BASE_URL}favicon.png`} alt="" width={56} height={56} />
         <h1>
           Koto<span className="red">venture</span> Admin
         </h1>

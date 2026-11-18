@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -96,3 +98,36 @@ jobs:
             --notes "$NOTES" \
             --prerelease \
             --target "$GITHUB_SHA"
+
+  pages:
+    name: Publish web preview to GitHub Pages
+    needs: check
+    # Pages only accepts deployments from the default branch (main) by default.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build game (web) at /<repo>/
+        working-directory: app
+        run: |
+          npm ci
+          node -e "const f='app.json';const j=require('./'+f);j.expo.experiments={...(j.expo.experiments||{}),baseUrl:'/${{ github.event.repository.name }}'};require('fs').writeFileSync(f,JSON.stringify(j,null,2))"
+          npx expo export --platform web --output-dir ../site
+      - name: Build admin (demo mode) at /<repo>/admin/
+        working-directory: admin
+        run: |
+          npm ci
+          npx vite build --base=/${{ github.event.repository.name }}/admin/ --outDir ../site/admin --emptyOutDir
+      - run: touch site/.nojekyll && cp site/index.html site/404.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4

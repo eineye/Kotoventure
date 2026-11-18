@@ -160,6 +160,14 @@ admin/.env    VITE_SUPABASE_URL=...          VITE_SUPABASE_ANON_KEY=...
 
 ---
 
+## 5-0. 브라우저로 바로 플레이 (GitHub Pages)
+
+`main` 브랜치에 반영될 때마다 웹 버전이 자동 배포됩니다 (데모 모드).
+- 게임: https://eineye.github.io/Kotoventure/  (`?gallery` 를 붙이면 전체 그림 모음)
+- 관리자 웹(데모): https://eineye.github.io/Kotoventure/admin/
+
+최초 1회 설정: 저장소 **Settings → Pages → Build and deployment → Source** 를 **GitHub Actions** 로 바꿔 주세요.
+
 ## 5-1. 내 안드로이드 폰에 테스트 APK 설치
 
 GitHub Actions가 코드를 푸시할 때마다 APK를 자동으로 빌드해 **`android-latest` 릴리스**에 올립니다 (약 20~30분).

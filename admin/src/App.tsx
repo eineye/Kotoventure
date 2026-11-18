@@ -85,7 +85,7 @@ export function App() {
       <div className="layout">
         <aside className="side">
           <div className="brand">
-            <img src="/favicon.png" alt="" width={32} height={32} />
+            <img src={`${import.meta.env.BASE_URL}favicon.png`} alt="" width={32} height={32} />
             <div>
               <b>Kotoventure</b>
               <small>Admin</small>
