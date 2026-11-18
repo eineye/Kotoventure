@@ -1,0 +1,27 @@
+# Minimal local config for `supabase start` (Supabase CLI, Docker).
+# Full reference: https://supabase.com/docs/guides/local-development/cli/config
+project_id = "kotoventure"
+
+[api]
+port = 54321
+schemas = ["public"]
+
+[db]
+port = 54322
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql", "./seed_test_accounts.sql"]
+
+[studio]
+port = 54323
+
+[auth]
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173", "kotoventure://"]
+# The game uses anonymous sign-in: nickname + country only (simplest signup)
+enable_anonymous_sign_ins = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false

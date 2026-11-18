@@ -1,0 +1,133 @@
+name: CI & Android APK
+
+on:
+  push:
+    branches: [main, 'claude/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Typecheck · lint · content validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: shared – validate missions & typecheck
+        working-directory: shared
+        run: |
+          npm ci
+          npm run validate
+          npx tsc -p .
+      - name: app – typecheck & lint
+        working-directory: app
+        run: |
+          npm ci
+          npx tsc --noEmit
+          npx expo lint
+      - name: admin – typecheck & build
+        working-directory: admin
+        run: |
+          npm ci
+          npm run build
+
+  apk:
+    name: Build installable APK
+    needs: check
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      # Optional: set these repository secrets to connect the APK to your Supabase test DB.
+      # Without them the APK runs in demo mode (bundled missions, progress saved on the phone).
+      EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install app dependencies
+        working-directory: app
+        run: npm ci
+      - name: Generate native Android project (Expo prebuild)
+        working-directory: app
+        run: npx expo prebuild --platform android --no-install
+      - name: Gradle assembleRelease
+        working-directory: app/android
+        run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a --no-daemon
+      - name: Collect APK
+        run: |
+          cp app/android/app/build/outputs/apk/release/app-release.apk kotoventure.apk
+          ls -lh kotoventure.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kotoventure-apk
+          path: kotoventure.apk
+      - name: Publish to "android-latest" release (stable download link)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NOTES="테스트용 Android APK (브랜치: ${GITHUB_REF_NAME}, 커밋: ${GITHUB_SHA::7}, $(date -u +'%Y-%m-%d %H:%M UTC'))
+
+          설치 방법
+          1. 휴대폰에서 아래 kotoventure.apk 를 눌러 다운로드
+          2. '알 수 없는 앱 설치 허용' 안내가 나오면 브라우저/파일 앱에 허용
+          3. 설치 후 Kotoventure 실행 (Google Play 프로텍트 경고가 나오면 '무시하고 설치')
+
+          ※ 테스트 서명(디버그 키)으로 빌드된 파일이라 스토어 배포용이 아닙니다."
+          gh release delete android-latest --yes --cleanup-tag || true
+          gh release create android-latest kotoventure.apk \
+            --title "Kotoventure Android 테스트 APK" \
+            --notes "$NOTES" \
+            --prerelease \
+            --target "$GITHUB_SHA"
+
+  pages:
+    name: Publish web preview to GitHub Pages
+    needs: check
+    # Pages only accepts deployments from the default branch (main) by default.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build game (web) at /<repo>/
+        working-directory: app
+        run: |
+          npm ci
+          node -e "const f='app.json';const j=require('./'+f);j.expo.experiments={...(j.expo.experiments||{}),baseUrl:'/${{ github.event.repository.name }}'};require('fs').writeFileSync(f,JSON.stringify(j,null,2))"
+          npx expo export --platform web --output-dir ../site
+      - name: Build admin (demo mode) at /<repo>/admin/
+        working-directory: admin
+        run: |
+          npm ci
+          npx vite build --base=/${{ github.event.repository.name }}/admin/ --outDir ../site/admin --emptyOutDir
+      - run: touch site/.nojekyll && cp site/index.html site/404.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
