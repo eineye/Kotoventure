@@ -160,6 +160,19 @@ admin/.env    VITE_SUPABASE_URL=...          VITE_SUPABASE_ANON_KEY=...
 
 ---
 
+## 5-1. 내 안드로이드 폰에 테스트 APK 설치
+
+GitHub Actions가 코드를 푸시할 때마다 APK를 자동으로 빌드해 **`android-latest` 릴리스**에 올립니다 (약 20~30분).
+
+1. 휴대폰 브라우저로 https://github.com/eineye/Kotoventure/releases/tag/android-latest 접속 (비공개 저장소면 GitHub 로그인 필요)
+2. **kotoventure.apk** 를 눌러 다운로드
+3. "알 수 없는 앱 설치" 허용 안내가 뜨면 브라우저(또는 파일 앱)에 허용
+4. Play 프로텍트 경고가 나오면 **무시하고 설치** → Kotoventure 실행
+
+- 서버 연결 없이 **데모 모드**로 동작합니다. 테스트 DB에 연결하려면 저장소 Settings → Secrets and variables → Actions 에 `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` 를 등록한 뒤 다시 빌드(Actions → CI & Android APK → Run workflow)하세요.
+- 테스트(디버그 키) 서명이라 스토어 업로드용이 아닙니다. 스토어용은 아래 6장의 EAS 빌드를 사용합니다.
+- 아이폰은 APK가 없으며, 테스트하려면 Apple 개발자 계정으로 TestFlight(`eas build -p ios` → `eas submit`)를 이용합니다.
+
 ## 6. 출시 (iOS / Android)
 
 ```bash
