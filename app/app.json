@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "Kotoventure",
+    "slug": "kotoventure",
+    "scheme": "kotoventure",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#FFF9F0",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFF9F0"
+    },
+    "ios": {
+      "bundleIdentifier": "com.kotoventure.app",
+      "supportsTablet": true,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.kotoventure.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#FFF9F0",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "name": "Kotoventure – Korea Touring Game Adventure"
+    },
+    "extra": {
+      "fullName": "Korea Touring Game Adventure"
+    }
+  }
+}
