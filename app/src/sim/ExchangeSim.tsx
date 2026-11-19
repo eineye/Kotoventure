@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Pressable, Text, View, useWindowDimensions } from 'react-native';
-import { KRW_COINS, KRW_NOTES, VENUE_SPREAD, breakdownKRW, currencyForCountry, tr, CURRENCIES } from '@kotoventure/shared';
+import { KRW_COINS, KRW_NOTES, VENUE_SPREAD, addCash, breakdownKRW, currencyForCountry, tr, CURRENCIES } from '@kotoventure/shared';
 import { Banknote, Coin } from '../art/Money';
 import { Btn, H, P, won } from '../ui/kit';
 import { C, R } from '../ui/theme';
@@ -244,7 +244,7 @@ export function ExchangeSim({ step, ctx, onDone }: SimProps) {
           score={sc.final()}
           log={log}
           lang={ctx.lang}
-          onContinue={() => onDone({ score: sc.final(), effects: { money: -Math.round(amount * mid - received) }, log })}
+          onContinue={() => onDone({ score: sc.final(), effects: { money: -Math.round(amount * mid - received) }, log, cash: addCash(ctx.cash, received) })}
         />
       )}
     </SimShell>

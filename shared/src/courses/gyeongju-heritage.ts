@@ -138,6 +138,7 @@ export const gyeongjuHeritage: Course = {
           no('Eat the leaves one by one as a salad', 'You can – but the wrap is the point!', { energy: 6, money: -15000 }),
         ], 'fo-baekban'),
         say('Dessert: Hwangnam-ppang, a small round bread filled with red bean paste, a Gyeongju speciality.'),
+        simulate('cashpay', 'money', 'Buy Hwangnam-ppang', 'The old bakery takes cards, but the owner smiles at cash. Pay for a box with your notes and coins.', { shop: '황남빵 Hwangnam-ppang bakery', items: [{ name: '황남빵 10개입 Box of 10', price: 13000 }], cashOnly: false }),
         ask('etiquette', 'An elderly shop owner hands you a free sample with both hands.', [
           ok('Receive it with two hands and a small bow: "Gamsahamnida"', 'She beams!', { manner: 6 }, 'two-hands'),
           no('Grab it with one hand while looking at my phone', 'Seems careless in Korea.', { manner: -5 }),

@@ -37,7 +37,7 @@ export const P = (hangul: string, roman: string, meaning: string): Phrase => ({ 
 
 /** hands-on simulation step */
 export const simulate = (
-  sim: 'exchange' | 'atm' | 'tmoney' | 'train',
+  sim: 'exchange' | 'atm' | 'tmoney' | 'train' | 'cashpay',
   topic: TopicId,
   title: string,
   intro: string,

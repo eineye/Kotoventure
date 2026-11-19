@@ -98,6 +98,7 @@ export const kcultureExperience: Course = {
           ok('Say "Ne" (yes) and pay a small fee – or bring my own bag', 'Plastic bags cost extra in Korea.', { money: -100 }),
           no('Expect it to be free', 'It costs a little – no big deal.', {}),
         ]),
+        simulate('cashpay', 'money', 'Convenience-store checkout', 'Pay for your Han River ramyeon, a banana milk and a plastic bag – try to use your coins!', { shop: '편의점 Convenience store (한강공원)', items: [{ name: '컵라면 Cup ramyeon', price: 1800 }, { name: '바나나우유 Banana milk', price: 1700 }, { name: '봉투 Plastic bag', price: 100 }], cashOnly: false }),
         ask('etiquette', 'Done eating. The park has bins with labels: 일반 / 재활용 / 음식물.', [
           ok('Drain soup in the food-waste bin, recycle the cup & cans, rest in general waste', 'Separation hero!', { manner: 8 }, 'trash-bins'),
           no('Leave the bowl with soup on the grass', 'Crows and park staff are not happy.', { manner: -12, money: -50000 }),

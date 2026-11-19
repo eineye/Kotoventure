@@ -80,10 +80,7 @@ export const busanFood: Course = {
           ok('Wait a moment and bite carefully – the syrup is boiling hot', 'Crunchy, sweet and nobody got burnt!', { energy: 8, money: -2000 }, 'hotteok'),
           no('Stuff it all in at once', 'Burnt tongue! Ow!', { energy: -8, money: -2000 }),
         ], 'fo-street'),
-        ask('money', 'The hotteok ajumma only takes cash. You only have a ₩50,000 note.', [
-          ok('Apologise and break the note at a convenience store first', 'Considerate – small vendors often lack change for big notes.', { manner: 5 }, 'krw-1000'),
-          no('Hand over ₩50,000 for a ₩2,000 snack', 'She sighs and digs through her apron for change.', { manner: -4 }),
-        ], 'mo-notes'),
+        simulate('cashpay', 'money', 'Pay the hotteok ajumma', 'Market stalls take cash. Pay for two seed hotteok and two fish-cake skewers with the money in your wallet – small notes and coins make the ajumma happy.', { shop: 'BIFF 씨앗호떡 · 어묵 Seed hotteok & eomuk stall', items: [{ name: '씨앗호떡 ×2 Seed hotteok', price: 4000 }, { name: '어묵 ×2 Fish-cake skewers', price: 2000 }], cashOnly: true }, 'mo-notes'),
         ask('food', 'Fish-cake (eomuk) skewers simmer in broth. The paper cups next to them?', [
           ok('The broth is free – ladle some into a cup; pay per skewer when done', 'Yes! Keep your sticks so the vendor can count.', { energy: 6, money: -3000 }),
           no('The broth costs extra so skip it', 'It\'s free. You missed the best part!', {}),

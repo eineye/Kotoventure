@@ -110,3 +110,44 @@ export const currencyForCountry = (country?: string): HomeCurrency => CURRENCIES
 
 /** Spread a money changer applies on top of the reference rate when buying your currency. */
 export const VENUE_SPREAD = { airport: 0.06, downtown: 0.015 } as const;
+
+/* ── wallet of physical cash ───────────────────────────────── */
+export type Cash = Record<string, number>;
+export const DENOMS = [50000, 10000, 5000, 1000, 500, 100, 50, 10] as const;
+
+/** Won the traveller brought from home (₩50,000) – used before any exchange/ATM. */
+export const DEFAULT_CASH: Cash = { 10000: 3, 5000: 2, 1000: 10 };
+
+export const cashTotal = (w: Cash = {}) => Object.entries(w).reduce((a, [v, n]) => a + Number(v) * n, 0);
+
+export function addCash(w: Cash, amount: number): Cash {
+  const out: Cash = { ...w };
+  for (const p of breakdownKRW(amount)) out[p.value] = (out[p.value] ?? 0) + p.count;
+  return out;
+}
+
+export function removePieces(w: Cash, pieces: number[]): Cash {
+  const out: Cash = { ...w };
+  for (const v of pieces) out[v] = Math.max(0, (out[v] ?? 0) - 1);
+  return out;
+}
+
+/**
+ * Smallest amount ≥ `total` that can be paid with the wallet's pieces (what a careful
+ * customer hands over). Returns null if the wallet can't cover the total.
+ */
+export function bestPayment(w: Cash, total: number): number | null {
+  if (cashTotal(w) < total) return null;
+  const unit = 10;
+  const cap = total + 50000;
+  const max = Math.floor(cap / unit);
+  const reach = new Uint8Array(max + 1);
+  reach[0] = 1;
+  for (const d of DENOMS) {
+    const n = w[d] ?? 0;
+    const step = d / unit;
+    for (let k = 0; k < n; k++) for (let i = max; i >= step; i--) if (reach[i - step]) reach[i] = 1;
+  }
+  for (let i = Math.ceil(total / unit); i <= max; i++) if (reach[i]) return i * unit;
+  return cashTotal(w);
+}

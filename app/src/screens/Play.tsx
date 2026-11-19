@@ -3,6 +3,8 @@ import { Animated, Easing, Pressable, ScrollView, Text, View, useWindowDimension
 import {
   applyEffects,
   applySim,
+  cashTotal,
+  DEFAULT_CASH,
   initialStats,
   score,
   tr,
@@ -165,7 +167,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
 
   const onSimDone = (r: SimResult) => {
     const sim = step as SimStep;
-    const st = applySim(effects(r.effects).st, r.score);
+    const st = { ...applySim(effects(r.effects).st, r.score), ...(r.cash ? { cash: r.cash } : {}) };
     setStats(st);
     const { cs, ps } = collect(sim.cardId);
     advance(st, cs, ps);
@@ -175,7 +177,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     return (
       <SimRunner
         step={step}
-        ctx={{ lang, party, partySize: PARTY_SIZE[party], country: profile?.country ?? 'US', fxRates: content.config.fxRates }}
+        ctx={{ lang, party, partySize: PARTY_SIZE[party], country: profile?.country ?? 'US', fxRates: content.config.fxRates, cash: stats.cash ?? { ...DEFAULT_CASH } }}
         onDone={onSimDone}
       />
     );
@@ -195,7 +197,10 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
           <Text style={{ color: '#FFF', fontWeight: '900' }}>
             {L.day} {scene.day} · {Math.min(sceneIdx + 1, course.scenes.length)}/{course.scenes.length}
           </Text>
-          <Text style={{ color: stats.money < 0 ? '#FCA5A5' : C.yellow, fontWeight: '900' }}>👛 {won(stats.money)}</Text>
+          <View style={{ alignItems: 'flex-end' }}>
+            <Text style={{ color: stats.money < 0 ? '#FCA5A5' : C.yellow, fontWeight: '900' }}>👛 {won(stats.money)}</Text>
+            <Text style={{ color: '#CBD5E1', fontWeight: '800', fontSize: 10 }}>💵 {lang === 'ko' ? '현금' : 'cash'} {won(cashTotal(stats.cash ?? DEFAULT_CASH))}</Text>
+          </View>
         </View>
         <View style={{ flexDirection: 'row', gap: 12, marginTop: 6 }}>
           <Bar label={`⚡ ${L.energy}`} value={stats.energy} color={stats.energy < 30 ? '#F87171' : '#4ADE80'} />
