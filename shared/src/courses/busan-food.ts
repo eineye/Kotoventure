@@ -66,11 +66,11 @@ export const busanFood: Course = {
         talk('local', 'Pick your fish downstairs, eat it upstairs! Hoe (raw fish) is fresh, fresh!', P('이거 얼마예요?', 'I-geo eol-ma-ye-yo?', 'How much is this?')),
         ask('money', 'You picked fish downstairs and go upstairs to eat. The bill has an extra "상차림비". What is it?', [
           ok('A per-person table-setting fee for side dishes, sauces and cooking', 'Correct. It\'s normal in fish markets – ask the price first.', { money: -20000 }),
-          no('A scam – refuse to pay', 'It\'s a standard charge. Arguing just ruins the meal.', { manner: -8, money: -20000 }),
+          no('A scam – refuse to pay', 'It\'s a normal, fair charge for the side dishes and cooking. Tip: ask about it before ordering and you\'ll never be surprised.', { manner: -8, money: -20000 }),
         ]),
         ask('etiquette', 'You want a photo of a vendor gutting an octopus.', [
           ok('Ask first: "Sajin jjigeodo dwaeyo?"', 'She laughs and poses with the octopus!', { manner: 6 }, 'camera'),
-          no('Shove the camera in her face', 'She waves you off. Ask first.', { manner: -6 }),
+          no('Shove the camera in her face', 'She turns away, a little uncomfortable. Most vendors happily pose if you ask first with a smile!', { manner: -6 }),
         ], 'et-photo'),
         simulate('phrase', 'food', 'Bargain in Korean', 'The ajumma speaks only Busan dialect. Build the market sentences from the word tiles and listen to how they sound.', {
           phrases: [
@@ -150,11 +150,11 @@ export const busanFood: Course = {
         say('A hillside of pastel houses, murals and the "Little Prince" statue. A small green "maeul bus" (village bus) climbs the steep road.'),
         ask('transport', 'On the packed village bus an elderly lady gets on with groceries.', [
           ok('Offer her my seat', 'She pats your arm: "Gomawoyo!" Respect for elders matters a lot.', { manner: 8, energy: -3 }, 'priority-seat'),
-          no('Pretend to sleep', 'Everyone noticed.', { manner: -6 }),
+          no('Pretend to sleep', 'An easy one to miss! Giving your seat to elders is a kind gesture Koreans really appreciate – try it next time.', { manner: -6 }),
         ], 'et-seats'),
         ask('etiquette', 'The alleys are tiny and people\'s laundry hangs outside.', [
           ok('Keep voices low and stay on the marked tour route', 'Residents appreciate it.', { manner: 5 }, 'quiet'),
-          no('Play music on a speaker', 'A resident shuts her window with a bang.', { manner: -8 }),
+          no('Play music on a speaker', 'Sound carries in the tiny alleys and people live here. Keep it quiet and residents will greet you warmly.', { manner: -8 }),
         ], 'et-quiet'),
         event('weather', 'Steep hill + heat', 'Climbing in 33 °C humid heat drains your energy fast.', { energy: -10 }, 'heatwave'),
         learn('we-heat'),
@@ -173,12 +173,12 @@ export const busanFood: Course = {
         ], 'me-firstaid', { chance: 0.6 }),
         ask('law', 'You want to smoke a cigarette on the sand.', [
           ok('Find the designated smoking area off the beach', 'Right. Smoking on the beach can be fined.', { manner: 4 }, 'no-smoking'),
-          no('Smoke on the sand and bury the butt', 'Fined – and kids play here.', { money: -50000, manner: -10 }),
+          no('Smoke on the sand and bury the butt', 'Smoking on the beach can be fined, and families play here. Designated smoking areas are easy to find nearby.', { money: -50000, manner: -10 }),
         ], 'la-minor'),
         ask('lodging', 'Tonight you need a cheap, private room near the beach. What\'s a good Korean option?', [
           ok('A clean modern motel with a self check-in kiosk', 'Korean motels are budget-friendly and private.', { money: -60000, energy: 15 }, 'motel'),
           ok('A guesthouse dorm (social & cheapest)', 'Great for meeting other travellers.', { money: -30000, energy: 10 }, 'house'),
-          no('Sleep on the beach', 'Security wakes you at 3 am. You feel awful.', { energy: -25 }),
+          no('Sleep on the beach', 'Security politely wakes you at 3 am and you sleep badly. Korea has plenty of affordable motels and guesthouses – no need to rough it!', { energy: -25 }),
         ], 'lo-motel'),
       ],
     },
@@ -197,11 +197,11 @@ export const busanFood: Course = {
         say('Your friends order soju and beer and make "somaek" (soju + beer).', { parties: ['friends', 'group'] }),
         ask('food', 'Your glass is empty. Your friend\'s glass is also empty.', [
           ok('Fill your friend\'s glass – they will fill yours', 'Yes! Never pour for yourself.', { manner: 6 }, 'soju'),
-          no('Refill only your own glass', 'Your friend raises an eyebrow…', { manner: -5 }),
+          no('Refill only your own glass', 'Your friend smiles and fills your glass for you – in Korea you pour for each other. Try it next round!', { manner: -5 }),
         ], 'fo-drink'),
         ask('law', 'You had two drinks. Your rental e-scooter is parked nearby.', [
           ok('Take a taxi – drink-riding is illegal on scooters too', 'Right. Korea\'s limit is 0.03% and police check scooters too.', { money: -9000, manner: 5 }, 'taxi'),
-          no('Ride the scooter back, it\'s only 2 km', 'Police checkpoint! Fine and licence trouble.', { money: -100000, manner: -15 }),
+          no('Ride the scooter back, it\'s only 2 km', 'Police check for drink-riding at night, and the fine is heavy. Taxis are cheap and safe in Korea – the easy choice!', { money: -100000, manner: -15 }),
         ], 'la-traffic'),
         event('surprise', 'Taxi home', 'The driver can\'t read English – you show him the Korean address screenshot you saved on day 1. "Ah, 남포동! OK!" Straight there.', { energy: 3 }, 'taxi', { ifFlags: ['hangulAddr'] }),
         event('surprise', 'Taxi home – lost in translation', 'The driver doesn\'t recognise the English hotel name. After phone calls and a detour you arrive 25 minutes later (+₩8,000). Next time save the address in Hangul!', { energy: -6, money: -8000 }, 'taxi', { unlessFlags: ['hangulAddr'] }),
@@ -220,12 +220,12 @@ export const busanFood: Course = {
         ]),
         ask('etiquette', 'Where do you leave your shoes?', [
           ok('In the shoe locker at the entrance', 'Yes. Shoes come off at the entrance.', { manner: 3 }, 'shoes-off'),
-          no('Carry them inside', 'Staff stop you.', { manner: -4 }),
+          no('Carry them inside', 'Staff kindly point you to the shoe lockers – shoes always come off at the entrance.', { manner: -4 }),
         ], 'et-shoes'),
         event('health', 'Feeling dizzy', 'Too long in the 70 °C sauna right after drinks – your head spins.', { energy: -15 }, 'medicine'),
         ask('medical', 'What do you do?', [
           ok('Get out, lie down in a cool room and drink water or sikhye', 'You feel better soon. Avoid saunas after alcohol.', { energy: 12 }),
-          no('Go back in to "sweat it out"', 'Worse! That\'s how people faint.', { energy: -15 }),
+          no('Go back in to "sweat it out"', 'That makes it worse and can cause fainting. Cool down, drink something and rest – the sauna will still be there tomorrow!', { energy: -15 }),
         ], 'me-firstaid'),
         learn('me-1330'),
       ],

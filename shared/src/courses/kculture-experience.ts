@@ -100,7 +100,7 @@ export const kcultureExperience: Course = {
         ], 'fo-manners'),
         ask('food', 'Lunch break! Next door they serve kimchi-jjigae in one big bubbling pot for the table.', [
           ok('Use the ladle or my own spoon to take some, blow, then sip', 'Hot, sour and comforting.', { energy: 12, money: -9000 }, 'jjigae'),
-          no('Drink straight from the pot', 'No no no.', { manner: -8 }),
+          no('Drink straight from the pot', 'Please don\'t! Use the ladle or your own spoon – sharing one stew is a lovely Korean custom.', { manner: -8 }),
         ], 'fo-jjigae'),
       ],
     },
@@ -134,7 +134,7 @@ export const kcultureExperience: Course = {
         simulate('cashpay', 'money', 'Convenience-store checkout', 'Pay for your Han River ramyeon, a banana milk and a plastic bag – try to use your coins!', { shop: '편의점 Convenience store (한강공원)', items: [{ name: '컵라면 Cup ramyeon', price: 1800 }, { name: '바나나우유 Banana milk', price: 1700 }, { name: '봉투 Plastic bag', price: 100 }], cashOnly: false }),
         ask('etiquette', 'Done eating. The park has bins with labels: 일반 / 재활용 / 음식물.', [
           ok('Drain soup in the food-waste bin, recycle the cup & cans, rest in general waste', 'Separation hero!', { manner: 8 }, 'trash-bins'),
-          no('Leave the bowl with soup on the grass', 'Crows and park staff are not happy.', { manner: -12, money: -50000 }),
+          no('Leave the bowl with soup on the grass', 'Park staff have to clean it up, and littering can be fined. The sorting bins are right there – easy!', { manner: -12, money: -50000 }),
         ], 'et-trash'),
         ask('law', 'A friend wants to light some fireworks in the park.', [
           ok('No – fireworks and open flames are banned in most river parks', 'Correct. Fines apply.', { manner: 5 }),
@@ -171,7 +171,7 @@ export const kcultureExperience: Course = {
         event('law', 'Turned back!', 'A passport photo on your phone is not accepted. You wait at Imjingak while the group goes into the DMZ (−₩30,000 for nothing).', { energy: -10, money: -30000 }, 'passport', { unlessFlags: ['passport'] }),
         ask('law', 'A soldier says "No photos here." Your phone is in your hand.', [
           ok('Put it away and only shoot at marked photo points', 'Correct. Military rules here are strict.', { manner: 8 }, 'camera'),
-          no('Sneak a quick photo', 'The soldier makes you delete it. The tour is delayed.', { manner: -15 }),
+          no('Sneak a quick photo', 'The soldier asks you to delete it – rules near the border are strict. There are marked photo points with great views.', { manner: -15 }),
         ], 'la-camera'),
         event('weather', 'Cold wind', 'The open hills near the border are windy – glad you packed that jacket.', { energy: -2 }, 'winter', { ifFlags: ['jacket'] }),
         event('weather', 'Cold wind', 'The open hills near the border are windy and much colder than Seoul – and you\'re in a T-shirt.', { energy: -12 }, 'winter', { unlessFlags: ['jacket'] }),
@@ -216,7 +216,7 @@ export const kcultureExperience: Course = {
         say('Day 4. Feeling better, you head back to Gimpo by subway.'),
         ask('etiquette', 'On the subway escalator, people stand in two lines. What do you do?', [
           ok('Stand still, hold the handrail, keep right on the stairs', 'Safety first.', { manner: 4 }, 'walk-right'),
-          no('Run down the escalator with my suitcase', 'You nearly knock someone over.', { manner: -8, energy: -5 }),
+          no('Run down the escalator with my suitcase', 'You nearly bump into someone. Stand still and hold the rail – it\'s safer for everyone, and you\'ll get there just as fast.', { manner: -8, energy: -5 }),
         ], 'et-right'),
         learn('lo-hotel'),
         learn('mo-fx'),

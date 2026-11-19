@@ -4,6 +4,7 @@ import {
   applyEffects,
   applySim,
   roll,
+  tally,
   nextScene,
   cashTotal,
   DEFAULT_CASH,
@@ -63,7 +64,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
   const plays = (prev?.plays ?? 0) + (resume ? 0 : 1);
   const real = profile?.mode === 'real';
   const [dayLog, setDayLog] = useState<DayLogItem[]>([]);
-  const [summary, setSummary] = useState<{ day: number; next: number; collapsed: boolean } | null>(null);
+  const [summary, setSummary] = useState<{ day: number; next: number; collapsed: boolean; resumeStep?: number } | null>(null);
   const [exhausted, setExhausted] = useState(false);
   const flags = stats.flags ?? [];
 
@@ -110,9 +111,9 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     let st = applyEffects(stats, e);
     let d: Effects | null = e ?? null;
     if (st.energy <= 0) {
-      // exhausted → the rest of today is lost (rest at the hotel, taxi back)
-      st = { ...st, energy: 40, money: st.money - 25000 };
-      d = { ...(e ?? {}), energy: (e?.energy ?? 0) + 40, money: (e?.money ?? 0) - 25000 };
+      // exhausted → a short rest break (snack, water, nap), then the trip continues – no content is skipped
+      st = { ...st, energy: 50, money: st.money - 10000 };
+      d = { ...(e ?? {}), energy: (e?.energy ?? 0) + 50, money: (e?.money ?? 0) - 10000 };
       setExhausted(true);
     }
     setStats(st);
@@ -134,15 +135,23 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     const fresh = visibleSteps(scene, party, fl, String(plays));
     const pos = step ? fresh.indexOf(step) : -1;
     const nextStep = pos >= 0 ? pos + 1 : stepIdx + 1;
-    if (!collapsed && nextStep < fresh.length) {
+    if (nextStep < fresh.length) {
+      if (collapsed) {
+        setExhausted(false);
+        setSummary({ day: scene.day, next: sceneIdx, collapsed, resumeStep: nextStep });
+        setPhase('summary');
+        persist(sceneIdx, nextStep, st, cs, ps);
+        return;
+      }
       setStepIdx(nextStep);
       setPhase('step');
       persist(sceneIdx, nextStep, st, cs, ps);
       return;
     }
-    const nxt = nextScene(course, sceneIdx, fl, collapsed ? scene.day + 1 : undefined);
+    const nxt = nextScene(course, sceneIdx, fl);
     const nextDay = nxt < course.scenes.length ? course.scenes[nxt].day : Infinity;
-    if (collapsed || (real && nextDay > scene.day && dayLog.length)) {
+    const dayReview = real && nextDay > scene.day && dayLog.length > 0;
+    if (collapsed || dayReview) {
       setExhausted(false);
       setSummary({ day: scene.day, next: nxt, collapsed });
       setPhase('summary');
@@ -180,7 +189,8 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     setPicked(i);
     const { st, d } = effects(opt.effects);
     const nf = opt.setFlags?.length ? Array.from(new Set([...(st.flags ?? []), ...opt.setFlags])) : st.flags;
-    setStats({ ...st, flags: nf, answered: st.answered + 1, correct: st.correct + (opt.correct ? 1 : 0) });
+    const key = `${scene.id}:${scene.steps.indexOf(step)}:${i}`;
+    setStats(tally({ ...st, flags: nf, answered: st.answered + 1, correct: st.correct + (opt.correct ? 1 : 0) }, step.topic, opt.correct ? 1 : 0, key));
     if (real) setDayLog((l) => [...l, { prompt: tr(step.prompt, lang), chosen: tr(opt.text, lang), correct: opt.correct, feedback: tr(opt.feedback, lang) }]);
     setDelta(d);
     setPhase('feedback');
@@ -204,7 +214,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     const sim = step as SimStep;
     const base = effects(r.effects).st;
     const st = {
-      ...applySim(base, r.score),
+      ...tally(applySim(base, r.score), sim.topic, r.score / 100, `${scene.id}:${scene.steps.indexOf(sim)}:-1`),
       ...(r.cash ? { cash: r.cash } : {}),
       flags: r.flags?.length ? Array.from(new Set([...(base.flags ?? []), ...r.flags])) : base.flags,
     };
@@ -223,25 +233,30 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     );
 
   if (phase === 'summary' && summary) {
+    const restOnly = summary.resumeStep !== undefined;
     const right = dayLog.filter((d) => d.correct).length;
+    const restCard = content.cards.find((c) => c.id === 'me-conv');
     return (
       <ScrollView style={{ flex: 1, backgroundColor: C.paper }} contentContainerStyle={{ padding: 18, gap: 12 }}>
-        <Text style={{ fontSize: 13, fontWeight: '900', color: C.red }}>
-          🌙 {L.day} {summary.day} {lang === 'ko' ? '정산' : 'review'}
-        </Text>
+        {!restOnly && (
+          <Text style={{ fontSize: 13, fontWeight: '900', color: C.red }}>
+            🌙 {L.day} {summary.day} {lang === 'ko' ? '정산' : 'review'}
+          </Text>
+        )}
         {summary.collapsed && (
-          <View style={{ backgroundColor: '#FDECEC', borderRadius: R.m, padding: 14 }}>
-            <H size={18} style={{ color: C.red }}>
-              😵 {lang === 'ko' ? '체력이 바닥나 쓰러졌어요!' : 'You ran out of energy and collapsed!'}
+          <View style={{ backgroundColor: '#FFF4D6', borderRadius: R.m, padding: 14 }}>
+            <H size={18} style={{ color: C.ink }}>
+              😮‍💨 {lang === 'ko' ? '잠깐 쉬어 가요' : 'Time for a break'}
             </H>
             <P style={{ marginTop: 4 }}>
               {lang === 'ko'
-                ? '택시를 타고 숙소로 돌아가 쉬었어요 (−₩25,000). 오늘 남은 일정은 모두 놓쳤습니다. 내일은 체력 관리(식사·휴식·이동수단)를 신경 쓰세요.'
-                : 'You took a taxi back and rested (−₩25,000). The rest of today’s plans are lost. Tomorrow, manage energy with meals, rest and smarter transport.'}
+                ? '체력이 바닥났어요. 편의점에서 물과 간식을 사서 벤치에서 쉬었어요 (−₩10,000, 체력 +50). 여행은 계속됩니다! 한국에는 어디에나 편의점이 있어서 쉬어 가기 좋아요.'
+                : 'You ran out of energy, so you grabbed water and a snack at a convenience store and rested on a bench (−₩10,000, energy +50). The trip goes on! Convenience stores are on every corner in Korea – perfect for a break.'}
             </P>
           </View>
         )}
-        {dayLog.length > 0 && (
+        {summary.collapsed && restCard && <CardView card={restCard} lang={lang} compact />}
+        {!restOnly && dayLog.length > 0 && (
           <View style={{ gap: 8 }}>
             <H size={18}>
               {lang === 'ko' ? '오늘의 선택 결과' : 'How your choices turned out'} · {right}/{dayLog.length}
@@ -259,12 +274,22 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
         )}
         <Btn
           testID="summary-next"
-          label={lang === 'ko' ? '다음 날로 ›' : 'Next day ›'}
+          label={restOnly || (summary.collapsed && !dayLog.length) ? (lang === 'ko' ? '다시 출발 ›' : 'Carry on ›') : lang === 'ko' ? '다음 날로 ›' : 'Next day ›'}
           onPress={() => {
+            if (restOnly) {
+              const rs = summary.resumeStep!;
+              setSummary(null);
+              setStepIdx(rs);
+              setPhase('step');
+              const { cs, ps } = collect('me-conv');
+              persist(sceneIdx, rs, stats, cs, ps);
+              return;
+            }
             setDayLog([]);
             const nx = summary.next;
+            const got = summary.collapsed ? collect('me-conv') : { cs: cards, ps: phrases };
             setSummary(null);
-            if (nx < course.scenes.length) goScene(nx, stats, cards, phrases);
+            if (nx < course.scenes.length) goScene(nx, stats, got.cs, got.ps);
             else {
               persist(course.scenes.length, 0, stats, cards, phrases, true);
               onFinish();

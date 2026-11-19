@@ -53,7 +53,7 @@ export const jejuAdventure: Course = {
         ], 'me-insurance', { ifFlags: ['rentalCar'] }),
         ask('law', 'On the road, which side do you drive on and what about speed?', [
           ok('Right side; follow limits – there are many speed cameras', 'Safe driving. Cameras flash often on Jeju.', { manner: 5 }, 'crosswalk'),
-          no('Left side like in Australia/Japan, as fast as I want', 'Wrong side – a near-miss and a speeding fine.', { money: -60000, energy: -15 }),
+          no('Left side like in Australia/Japan, as fast as I want', 'Koreans drive on the right – a near-miss and a speed-camera fine. Take it slow and enjoy the island roads!', { money: -60000, energy: -15 }),
         ], 'la-traffic'),
       ],
     },
@@ -66,7 +66,7 @@ export const jejuAdventure: Course = {
         learn('lo-pension'),
         ask('lodging', 'The pension is booked for 4 people but your group is 6.', [
           ok('Tell the host and pay the extra-guest fee', 'Honest – and safe for fire regulations.', { money: -40000, manner: 5 }, 'pension'),
-          no('Sneak the extra two in', 'The host counts the shoes at the door…', { manner: -12, money: -60000 }),
+          no('Sneak the extra two in', 'The host notices and charges extra (rooms have fire-safety limits). Just ask – most hosts are flexible!', { manner: -12, money: -60000 }),
         ], undefined, { parties: ['friends', 'group'] }),
         ask('lodging', 'Solo on Jeju: where do you stay to meet people?', [
           ok('A guesthouse with a shared kitchen and evening gatherings', 'You meet hikers for tomorrow.', { money: -35000, energy: 10 }, 'house'),
@@ -74,7 +74,7 @@ export const jejuAdventure: Course = {
         ], 'lo-motel', { parties: ['solo', 'couple'] }),
         ask('etiquette', 'Jeju has strict trash rules. Your BBQ left cans, plastic and food scraps.', [
           ok('Separate them and use the village "clean house" bins on the right days', 'Great. Jeju works hard to stay clean.', { manner: 8 }, 'trash-bins'),
-          no('Put everything in one bag by the road', 'Neighbours report it. Fine!', { manner: -10, money: -50000 }),
+          no('Put everything in one bag by the road', 'Neighbours report it and a fine follows. The "clean house" bins have clear pictures – you\'ll get the hang of it quickly.', { manner: -10, money: -50000 }),
         ], 'et-trash'),
         ask('law', 'Tomorrow is Hallasan. Your host asks: "Did you reserve the summit trail?"', [
           flag(ok('Yes – I booked Seongpanak online (free, QR code) and will start before 08:00', 'Perfect. Summit trails need a reservation and close the summit section around noon.', { manner: 5 }, 'passport'), 'hallaBooked'),
@@ -97,7 +97,7 @@ export const jejuAdventure: Course = {
         ], 'we-cold'),
         ask('medical', 'A hiker near you suddenly collapses, breathing but confused. What do you do?', [
           ok('Call 119, tell them the trail marker number, keep him warm', 'Rescue arrives. Trail post numbers help 119 find you.', { manner: 10 }, 'er'),
-          no('Take a photo and keep walking', 'Never. Call 119.', { manner: -20 }),
+          no('Take a photo and keep walking', 'Always help: call 119 – it\'s free, and operators can connect an interpreter.', { manner: -20 }),
         ], 'me-er'),
         say('You reach the summit and see the crater lake through the clouds. Incredible!', { ifFlags: ['hallaBooked'] }),
         say('From Witse-oreum you can see the summit wall above you. Next time: reserve!', { unlessFlags: ['hallaBooked'] }),
@@ -113,7 +113,7 @@ export const jejuAdventure: Course = {
         talk('haenyeo', 'Hoi~! We dive for conch, abalone and sea urchin. The sea is our field.', P('해녀', 'Hae-nyeo', 'Woman diver')),
         ask('law', 'You see conch shells in the shallow water near the village. Can you take some?', [
           ok('No – the village fishing grounds belong to the haenyeo; buy from them instead', 'Correct. Gathering seafood there is illegal.', { manner: 8, money: -20000 }),
-          no('Yes, the sea is free', 'Haenyeo and police disagree. Fine!', { manner: -12, money: -100000 }),
+          no('Yes, the sea is free', 'These waters are the haenyeo\'s fishing grounds, so taking seafood is illegal and fined. Buying from them supports their UNESCO-listed culture!', { manner: -12, money: -100000 }),
         ]),
         simulate('cashpay', 'money', 'Buy from the haenyeo', 'The haenyeo sell their fresh catch on the rocks – cash only. Pay for a plate of sea urchin and conch.', { shop: '해녀의 집 Haenyeo seafood stand', items: [{ name: '성게·소라 한 접시 Sea urchin & conch plate', price: 20000 }, { name: '소주 Soju (to share)', price: 5000 }], cashOnly: true }),
         ask('etiquette', 'You want a portrait of a haenyeo grandmother.', [

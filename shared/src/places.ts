@@ -18,12 +18,14 @@ export interface RegionInfo {
   /** last public transport of the day */
   last?: { mode: Transport; at: string };
   mapKm: string;
+  /** fun target multiplier (long travel distances → lower target) */
+  funFactor: number;
 }
 export const REGIONS: Record<Region, RegionInfo> = {
-  seoul: { modes: ['subway', 'taxi', 'walk'], scale: 1, last: { mode: 'subway', at: '24:00' }, mapKm: '~1.5 km' },
-  busan: { modes: ['subway', 'taxi', 'walk'], scale: 2, last: { mode: 'subway', at: '24:00' }, mapKm: '~3 km' },
-  gyeongju: { modes: ['bus', 'taxi', 'walk'], scale: 2, last: { mode: 'bus', at: '22:30' }, mapKm: '~3 km' },
-  jeju: { modes: ['car', 'bus', 'taxi'], scale: 4, last: { mode: 'bus', at: '22:00' }, mapKm: '~6 km' },
+  seoul: { modes: ['subway', 'taxi', 'walk'], scale: 1, last: { mode: 'subway', at: '24:00' }, mapKm: '~1.5 km', funFactor: 1 },
+  busan: { modes: ['subway', 'taxi', 'walk'], scale: 2, last: { mode: 'subway', at: '24:00' }, mapKm: '~3 km', funFactor: 1 },
+  gyeongju: { modes: ['bus', 'taxi', 'walk'], scale: 2, last: { mode: 'bus', at: '22:30' }, mapKm: '~3 km', funFactor: 0.85 },
+  jeju: { modes: ['car', 'bus', 'taxi'], scale: 4, last: { mode: 'bus', at: '22:00' }, mapKm: '~6 km', funFactor: 0.8 },
 };
 export const MODE_ICON: Record<Transport, string> = { subway: '🚇', bus: '🚌', car: '🚗', taxi: '🚕', walk: '🚶' };
 export const MODE_NAME: Record<Transport, string> = { subway: 'Subway', bus: 'Bus', car: 'Rental car', taxi: 'Taxi', walk: 'Walk' };

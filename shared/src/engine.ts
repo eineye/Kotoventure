@@ -70,6 +70,23 @@ export function nextScene(course: Course, from: number, flags: string[], minDay?
   return course.scenes.length;
 }
 
+/** Record a learning result for a topic (value 0..1) and remember misses for the review list. */
+export function tally(s: RunStats, topic: TopicId, value: number, missKey?: string): RunStats {
+  const cur = s.topics?.[topic] ?? { c: 0, n: 0 };
+  return {
+    ...s,
+    topics: { ...(s.topics ?? {}), [topic]: { c: cur.c + value, n: cur.n + 1 } },
+    missed: missKey && value < 0.7 && !(s.missed ?? []).includes(missKey) ? [...(s.missed ?? []), missKey] : s.missed,
+  };
+}
+
+/** Overall "Korea travel readiness" 0..100 from the per-topic tally (falls back to accuracy). */
+export function readiness(s: RunStats): number {
+  const ts = Object.values(s.topics ?? {}).filter((t) => t && t.n > 0) as { c: number; n: number }[];
+  if (!ts.length) return s.answered ? Math.round((s.correct / s.answered) * 100) : 0;
+  return Math.round((ts.reduce((a, t) => a + t.c / t.n, 0) / ts.length) * 100);
+}
+
 export function score(s: RunStats, course: Course): number {
   const quiz = s.answered ? (s.correct / s.answered) * 600 : 0;
   const budgetLeft = clamp(s.money / course.startBudget, 0, 1) * 100;
