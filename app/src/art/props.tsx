@@ -1,5 +1,8 @@
 import React from 'react';
-import Svg, { Circle, Ellipse, G, Line, Path, Rect, Text as T } from 'react-native-svg';
+import { View } from 'react-native';
+import Svg, { Circle, Defs, Ellipse, G, Line, LinearGradient, Path, RadialGradient, Rect, Stop, Text as T } from 'react-native-svg';
+import { Banknote, Coin } from './Money';
+import { TmoneyCard } from './TmoneyCard';
 import type { PropId } from '@kotoventure/shared';
 
 /**
@@ -56,7 +59,10 @@ const coin = (cx: number, cy: number, r: number, v: string, fill: string, motif:
 /* ── Signs ───────────────────────────────────────────────── */
 const signBoard = (bg: string, big: string, sub: string, fg = '#FFFFFF', bigSize = 34) => (
   <G>
+    <Rect x="8" y="17" width="88" height="72" rx="10" fill="#000" opacity={0.18} />
     <Rect x="6" y="14" width="88" height="72" rx="10" fill={bg} />
+    <Rect x="6" y="14" width="88" height="72" rx="10" fill="url(#pp-gloss)" />
+    <Rect x="6" y="14" width="88" height="72" rx="10" fill="url(#pp-vshade)" />
     <Rect x="10" y="18" width="80" height="64" rx="7" fill="none" stroke={fg} strokeWidth="1.5" opacity={0.6} />
     {txt(50, 56, big, bigSize, fg, '900')}
     {txt(50, 75, sub, Math.min(9, 150 / sub.length), fg, '800')}
@@ -77,7 +83,10 @@ const bowl = (soup: string, inner?: React.ReactNode, rim = '#F5F5F4') => (
     <Path d="M12 48 Q14 82 50 84 Q86 82 88 48 Z" fill={rim} stroke="#A8A29E" strokeWidth="1.5" />
     <Ellipse cx="50" cy="48" rx="38" ry="14" fill={rim} stroke="#A8A29E" strokeWidth="1.5" />
     <Ellipse cx="50" cy="49" rx="33" ry="10.5" fill={soup} />
+    <Ellipse cx="50" cy="49" rx="33" ry="10.5" fill="url(#pp-soup)" />
     {inner}
+    <Path d="M18 54 Q22 74 40 80" stroke="#FFFFFF" strokeWidth="3" fill="none" opacity={0.35} strokeLinecap="round" />
+    <Path d="M12 48 Q14 82 50 84 Q86 82 88 48 Q86 70 50 72 Q14 70 12 48Z" fill="#000" opacity={0.08} />
   </G>
 );
 const steam = (
@@ -90,8 +99,9 @@ const steam = (
 const building = (wall: string, roof: string, label: string, labelColor = '#FFFFFF') => (
   <G>
     <Rect x="20" y="22" width="60" height="68" rx="3" fill={wall} />
+    <Rect x="58" y="22" width="22" height="68" rx="3" fill="#000" opacity={0.15} />
     <Rect x="16" y="16" width="68" height="10" rx="2" fill={roof} />
-    {[0, 1, 2].map((r) => [0, 1, 2].map((c) => <Rect key={`${r}${c}`} x={27 + c * 17} y={32 + r * 14} width="11" height="8" rx="1" fill="#BFE3FF" />))}
+    {[0, 1, 2].map((r) => [0, 1, 2].map((c) => <Rect key={`${r}${c}`} x={27 + c * 17} y={32 + r * 14} width="11" height="8" rx="1" fill="url(#pp-window)" />))}
     <Rect x="42" y="74" width="16" height="16" fill="#334155" />
     <Rect x="24" y="2" width="52" height="13" rx="3" fill={roof} />
     {txt(50, 12, label, 9, labelColor, '900')}
@@ -775,10 +785,73 @@ const PROPS: Record<PropId, React.ReactNode> = {
 
 export const hasProp = (id?: string) => !!id && id in PROPS;
 
+const NOTE_PROPS: Record<string, number> = { 'krw-1000': 1000, 'krw-5000': 5000, 'krw-10000': 10000, 'krw-50000': 50000 };
+
+/** Shared gradients used by the prop helpers (gloss, ceramic, windows…). */
+const PropDefs = () => (
+  <Defs>
+    <LinearGradient id="pp-gloss" x1="0" y1="0" x2="0" y2="1">
+      <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.35" />
+      <Stop offset="0.5" stopColor="#FFFFFF" stopOpacity="0.05" />
+      <Stop offset="0.51" stopColor="#FFFFFF" stopOpacity="0" />
+    </LinearGradient>
+    <LinearGradient id="pp-vshade" x1="0" y1="0" x2="0" y2="1">
+      <Stop offset="0.6" stopColor="#000" stopOpacity="0" />
+      <Stop offset="1" stopColor="#000" stopOpacity="0.18" />
+    </LinearGradient>
+    <RadialGradient id="pp-soup" cx="0.35" cy="0.3" r="0.8">
+      <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.45" />
+      <Stop offset="0.5" stopColor="#FFFFFF" stopOpacity="0" />
+    </RadialGradient>
+    <LinearGradient id="pp-window" x1="0" y1="0" x2="1" y2="1">
+      <Stop offset="0" stopColor="#E0F2FE" />
+      <Stop offset="0.5" stopColor="#7DD3FC" />
+      <Stop offset="1" stopColor="#38BDF8" />
+    </LinearGradient>
+    <RadialGradient id="pp-ground" cx="0.5" cy="0.5" r="0.5">
+      <Stop offset="0" stopColor="#000" stopOpacity="0.18" />
+      <Stop offset="1" stopColor="#000" stopOpacity="0" />
+    </RadialGradient>
+  </Defs>
+);
+
 export function Prop({ id, size = 96 }: { id?: string; size?: number }) {
+  // Money & cards use the detailed, true-to-life renderers
+  if (id && NOTE_PROPS[id])
+    return (
+      <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+        <Banknote value={NOTE_PROPS[id]} width={size * 0.98} />
+      </View>
+    );
+  if (id === 'krw-notes')
+    return (
+      <View style={{ width: size, height: size }}>
+        {[1000, 5000, 10000, 50000].map((v, i) => (
+          <View key={v} style={{ position: 'absolute', left: (i % 2) * size * 0.12, top: i * size * 0.17 }}>
+            <Banknote value={v} width={size * 0.86} />
+          </View>
+        ))}
+      </View>
+    );
+  if (id === 'coins')
+    return (
+      <View style={{ width: size, height: size, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
+        {[10, 50, 100, 500].map((v) => (
+          <Coin key={v} value={v} pxPerMm={size / 62} />
+        ))}
+      </View>
+    );
+  if (id === 'tmoney')
+    return (
+      <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+        <TmoneyCard width={size * 0.98} />
+      </View>
+    );
   const art = id && (PROPS as Record<string, React.ReactNode>)[id];
   return (
     <Svg width={size} height={size} viewBox="0 0 100 100">
+      <PropDefs />
+      <Ellipse cx="50" cy="94" rx="36" ry="5" fill="url(#pp-ground)" />
       {art ?? (
         <G>
           <Circle cx="50" cy="50" r="40" fill="#E2E8F0" />

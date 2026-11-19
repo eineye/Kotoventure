@@ -3,7 +3,7 @@ import { Text, View, useWindowDimensions } from 'react-native';
 import { addCash, currencyForCountry, tr } from '@kotoventure/shared';
 import { P, won } from '../ui/kit';
 import { C } from '../ui/theme';
-import { Box, DoneCard, Keypad, MoneyTray, OptBtn, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
+import { Box, DoneCard, Glass, Keypad, Metal, MoneyTray, OptBtn, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
 
 type S =
   | 'lang' | 'menu' | 'insert' | 'pin' | 'account' | 'amount' | 'dcc' | 'fee' | 'busy' | 'takeCard' | 'takeCash' | 'receipt'
@@ -378,14 +378,14 @@ export function AtmSim({ step, ctx, onDone }: SimProps) {
         </Box>
       )}
       {/* ── the machine ── */}
-      <View style={{ width: W, alignSelf: 'center', backgroundColor: '#1E3A8A', borderRadius: 14, padding: 10, borderWidth: 3, borderColor: '#0F1E4A' }}>
+      <Metal colors={['#5B7FD6', '#1E3A8A', '#0F1E4A']} style={{ width: W, alignSelf: 'center', padding: 10 }}>
         <View style={{ backgroundColor: '#DC2626', borderRadius: 6, paddingVertical: 4, marginBottom: 8 }}>
           <Text style={{ color: '#FFF', fontWeight: '900', textAlign: 'center', fontSize: 13 }}>GLOBAL ATM · 해외카드 Foreign Cards · 24h</Text>
         </View>
         {/* screen */}
-        <View style={{ backgroundColor: '#0F172A', borderRadius: 8, padding: 6 }}>
-          <View style={{ backgroundColor: '#E0F2FE', borderRadius: 4, padding: 8, minHeight: 190, gap: 8, justifyContent: 'center' }}>{screen()}</View>
-        </View>
+        <Glass minHeight={190} tint="#D6ECFF">
+          {screen()}
+        </Glass>
         {/* hardware */}
         <View style={{ flexDirection: 'row', marginTop: 10, gap: 10 }}>
           <View style={{ backgroundColor: '#334155', borderRadius: 8, padding: 6 }}>
@@ -401,7 +401,7 @@ export function AtmSim({ step, ctx, onDone }: SimProps) {
         <View style={{ marginTop: 10 }}>
           <Slot testID="slot-cash" label="현금 CASH" sub={s === 'takeCash' ? '💵 cash is out!' : ''} width={W - 60} height={34} onPress={tapCash} blink={s === 'takeCash'} />
         </View>
-      </View>
+      </Metal>
       <WalletBar
         items={[
           { id: 'card', icon: '💳', label: `${home.code} debit card (PIN ${PIN})`, disabled: cardIn || passbookMode },
