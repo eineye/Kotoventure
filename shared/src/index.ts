@@ -26,3 +26,6 @@ export const SEED_BUNDLE: ContentBundle = {
   config: DEFAULT_CONFIG,
 };
 export * from './art-ids';
+export * from './places';
+export * from './subway';
+export * from './dayplan';

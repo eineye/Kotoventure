@@ -3,6 +3,8 @@ import { Animated, Easing, Pressable, ScrollView, Text, View, useWindowDimension
 import {
   applyEffects,
   applySim,
+  roll,
+  nextScene,
   cashTotal,
   DEFAULT_CASH,
   initialStats,
@@ -27,7 +29,13 @@ import { C, R, shadow } from '../ui/theme';
 import { SIM_ICON, SimRunner } from '../sim/SimRunner';
 import { PARTY_SIZE, type SimResult } from '../sim/kit';
 
-type Phase = 'intro' | 'step' | 'feedback' | 'card' | 'sim';
+type Phase = 'intro' | 'step' | 'feedback' | 'card' | 'sim' | 'summary';
+interface DayLogItem {
+  prompt: string;
+  chosen: string;
+  correct: boolean;
+  feedback: string;
+}
 
 const phraseKey = (p: Phrase) => `${p.hangul}|${p.roman}|${p.meaning}`;
 
@@ -53,9 +61,14 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
   const [delta, setDelta] = useState<Effects | null>(null);
   const [pendingCard, setPendingCard] = useState<string | null>(null);
   const plays = (prev?.plays ?? 0) + (resume ? 0 : 1);
+  const real = profile?.mode === 'real';
+  const [dayLog, setDayLog] = useState<DayLogItem[]>([]);
+  const [summary, setSummary] = useState<{ day: number; next: number; collapsed: boolean } | null>(null);
+  const [exhausted, setExhausted] = useState(false);
+  const flags = stats.flags ?? [];
 
   const scene = course.scenes[Math.min(sceneIdx, course.scenes.length - 1)];
-  const steps = visibleSteps(scene, party);
+  const steps = visibleSteps(scene, party, flags, String(plays));
   const step: Step | undefined = steps[stepIdx];
 
   // panel fade-in on every change
@@ -97,27 +110,47 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     let st = applyEffects(stats, e);
     let d: Effects | null = e ?? null;
     if (st.energy <= 0) {
-      // exhausted → forced rest
-      st = { ...st, energy: 35, money: st.money - 20000 };
-      d = { ...(e ?? {}), energy: (e?.energy ?? 0) + 35, money: (e?.money ?? 0) - 20000 };
+      // exhausted → the rest of today is lost (rest at the hotel, taxi back)
+      st = { ...st, energy: 40, money: st.money - 25000 };
+      d = { ...(e ?? {}), energy: (e?.energy ?? 0) + 40, money: (e?.money ?? 0) - 25000 };
+      setExhausted(true);
     }
     setStats(st);
     return { st, d };
   };
 
-  const advance = (st = stats, cs = cards, ps = phrases) => {
+  const goScene = (idx: number, st: RunStats, cs: string[], ps: string[]) => {
+    setSceneIdx(idx);
+    setStepIdx(0);
+    setPhase('intro');
+    persist(idx, 0, st, cs, ps);
+  };
+
+  const advance = (st = stats, cs = cards, ps = phrases, collapsed = exhausted) => {
     setPicked(null);
     setDelta(null);
-    if (stepIdx + 1 < steps.length) {
-      setStepIdx(stepIdx + 1);
+    const fl = st.flags ?? [];
+    // flags may have changed → recompute this scene's visible steps and continue after the current one
+    const fresh = visibleSteps(scene, party, fl, String(plays));
+    const pos = step ? fresh.indexOf(step) : -1;
+    const nextStep = pos >= 0 ? pos + 1 : stepIdx + 1;
+    if (!collapsed && nextStep < fresh.length) {
+      setStepIdx(nextStep);
       setPhase('step');
-      persist(sceneIdx, stepIdx + 1, st, cs, ps);
-    } else if (sceneIdx + 1 < course.scenes.length) {
-      setSceneIdx(sceneIdx + 1);
-      setStepIdx(0);
-      setPhase('intro');
-      persist(sceneIdx + 1, 0, st, cs, ps);
-    } else {
+      persist(sceneIdx, nextStep, st, cs, ps);
+      return;
+    }
+    const nxt = nextScene(course, sceneIdx, fl, collapsed ? scene.day + 1 : undefined);
+    const nextDay = nxt < course.scenes.length ? course.scenes[nxt].day : Infinity;
+    if (collapsed || (real && nextDay > scene.day && dayLog.length)) {
+      setExhausted(false);
+      setSummary({ day: scene.day, next: nxt, collapsed });
+      setPhase('summary');
+      persist(nxt, 0, st, cs, ps);
+      return;
+    }
+    if (nxt < course.scenes.length) goScene(nxt, st, cs, ps);
+    else {
       persist(course.scenes.length, 0, st, cs, ps, true);
       onFinish();
     }
@@ -146,7 +179,9 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     const opt = step.options[i];
     setPicked(i);
     const { st, d } = effects(opt.effects);
-    setStats({ ...st, answered: st.answered + 1, correct: st.correct + (opt.correct ? 1 : 0) });
+    const nf = opt.setFlags?.length ? Array.from(new Set([...(st.flags ?? []), ...opt.setFlags])) : st.flags;
+    setStats({ ...st, flags: nf, answered: st.answered + 1, correct: st.correct + (opt.correct ? 1 : 0) });
+    if (real) setDayLog((l) => [...l, { prompt: tr(step.prompt, lang), chosen: tr(opt.text, lang), correct: opt.correct, feedback: tr(opt.feedback, lang) }]);
     setDelta(d);
     setPhase('feedback');
   };
@@ -167,7 +202,12 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
 
   const onSimDone = (r: SimResult) => {
     const sim = step as SimStep;
-    const st = { ...applySim(effects(r.effects).st, r.score), ...(r.cash ? { cash: r.cash } : {}) };
+    const base = effects(r.effects).st;
+    const st = {
+      ...applySim(base, r.score),
+      ...(r.cash ? { cash: r.cash } : {}),
+      flags: r.flags?.length ? Array.from(new Set([...(base.flags ?? []), ...r.flags])) : base.flags,
+    };
     setStats(st);
     const { cs, ps } = collect(sim.cardId);
     advance(st, cs, ps);
@@ -177,10 +217,63 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     return (
       <SimRunner
         step={step}
-        ctx={{ lang, party, partySize: PARTY_SIZE[party], country: profile?.country ?? 'US', fxRates: content.config.fxRates, cash: stats.cash ?? { ...DEFAULT_CASH } }}
+        ctx={{ lang, party, partySize: PARTY_SIZE[party], country: profile?.country ?? 'US', fxRates: content.config.fxRates, cash: stats.cash ?? { ...DEFAULT_CASH }, energy: stats.energy, flags }}
         onDone={onSimDone}
       />
     );
+
+  if (phase === 'summary' && summary) {
+    const right = dayLog.filter((d) => d.correct).length;
+    return (
+      <ScrollView style={{ flex: 1, backgroundColor: C.paper }} contentContainerStyle={{ padding: 18, gap: 12 }}>
+        <Text style={{ fontSize: 13, fontWeight: '900', color: C.red }}>
+          🌙 {L.day} {summary.day} {lang === 'ko' ? '정산' : 'review'}
+        </Text>
+        {summary.collapsed && (
+          <View style={{ backgroundColor: '#FDECEC', borderRadius: R.m, padding: 14 }}>
+            <H size={18} style={{ color: C.red }}>
+              😵 {lang === 'ko' ? '체력이 바닥나 쓰러졌어요!' : 'You ran out of energy and collapsed!'}
+            </H>
+            <P style={{ marginTop: 4 }}>
+              {lang === 'ko'
+                ? '택시를 타고 숙소로 돌아가 쉬었어요 (−₩25,000). 오늘 남은 일정은 모두 놓쳤습니다. 내일은 체력 관리(식사·휴식·이동수단)를 신경 쓰세요.'
+                : 'You took a taxi back and rested (−₩25,000). The rest of today’s plans are lost. Tomorrow, manage energy with meals, rest and smarter transport.'}
+            </P>
+          </View>
+        )}
+        {dayLog.length > 0 && (
+          <View style={{ gap: 8 }}>
+            <H size={18}>
+              {lang === 'ko' ? '오늘의 선택 결과' : 'How your choices turned out'} · {right}/{dayLog.length}
+            </H>
+            {dayLog.map((d, i) => (
+              <View key={i} style={{ backgroundColor: d.correct ? '#E8F8F0' : '#FDECEC', borderRadius: R.m, padding: 12 }}>
+                <Text style={{ fontWeight: '800', color: C.inkSoft, fontSize: 12 }}>{d.prompt}</Text>
+                <Text style={{ fontWeight: '900', color: d.correct ? C.green : C.red, marginTop: 4 }}>
+                  {d.correct ? '✅' : '❌'} {d.chosen}
+                </Text>
+                <P style={{ marginTop: 4, fontSize: 14 }}>{d.feedback}</P>
+              </View>
+            ))}
+          </View>
+        )}
+        <Btn
+          testID="summary-next"
+          label={lang === 'ko' ? '다음 날로 ›' : 'Next day ›'}
+          onPress={() => {
+            setDayLog([]);
+            const nx = summary.next;
+            setSummary(null);
+            if (nx < course.scenes.length) goScene(nx, stats, cards, phrases);
+            else {
+              persist(course.scenes.length, 0, stats, cards, phrases, true);
+              onFinish();
+            }
+          }}
+        />
+      </ScrollView>
+    );
+  }
 
   const sceneH = Math.min(height * 0.36, 300);
   const speaker = step?.type === 'dialog' ? step.speaker : null;
@@ -319,7 +412,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
             )}
 
             {step.type === 'choice' && phase !== 'card' && (
-              <ChoiceView step={step} lang={lang} picked={picked} onPick={onPick} delta={delta} onNext={afterFeedback} />
+              <ChoiceView step={step} lang={lang} picked={picked} onPick={onPick} delta={delta} onNext={afterFeedback} real={real} seed={`${plays}|${scene.id}|${stepIdx}`} />
             )}
 
             {phase === 'card' && pendingCard && (
@@ -380,6 +473,8 @@ function ChoiceView({
   onPick,
   delta,
   onNext,
+  real,
+  seed,
 }: {
   step: ChoiceStep;
   lang: string;
@@ -387,6 +482,8 @@ function ChoiceView({
   onPick: (i: number) => void;
   delta: Effects | null;
   onNext: () => void;
+  real?: boolean;
+  seed: string;
 }) {
   const L = t(lang as any);
   const visual = step.options.every((o) => o.prop && hasProp(o.prop)) && step.options.length <= 4;
@@ -399,14 +496,17 @@ function ChoiceView({
         {tr(step.prompt, lang)}
       </H>
       <View style={visual ? { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 12 } : { gap: 10, marginTop: 12 }}>
-        {step.options.map((o, i) => {
-          const state = picked === null ? 'idle' : o.correct ? 'right' : picked === i ? 'wrong' : 'dim';
-          const border = { idle: C.line, right: C.green, wrong: C.red, dim: C.line }[state];
-          const bg = { idle: '#FFF', right: '#E8F8F0', wrong: '#FDECEC', dim: '#FAFAFA' }[state];
+        {step.options
+          .map((o, i) => ({ o, i, r: roll(`${seed}|${i}`) }))
+          .sort((a, b) => a.r - b.r)
+          .map(({ o, i }, di) => {
+          const state = picked === null ? 'idle' : real ? (picked === i ? 'picked' : 'dim') : o.correct ? 'right' : picked === i ? 'wrong' : 'dim';
+          const border = { idle: C.line, right: C.green, wrong: C.red, dim: C.line, picked: C.blue }[state];
+          const bg = { idle: '#FFF', right: '#E8F8F0', wrong: '#FDECEC', dim: '#FAFAFA', picked: '#EEF4FF' }[state];
           return (
             <Pressable
               key={i}
-              testID={`opt-${i}`}
+              testID={`opt-${di}`}
               onPress={() => onPick(i)}
               disabled={picked !== null}
               accessibilityRole="button"
@@ -432,7 +532,15 @@ function ChoiceView({
           );
         })}
       </View>
-      {chosen && (
+      {chosen && real && (
+        <View style={{ marginTop: 14, backgroundColor: '#EEF4FF', borderRadius: R.m, padding: 14 }}>
+          <H size={16} style={{ color: C.blue }}>
+            📝 {lang === 'ko' ? '선택 완료 – 결과는 오늘 밤 정산에서!' : 'Choice made – you’ll see how it turned out tonight.'}
+          </H>
+          <Btn testID="next" label={L.next} style={{ marginTop: 12 }} onPress={onNext} />
+        </View>
+      )}
+      {chosen && !real && (
         <View style={{ marginTop: 14, backgroundColor: chosen.correct ? '#E8F8F0' : '#FDECEC', borderRadius: R.m, padding: 14 }}>
           <H size={18} style={{ color: chosen.correct ? C.green : C.red }}>
             {chosen.correct ? `🎉 ${L.correct}` : `🤔 ${L.wrong}`}

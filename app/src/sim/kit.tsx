@@ -14,6 +14,9 @@ export interface SimCtx {
   fxRates: Record<string, number>;
   /** physical cash in the wallet (denomination → count) */
   cash: Cash;
+  /** current energy and consequence flags */
+  energy: number;
+  flags: string[];
 }
 
 export interface SimResult {
@@ -23,6 +26,8 @@ export interface SimResult {
   log: string[];
   /** wallet after the simulation (omit = unchanged) */
   cash?: Cash;
+  /** flags to add (e.g. visit:bukchon) */
+  flags?: string[];
 }
 
 export interface SimProps {

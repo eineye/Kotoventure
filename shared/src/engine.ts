@@ -3,8 +3,10 @@ import type { ContentBundle, Course, Effects, KnowledgeCard, L, PartyType, RunSt
 import { TOPICS } from './meta';
 import { stationById } from './rail';
 import { DEFAULT_CASH } from './money';
+import { placeById } from './places';
+import { stationOf } from './subway';
 
-export const SIM_KINDS = ['exchange', 'atm', 'tmoney', 'train', 'cashpay'] as const;
+export const SIM_KINDS = ['exchange', 'atm', 'tmoney', 'train', 'cashpay', 'dayplan', 'transfer', 'kiosk', 'phrase'] as const;
 
 /** Record a finished simulation (score 0..100) in the run stats. */
 export function applySim(s: RunStats, points: number): RunStats {
@@ -35,9 +37,36 @@ export function applyEffects(s: RunStats, e?: Effects): RunStats {
   };
 }
 
-/** Steps visible for the selected party type. */
-export const visibleSteps = (scene: Scene, party: PartyType): Step[] =>
-  scene.steps.filter((st) => !st.parties || st.parties.length === 0 || st.parties.includes(party));
+/** deterministic 0..1 from a string (so random events are stable within one play) */
+export function roll(seed: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) h = Math.imul(h ^ seed.charCodeAt(i), 16777619);
+  return ((h >>> 0) % 10000) / 10000;
+}
+
+const flagsOk = (ifF: string[] | undefined, unlessF: string[] | undefined, flags: string[]) =>
+  (!ifF || ifF.every((f) => flags.includes(f))) && (!unlessF || !unlessF.some((f) => flags.includes(f)));
+
+/** Steps visible for the party type, the consequence flags and (for random events) this play's seed. */
+export const visibleSteps = (scene: Scene, party: PartyType, flags: string[] = [], seed = ''): Step[] =>
+  scene.steps.filter(
+    (st, i) =>
+      (!st.parties || st.parties.length === 0 || st.parties.includes(party)) &&
+      flagsOk(st.ifFlags, st.unlessFlags, flags) &&
+      (st.chance === undefined || roll(`${seed}|${scene.id}|${i}`) < st.chance),
+  );
+
+export const sceneVisible = (scene: Scene, flags: string[] = []) => !scene.requires || scene.requires.every((f) => flags.includes(f));
+
+/** Index of the next playable scene after `from` (skips scenes whose requirements aren't met). */
+export function nextScene(course: Course, from: number, flags: string[], minDay?: number): number {
+  for (let i = from + 1; i < course.scenes.length; i++) {
+    const sc = course.scenes[i];
+    if (minDay !== undefined && sc.day < minDay) continue;
+    if (sceneVisible(sc, flags)) return i;
+  }
+  return course.scenes.length;
+}
 
 export function score(s: RunStats, course: Course): number {
   const quiz = s.answered ? (s.correct / s.answered) * 600 : 0;
@@ -96,6 +125,12 @@ export function validateBundle(b: ContentBundle, known?: { props?: Set<string>; 
         const ws = `${w} › step ${j + 1}`;
         if (st.type === 'sim') {
           if (!SIM_KINDS.includes(st.sim)) issues.push({ level: 'error', where: ws, msg: `unknown simulation "${st.sim}"` });
+          if (st.sim === 'dayplan' && (!st.config?.places?.length || st.config.places.some((p) => !placeById(p))))
+            issues.push({ level: 'error', where: ws, msg: 'day plan needs valid config.places' });
+          if (st.sim === 'transfer' && (!stationOf(st.config?.fromStation) || !stationOf(st.config?.toStation)))
+            issues.push({ level: 'error', where: ws, msg: 'transfer puzzle needs valid fromStation/toStation' });
+          if (st.sim === 'phrase' && !st.config?.phrases?.length) issues.push({ level: 'error', where: ws, msg: 'phrase builder needs config.phrases' });
+          if (st.sim === 'kiosk' && !st.config?.order?.length) issues.push({ level: 'error', where: ws, msg: 'kiosk needs config.order' });
           if (st.sim === 'cashpay' && !st.config?.items?.length) issues.push({ level: 'error', where: ws, msg: 'cash payment needs config.items (name + price)' });
           if (st.sim === 'train' && (!st.config?.to || !stationById(st.config.to))) issues.push({ level: 'error', where: ws, msg: 'train simulation needs a valid config.to station' });
         }

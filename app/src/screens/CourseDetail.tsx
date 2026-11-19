@@ -85,7 +85,10 @@ export function CourseDetail({ id, onBack, onPlay }: { id: string; onBack: () =>
                           <Text style={{ color: done ? '#FFF' : C.inkSoft, fontWeight: '900', fontSize: 12 }}>{done ? '✓' : i + 1}</Text>
                         </View>
                         <View style={{ marginLeft: 10, flex: 1 }}>
-                          <Text style={{ fontWeight: '800', color: C.ink }}>{tr(s.title, lang)}</Text>
+                          <Text style={{ fontWeight: '800', color: C.ink }}>
+                            {tr(s.title, lang)}
+                            {s.requires?.length ? <Text style={{ color: C.orange, fontSize: 12 }}> · {lang === 'ko' ? '일정에 넣으면' : 'if you plan it'}</Text> : null}
+                          </Text>
                           <Text style={{ fontSize: 12, color: C.inkSoft }}>📍 {tr(s.location, lang)}</Text>
                         </View>
                       </View>

@@ -51,9 +51,10 @@ export function P({ children, style, dim }: { children: React.ReactNode; style?:
   return <Text style={[{ fontSize: 15, lineHeight: 22, color: dim ? C.inkSoft : C.ink }, style]}>{children}</Text>;
 }
 
-export function Chip({ label, color = C.navy, active, onPress, style }: { label: string; color?: string; active?: boolean; onPress?: () => void; style?: StyleProp<ViewStyle> }) {
+export function Chip({ label, color = C.navy, active, onPress, style, testID }: { label: string; color?: string; active?: boolean; onPress?: () => void; style?: StyleProp<ViewStyle>; testID?: string }) {
   return (
     <Pressable
+      testID={testID}
       onPress={onPress}
       style={[s.chip, { borderColor: color, backgroundColor: active ? color : '#FFF' }, style]}
       accessibilityRole={onPress ? 'button' : undefined}
