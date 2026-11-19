@@ -80,11 +80,11 @@ export const seoulClassic: Course = {
         say('The train arrives. People are lined up at the sides of the doors.'),
         ask('etiquette', 'The doors open. What do you do?', [
           ok('Stand aside and let passengers get off first', 'Correct. Then board quickly and move inside.', { manner: 5 }, 'queue'),
-          no('Rush in first to get a seat', 'You blocked people getting off – everyone stares at you.', { manner: -8 }),
+          no('Rush in first to get a seat', 'You blocked people getting off. Just wait beside the doors – let people exit first, then board.', { manner: -8 }),
         ], 'et-queue'),
         ask('etiquette', 'The only empty seats are pink with a pregnant-woman sign, and two at the end of the car for elders. You are tired…', [
           ok('Stay standing and hold the strap', 'Respect! Pink seats are left empty for pregnant women.', { manner: 6, energy: -3 }, 'priority-seat'),
-          no('Sit in the pink seat – nobody is pregnant now', 'Koreans leave it empty in case someone needs it. You get some looks.', { manner: -6 }),
+          no('Sit in the pink seat – nobody is pregnant now', 'Koreans keep this pink seat free for pregnant women, even on busy trains – a kind custom to follow.', { manner: -6 }),
         ], 'et-seats'),
         learn('et-quiet'),
       ],
@@ -98,7 +98,7 @@ export const seoulClassic: Course = {
         say('It\'s 11:00. Your hotel check-in is at 15:00 – and four friends\' worth of suitcases is a lot to drag around.', { parties: ['friends'] }),
         ask('lodging', 'What do you do with your luggage?', [
           ok('Ask the front desk to keep it until check-in', 'Almost every hotel does this for free.', { energy: 5 }, 'hotel'),
-          no('Drag it around Myeongdong for four hours', 'Your arms hate you. And the streets are crowded.', { energy: -15 }),
+          no('Drag it around Myeongdong for four hours', 'Heavy bags on busy streets – tiring! Korea has handy luggage storage and same-day luggage delivery at major stations.', { energy: -15 }),
         ], 'lo-hotel'),
         talk('staff', 'Of course. Here is your tag. Your room will be ready at 3 pm.', P('짐 좀 맡길 수 있을까요?', 'Jim jom mat-gil su i-sseul-kka-yo?', 'Can I leave my luggage?')),
         say('You charge your phone – wait, your Australian plug doesn\'t fit! Korean sockets are 220 V with two round pins. You borrow an adapter from the front desk.'),
@@ -136,7 +136,7 @@ export const seoulClassic: Course = {
         ask('food', 'You want to order. How do you call the staff?', [
           ok('Press the call bell (or raise a hand and say "Jeogiyo!")', 'Exactly. In Korea calling the staff like this is totally normal.', { manner: 3 }, 'call-bell'),
           no('Wait silently until they come', 'You wait… and wait. Staff won\'t come unless you call.', { energy: -5 }),
-          no('Whistle', 'Very rude in Korea. Ouch.', { manner: -10 }),
+          no('Whistle', 'Whistling at staff feels rude in Korea. Just say "Jeogiyo!" or press the call bell – totally normal.', { manner: -10 }),
         ], 'fo-bell'),
         ask('food', 'The meat is grilling. How do you eat it the Korean way?', [
           ok('Wrap meat, garlic and ssamjang in a lettuce leaf and eat it in one bite', 'Delicious! That\'s "ssam".', { energy: 10 }, 'bbq'),
@@ -233,7 +233,7 @@ export const seoulClassic: Course = {
         ], 'la-bukchon'),
         ask('etiquette', 'A resident\'s gate is open with a beautiful courtyard inside.', [
           ok('Admire it from the street, whisper, move on', 'Perfect. It\'s someone\'s home.', { manner: 6 }),
-          no('Step inside for a quick look', 'Trespassing on private property. The owner is upset.', { manner: -12 }),
+          no('Step inside for a quick look', 'That\'s someone\'s home, so the owner is upset. Admiring it from the street is perfectly fine!', { manner: -12 }),
         ], 'et-quiet'),
         learn('lo-hanok'),
       ],
@@ -289,7 +289,7 @@ export const seoulClassic: Course = {
         learn('me-firstaid'),
         ask('etiquette', 'A guard in costume is standing still. You want a photo.', [
           ok('Take a photo from a respectful distance without touching', 'Correct. Don\'t touch or block the guards.', { manner: 4 }, 'camera'),
-          no('Put your arm around him and tug his beard', 'Not cool. He\'s working.', { manner: -10 }),
+          no('Put your arm around him and tug his beard', 'He\'s on duty and can\'t move or react. Take your photo next to him from a respectful distance instead.', { manner: -10 }),
         ], 'et-photo'),
         say('Remember: Gyeongbokgung is closed on Tuesdays – good thing you planned it for Wednesday!'),
       ],
@@ -309,7 +309,7 @@ export const seoulClassic: Course = {
         say('At a famous pop-up there\'s a long line and a tablet at the entrance.'),
         ask('etiquette', 'How do you get in?', [
           ok('Register on the waiting tablet (or app) and wait your turn', 'Yes. Queueing is sacred in Korea.', { manner: 5 }, 'queue'),
-          no('Squeeze in next to a friend in the middle of the line', 'Line-cutting is a big no. People call staff.', { manner: -10 }),
+          no('Squeeze in next to a friend in the middle of the line', 'Queues are taken seriously in Korea and people call staff. Join the back – lines move fast!', { manner: -10 }),
         ]),
         simulate('kiosk', 'money', 'Café kiosk – Korean only', 'This café has only a Korean kiosk and people are queueing behind you. Order exactly what you want and pay by card – fast!', { menu: 'cafe', order: [{ id: 'americano', qty: 1, temp: 'ice', size: 'R' }, { id: 'croffle', qty: 1 }], dineIn: true, english: false }, 'fo-solo'),
         ask('etiquette', 'You finished your iced americano. At the return station there are separate bins.', [

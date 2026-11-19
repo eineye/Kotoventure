@@ -72,7 +72,7 @@ export const gyeongjuHeritage: Course = {
         say('Your lodging is a hanok with a wooden veranda (maru) and paper doors (changhoji).'),
         ask('etiquette', 'At the stone step in front of the wooden floor, what do you do?', [
           ok('Take off my shoes and leave them on the stone step', 'Exactly. The wood floor is a clean, shoes-free zone.', { manner: 5 }, 'shoes-off'),
-          no('Walk in with shoes – they\'re clean', 'The host gasps.', { manner: -10 }),
+          no('Walk in with shoes – they\'re clean', 'The host gently stops you: wooden floors in Korean homes are shoe-free. Leave your shoes on the stone step – easy!', { manner: -10 }),
         ], 'et-shoes'),
         learn('lo-hanok'),
         say('Your family books a whole hanok house so the kids can run around the courtyard.', { parties: ['group'] }),
@@ -101,7 +101,7 @@ export const gyeongjuHeritage: Course = {
         say('Day 2. Giant grass mounds rise in the middle of town: tombs of Silla kings and queens, 1,500 years old.'),
         ask('law', 'The grassy mound looks perfect to climb for a photo.', [
           ok('Stay on the path – climbing tombs damages a protected heritage site', 'Correct. Damaging cultural heritage is punishable by law.', { manner: 8 }),
-          no('Climb up quickly for a selfie', 'A guard whistles. Heritage protection laws apply!', { manner: -12, money: -30000 }),
+          no('Climb up quickly for a selfie', 'A guard calls you back. These 1,500-year-old tombs are protected by law – and the best photos are from the path anyway!', { manner: -12, money: -30000 }),
         ]),
         say('A short ride away stands Cheomseongdae, the oldest surviving astronomical observatory in East Asia (7th century).'),
         ask('transport', 'You rent bikes for the day. Where do you ride?', [
@@ -148,7 +148,7 @@ export const gyeongjuHeritage: Course = {
         ]),
         ask('law', 'You packed a bottle of makgeolli for the night.', [
           ok('Leave it closed in my bag – alcohol is not allowed at the temple', 'Correct.', { manner: 5 }),
-          no('Open it in the dormitory', 'Breaking temple rules is very disrespectful.', { manner: -15 }),
+          no('Open it in the dormitory', 'Alcohol isn\'t allowed at temples – keep it closed until after your stay. Monks appreciate guests who follow the simple rules.', { manner: -15 }),
         ]),
         event('surprise', '4 am wake-up', 'A wooden fish drum (moktak) sounds at 4 am. You join the dawn chanting under the stars.', { energy: -8, manner: 5 }),
       ],
@@ -181,7 +181,7 @@ export const gyeongjuHeritage: Course = {
         simulate('cashpay', 'money', 'Buy Hwangnam-ppang', 'The old bakery takes cards, but the owner smiles at cash. Pay for a box with your notes and coins.', { shop: '황남빵 Hwangnam-ppang bakery', items: [{ name: '황남빵 10개입 Box of 10', price: 13000 }], cashOnly: false }),
         ask('etiquette', 'An elderly shop owner hands you a free sample with both hands.', [
           ok('Receive it with two hands and a small bow: "Gamsahamnida"', 'She beams!', { manner: 6 }, 'two-hands'),
-          no('Grab it with one hand while looking at my phone', 'Seems careless in Korea.', { manner: -5 }),
+          no('Grab it with one hand while looking at my phone', 'Not a big deal – but receiving with both hands shows respect in Korea, a small gesture that makes people smile.', { manner: -5 }),
         ], 'et-hands'),
         learn('fo-manners'),
       ],
@@ -196,7 +196,7 @@ export const gyeongjuHeritage: Course = {
         event('health', 'Twisted ankle!', 'You slip on a wet stone and twist your ankle. It swells quickly.', { energy: -25 }, 'firstaid'),
         ask('medical', 'First aid first. What do you do?', [
           ok('Rest, cold compress, bandage, raise the leg – then get help down', 'R.I.C.E. – the classic first aid for sprains.', { energy: 10 }, 'firstaid'),
-          no('Keep hiking to the summit', 'It gets much worse.', { energy: -20 }),
+          no('Keep hiking to the summit', 'The ankle swells more and the way down gets harder. Rest first – and remember help (119) is always one call away.', { energy: -20 }),
         ], 'me-firstaid'),
         ask('medical', 'Down in town, the ankle still hurts. Where do you go?', [
           ok('An orthopaedic clinic (정형외과) for an X-ray', 'Nothing broken – a sprain. Total about ₩60,000 incl. X-ray.', { energy: 15, money: -60000 }, 'hospital'),
@@ -218,7 +218,7 @@ export const gyeongjuHeritage: Course = {
         say('Day 4. You take the limousine back to Gimhae with heritage souvenirs.'),
         ask('law', 'At the airport you want to fly a small drone for one last aerial shot.', [
           ok('No – airports and many areas are no-fly zones', 'Correct. Drone rules are strict in Korea.', { manner: 5 }, 'drone'),
-          no('Launch it from the car park', 'Airport security arrives within minutes.', { manner: -15, money: -100000 }),
+          no('Launch it from the car park', 'Airports are strict no-fly zones and security arrives quickly. Check a drone-zone map app before flying anywhere in Korea.', { manner: -15, money: -100000 }),
         ], 'la-camera'),
         learn('mo-tax'),
         talk('guide', 'A thousand years of history in four days. Annyeonghi gaseyo!', P('안녕히 가세요', 'An-nyeong-hi ga-se-yo', 'Goodbye (to someone leaving)')),

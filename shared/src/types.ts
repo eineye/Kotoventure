@@ -273,6 +273,10 @@ export interface RunStats {
   cash?: Record<string, number>;
   /** consequence flags set by choices and simulations */
   flags?: string[];
+  /** per-topic learning tally: c = correct (fractional for sims), n = answered */
+  topics?: Partial<Record<TopicId, { c: number; n: number }>>;
+  /** things to review: "sceneId:stepIndex:optionIndex" (optionIndex −1 = simulation) */
+  missed?: string[];
 }
 
 export interface CourseProgress {

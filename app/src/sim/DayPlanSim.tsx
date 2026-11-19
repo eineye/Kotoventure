@@ -6,6 +6,7 @@ import {
   MODE_NAME,
   REGIONS,
   WEEKDAY_KO,
+  funTarget,
   modesFor,
   regionOf,
   type Region,
@@ -122,7 +123,7 @@ export function DayPlanSim({ step, ctx, onDone }: SimProps) {
         {done && (
           <>
             <Box style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-              <Stat k={ko ? '즐거움' : 'Fun'} v={`${result.fun}`} />
+              <Stat k={ko ? '즐거움 / 목표' : 'Fun / goal'} v={`${result.fun}/${result.target}`} />
               <Stat k={ko ? '쓴 돈' : 'Spent'} v={won(result.cost)} />
               <Stat k={ko ? '체력' : 'Energy'} v={`−${Math.max(0, result.energy)}`} />
               <Stat k={ko ? '방문' : 'Visited'} v={`${result.visited.length}/${stops.length}`} />
@@ -163,7 +164,7 @@ export function DayPlanSim({ step, ctx, onDone }: SimProps) {
           </Text>
         )}
         <Text style={{ color: C.inkSoft, fontSize: 12 }}>
-          ⚡ {ko ? '현재 체력' : 'Energy now'} {ctx.energy} · {ko ? '점심을 꼭 챙기세요 (11:00–14:30)' : 'Remember lunch (11:00–14:30)'} {last ? ` · ${ko ? `${MODE_NAME[last.mode] === 'Bus' ? '버스' : '지하철'} 막차 ~${last.at}` : `Last ${MODE_NAME[last.mode].toLowerCase()} ~${last.at}`}` : ''}
+          🎯 {ko ? '즐거움 목표' : 'Fun goal'} {funTarget(cfg)} · ⚡ {ko ? '현재 체력' : 'Energy now'} {ctx.energy} · {ko ? '점심을 꼭 챙기세요 (11:00–14:30)' : 'Remember lunch (11:00–14:30)'} {last ? ` · ${ko ? `${MODE_NAME[last.mode] === 'Bus' ? '버스' : '지하철'} 막차 ~${last.at}` : `Last ${MODE_NAME[last.mode].toLowerCase()} ~${last.at}`}` : ''}
           {modes.length ? ` · ${modes.map((m) => `${MODE_ICON[m]} ${MODE_NAME[m]}`).join(' / ')}` : ''}
         </Text>
       </Box>

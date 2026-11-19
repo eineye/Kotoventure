@@ -26,6 +26,8 @@ export interface PlanResult {
   visited: string[];
   score: number;
   endMin: number;
+  /** fun needed for 100 points (scaled to available hours and region) */
+  target: number;
 }
 
 export const toMinutes = (s: string) => {
@@ -34,8 +36,15 @@ export const toMinutes = (s: string) => {
 };
 export const hhmm = (m: number) => `${String(Math.floor(m / 60) % 24).padStart(2, '0')}:${String(Math.round(m) % 60).padStart(2, '0')}`;
 
-/** Fun points that make a 100-point day. */
+/** Fun points that make a 100-point FULL day (09:00–21:00) in Seoul. */
 export const FUN_TARGET = 75;
+
+/** Fun target for a plan: scaled by the hours available (a half day needs less) and the region's travel distances. */
+export function funTarget(cfg: SimConfig): number {
+  const hotel = placeById(cfg.hotel ?? 'hotel-myeongdong');
+  const hours = (21 * 60 - toMinutes(cfg.start ?? '09:00')) / (12 * 60);
+  return Math.round(FUN_TARGET * Math.max(0.4, Math.min(1, hours)) * REGIONS[regionOf(hotel)].funFactor);
+}
 const DAY_NAME: Record<string, string> = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday' };
 
 export function simulatePlan(cfg: SimConfig, stops: PlanStop[], returnMode: Transport, flags: string[], startEnergy: number): PlanResult {
@@ -161,6 +170,7 @@ export function simulatePlan(cfg: SimConfig, stops: PlanStop[], returnMode: Tran
     penalty += 15;
   }
   ev.push({ time: hhmm(t), kind: 'end', text: `Back at the hotel at ${hhmm(t)}.` });
-  const score = Math.max(0, Math.min(100, Math.round((fun / FUN_TARGET) * 100) - penalty));
-  return { events: ev, fun: Math.round(fun), cost, energy, visited, score, endMin: t };
+  const target = funTarget(cfg);
+  const score = Math.max(0, Math.min(100, Math.round((fun / target) * 100) - penalty));
+  return { events: ev, fun: Math.round(fun), cost, energy, visited, score, endMin: t, target };
 }
