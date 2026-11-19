@@ -119,7 +119,7 @@ export interface EventStep extends StepBase {
 }
 
 /** Hands-on simulations of real Korean machines / counters. */
-export type SimKind = 'exchange' | 'atm' | 'tmoney' | 'train';
+export type SimKind = 'exchange' | 'atm' | 'tmoney' | 'train' | 'cashpay';
 
 export interface SimConfig {
   /** exchange: where you exchange – airport rates are worse than downtown money changers */
@@ -134,6 +134,11 @@ export interface SimConfig {
   from?: string;
   to?: string;
   arriveBy?: string;
+  /** cashpay: shop name and what you buy */
+  shop?: string;
+  items?: { name: string; price: number }[];
+  /** cashpay: the shop does not take cards (markets, street stalls) */
+  cashOnly?: boolean;
 }
 
 export interface SimStep extends StepBase {
@@ -235,6 +240,8 @@ export interface RunStats {
   /** number of simulations played and their summed score (0..100 each) */
   sims?: number;
   simPoints?: number;
+  /** physical cash in the wallet: denomination (KRW) → count. Part of `money`. */
+  cash?: Record<string, number>;
 }
 
 export interface CourseProgress {

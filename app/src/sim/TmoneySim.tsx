@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Circle, G, Path, Rect, Text as T } from 'react-native-svg';
-import { tr } from '@kotoventure/shared';
-import { Banknote } from '../art/Money';
+import { addCash, tr, type Cash } from '@kotoventure/shared';
 import { Btn, H, P, won } from '../ui/kit';
 import { C } from '../ui/theme';
-import { Box, DoneCard, OptBtn, SimShell, Slot, WalletBar, notePx, useScore, type SimProps } from './kit';
+import { Box, DoneCard, OptBtn, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
+import { CashPicker } from './CashPay';
 
 const CARD_PRICE = 3000; // plain T-money card ≈ ₩2,500–4,000
 const FARE = 1550; // Seoul subway base fare with a transit card (2025)
@@ -54,7 +54,6 @@ export function TmoneyCard({ width, side = 'front', balance }: { width: number; 
 }
 
 type S = 'store' | 'menu' | 'place' | 'amount' | 'cash' | 'charging' | 'charged' | 'gates' | 'exit' | 'bus' | 'done';
-const NOTES0: Record<number, number> = { 50000: 1, 10000: 2, 5000: 1, 1000: 3 };
 
 export function TmoneySim({ step, ctx, onDone }: SimProps) {
   const { width } = useWindowDimensions();
@@ -62,8 +61,8 @@ export function TmoneySim({ step, ctx, onDone }: SimProps) {
   const buy = step.config?.buyCard ?? true;
   const [s, setS] = useState<S>(buy ? 'store' : 'menu');
   const [flipped, setFlipped] = useState(false);
-  const [notes, setNotes] = useState<Record<number, number>>(NOTES0);
-  const [onCounter, setOnCounter] = useState<number[]>([]);
+  const [notes, setNotes] = useState<Cash>({ ...ctx.cash });
+  const [bought, setBought] = useState(false);
   const [held, setHeld] = useState<string | null>(null);
   const [balance, setBalance] = useState(0);
   const [topup, setTopup] = useState(0);
@@ -89,7 +88,7 @@ export function TmoneySim({ step, ctx, onDone }: SimProps) {
   }, [s]);
 
   const noteItems = Object.entries(notes)
-    .filter(([, n]) => n > 0)
+    .filter(([v, n]) => n > 0 && Number(v) >= 1000)
     .map(([v, n]) => ({ id: `note-${v}`, icon: '💵', label: `${won(Number(v))} ×${n}` }));
   const takeNote = (id: string) => {
     const v = Number(id.replace('note-', ''));
@@ -124,7 +123,10 @@ export function TmoneySim({ step, ctx, onDone }: SimProps) {
     const total = inserted + v;
     setInserted(total);
     if (total >= topup) {
-      if (total > topup) add(`Received ${won(total - topup)} change`);
+      if (total > topup) {
+        add(`Received ${won(total - topup)} change`);
+        setNotes((n) => addCash(n, total - topup));
+      }
       setS('charging');
       sc.info('충전 중 – charging… keep the card on the pad.');
     } else sc.info(`Inserted ${won(total)} of ${won(topup)}.`);
@@ -176,6 +178,8 @@ export function TmoneySim({ step, ctx, onDone }: SimProps) {
                   label={won(a)}
                   style={{ width: '47%' }}
                   onPress={() => {
+                    const bills = Object.entries(notes).reduce((t, [v, n]) => t + (Number(v) >= 1000 ? Number(v) * n : 0), 0);
+                    if (a > bills) return sc.miss(`You only have ${won(bills)} in notes – choose a smaller amount.`);
                     setTopup(a);
                     if (a < 10000) sc.info('₩5,000 is only about 3 rides – you may need to top up again soon.');
                     else if (a > 30000) sc.info(`${won(a)} is a lot for a short trip – leftovers are refundable only with a fee.`);
@@ -216,34 +220,24 @@ export function TmoneySim({ step, ctx, onDone }: SimProps) {
             </Pressable>
             <Text style={{ fontSize: 12, color: C.inkSoft }}>Tap the card to see the {flipped ? 'front' : 'back'} · price {won(CARD_PRICE)} (cash)</Text>
           </Box>
-          <H size={16}>Pay {won(CARD_PRICE)} in cash: tap notes from your wallet onto the counter</H>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, minHeight: 50, backgroundColor: '#E2E8F0', borderRadius: 8, padding: 6 }}>
-            {onCounter.map((v, i) => (
-              <Banknote key={i} value={v} width={(110 * notePx(v)) / 154} />
-            ))}
-            {!onCounter.length && <Text style={{ color: C.inkSoft }}>(counter)</Text>}
-          </View>
-          <WalletBar
-            title="Tap a note to put it on the counter"
-            items={noteItems}
-            selected={null}
-            onSelect={(id) => setOnCounter((c) => [...c, takeNote(id)])}
-          />
-          <Btn
-            testID="sim-next"
-            label={`Pay (${won(onCounter.reduce((a, b) => a + b, 0))})`}
-            disabled={onCounter.reduce((a, b) => a + b, 0) < CARD_PRICE}
-            onPress={() => {
-              const paid = onCounter.reduce((a, b) => a + b, 0);
-              const change = paid - CARD_PRICE;
-              if (onCounter.includes(50000)) sc.info('Paying ₩3,000 with ₩50,000 works, but small notes are appreciated.');
-              else sc.ok(change ? `Paid. Change: ${won(change)}.` : 'Exact amount – perfect!');
-              if (change >= 1000) setNotes((n) => ({ ...n, 1000: (n[1000] ?? 0) + Math.floor(change / 1000) }));
-              setSpent((x) => x + CARD_PRICE);
-              add(`Bought a T-money card for ${won(CARD_PRICE)} in cash`);
-              setS('menu');
-            }}
-          />
+          <H size={16}>Pay {won(CARD_PRICE)} in cash – pick the notes/coins from your wallet</H>
+          {!bought ? (
+            <CashPicker
+              wallet={notes}
+              total={CARD_PRICE}
+              sc={sc}
+              lang={ctx.lang}
+              onDone={(r) => {
+                setNotes(r.wallet);
+                setSpent((x) => x + CARD_PRICE);
+                r.log.forEach(add);
+                add(`Bought a T-money card for ${won(CARD_PRICE)} in cash`);
+                setBought(true);
+              }}
+            />
+          ) : (
+            <Btn testID="sim-next" label="Go to the subway station →" onPress={() => setS('menu')} />
+          )}
         </>
       )}
 
@@ -377,7 +371,7 @@ export function TmoneySim({ step, ctx, onDone }: SimProps) {
           <Box style={{ alignItems: 'center' }}>
             <TmoneyCard width={cardW} side="back" balance={balance} />
           </Box>
-          <DoneCard title="T-money master" score={sc.final()} log={log} lang={ctx.lang} onContinue={() => onDone({ score: sc.final(), effects: { money: -spent }, log })} />
+          <DoneCard title="T-money master" score={sc.final()} log={log} lang={ctx.lang} onContinue={() => onDone({ score: sc.final(), effects: { money: -spent }, log, cash: notes })} />
         </>
       )}
     </SimShell>

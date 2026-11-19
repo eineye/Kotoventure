@@ -3,6 +3,7 @@ import { ExchangeSim } from './ExchangeSim';
 import { AtmSim } from './AtmSim';
 import { TmoneySim } from './TmoneySim';
 import { TrainSim } from './TrainSim';
+import { CashPaySim } from './CashPay';
 
 /** Picks the simulation component for a sim step. */
 export function SimRunner(props: SimProps) {
@@ -15,9 +16,11 @@ export function SimRunner(props: SimProps) {
       return <TmoneySim {...props} />;
     case 'train':
       return <TrainSim {...props} />;
+    case 'cashpay':
+      return <CashPaySim {...props} />;
     default:
       return null;
   }
 }
 
-export const SIM_ICON: Record<string, string> = { exchange: '💱', atm: '🏧', tmoney: '🟧', train: '🚄' };
+export const SIM_ICON: Record<string, string> = { exchange: '💱', atm: '🏧', tmoney: '🟧', train: '🚄', cashpay: '💵' };

@@ -96,11 +96,7 @@ export const seoulClassic: Course = {
         talk('staff', 'Of course. Here is your tag. Your room will be ready at 3 pm.', P('짐 좀 맡길 수 있을까요?', 'Jim jom mat-gil su i-sseul-kka-yo?', 'Can I leave my luggage?')),
         say('You charge your phone – wait, your Australian plug doesn\'t fit! Korean sockets are 220 V with two round pins. You borrow an adapter from the front desk.'),
         say('Myeongdong\'s street food stalls open in the afternoon: tteokbokki, egg bread, grilled cheese lobster, hotteok…'),
-        ask('money', 'You want to pay for a ₩5,000 tteokbokki cup with cash. Which note is ₩5,000?', [
-          ok('The red-orange note with Yi I', 'Correct!', { manner: 2 }, 'krw-5000'),
-          no('The yellow note with Shin Saimdang', 'That\'s ₩50,000 – ten times more! The colours look similar, always check the number.', { money: -45000 }, 'krw-50000'),
-          no('The green note with King Sejong', 'That\'s ₩10,000. The vendor gives you change, no harm done.', {}, 'krw-10000'),
-        ], 'mo-notes'),
+        simulate('cashpay', 'money', 'Street-food stall: pay in cash', 'The stall only takes cash. Pick the right notes and coins from your wallet for a cup of tteokbokki and an egg bread – and check your change.', { shop: '명동 노점 Myeongdong street stall', items: [{ name: '떡볶이 Tteokbokki cup', price: 5000 }, { name: '계란빵 Egg bread', price: 2500 }], cashOnly: true }),
         learn('fo-street'),
         ask('etiquette', 'You finished your snack. There\'s no bin in sight. What now?', [
           ok('Keep the cup in a bag and throw it away at the hotel', 'That\'s exactly what Koreans do – public bins are rare.', { manner: 6 }, 'trash-bins'),

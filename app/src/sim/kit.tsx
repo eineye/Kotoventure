@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, ScrollView, Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import { breakdownKRW, type Effects, type PartyType, type SimStep } from '@kotoventure/shared';
+import { breakdownKRW, type Cash, type Effects, type PartyType, type SimStep } from '@kotoventure/shared';
 import { Banknote, Coin } from '../art/Money';
 import { Btn, H, P, won } from '../ui/kit';
 import { C, R, shadow } from '../ui/theme';
@@ -11,6 +11,8 @@ export interface SimCtx {
   partySize: number;
   country: string;
   fxRates: Record<string, number>;
+  /** physical cash in the wallet (denomination → count) */
+  cash: Cash;
 }
 
 export interface SimResult {
@@ -18,6 +20,8 @@ export interface SimResult {
   effects?: Effects;
   /** short log of what the player did, shown on the result card */
   log: string[];
+  /** wallet after the simulation (omit = unchanged) */
+  cash?: Cash;
 }
 
 export interface SimProps {

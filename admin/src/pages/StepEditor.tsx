@@ -22,6 +22,7 @@ const SIMS: [string, string][] = [
   ['atm', '🏧 ATM (카드·PIN·금액·DCC·통장정리)'],
   ['tmoney', '🟧 T머니 (구입·충전기·개찰구)'],
   ['train', '🚄 KTX (노선도·승차권 발매기·승강장)'],
+  ['cashpay', '💵 현금 결제 (보유 현금에서 지폐·동전 골라 내기·거스름돈)'],
 ];
 
 export const blankStep = (type: Step['type']): Step => {
@@ -270,6 +271,31 @@ function SimConfigEdit({ sim, value, onChange }: { sim: string; value: SimConfig
         <Field label="카드 구입부터">
           <Check checked={value.buyCard ?? true} onChange={(buyCard) => set({ buyCard })} label="편의점에서 카드 구입(현금 결제) 단계 포함" />
         </Field>
+      )}
+      {sim === 'cashpay' && (
+        <>
+          <Field label="가게 이름">
+            <input value={value.shop ?? ''} placeholder="명동 노점 Myeongdong street stall" onChange={(e) => set({ shop: e.target.value })} />
+          </Field>
+          <Field label="결제 수단">
+            <Check checked={value.cashOnly ?? true} onChange={(cashOnly) => set({ cashOnly })} label="현금만 가능 (현금 부족 시 카드 대체 불가)" />
+          </Field>
+          <Field label="구매 품목 (이름 / 가격 ₩)" wide>
+            {(value.items ?? []).map((it, i) => (
+              <div key={i} className="row">
+                <input style={{ flex: 1 }} value={it.name} onChange={(e) => set({ items: (value.items ?? []).map((x, k) => (k === i ? { ...x, name: e.target.value } : x)) })} />
+                <Num value={it.price} step={100} onChange={(price) => set({ items: (value.items ?? []).map((x, k) => (k === i ? { ...x, price } : x)) })} />
+                <button className="link red" onClick={() => set({ items: (value.items ?? []).filter((_, k) => k !== i) })}>
+                  삭제
+                </button>
+              </div>
+            ))}
+            <button className="ghost small" onClick={() => set({ items: [...(value.items ?? []), { name: '', price: 1000 }] })}>
+              + 품목 추가
+            </button>
+            <span className="hint">합계: ₩{(value.items ?? []).reduce((a, b) => a + (b.price || 0), 0).toLocaleString('en-US')} · 플레이어는 게임 속 지갑(환전·ATM으로 받은 실제 지폐·동전)에서 골라 냅니다.</span>
+          </Field>
+        </>
       )}
       {sim === 'train' && (
         <>

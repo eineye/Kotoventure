@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Text, View, useWindowDimensions } from 'react-native';
-import { currencyForCountry, tr } from '@kotoventure/shared';
+import { addCash, currencyForCountry, tr } from '@kotoventure/shared';
 import { P, won } from '../ui/kit';
 import { C } from '../ui/theme';
 import { Box, DoneCard, Keypad, MoneyTray, OptBtn, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
@@ -359,6 +359,7 @@ export function AtmSim({ step, ctx, onDone }: SimProps) {
               score: sc.final(),
               effects: { money: -ATM_FEE - (dcc ? Math.round(amount * DCC_MARKUP) : 0) - (credit ? 5000 : 0) },
               log,
+              cash: addCash(ctx.cash, amount),
             })
           }
         />

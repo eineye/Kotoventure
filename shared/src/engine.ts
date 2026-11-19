@@ -2,8 +2,9 @@
 import type { ContentBundle, Course, Effects, KnowledgeCard, L, PartyType, RunStats, Scene, Step, TopicId } from './types';
 import { TOPICS } from './meta';
 import { stationById } from './rail';
+import { DEFAULT_CASH } from './money';
 
-export const SIM_KINDS = ['exchange', 'atm', 'tmoney', 'train'] as const;
+export const SIM_KINDS = ['exchange', 'atm', 'tmoney', 'train', 'cashpay'] as const;
 
 /** Record a finished simulation (score 0..100) in the run stats. */
 export function applySim(s: RunStats, points: number): RunStats {
@@ -19,6 +20,7 @@ export const initialStats = (course: Course): RunStats => ({
   manner: 50,
   correct: 0,
   answered: 0,
+  cash: { ...DEFAULT_CASH },
 });
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
@@ -94,6 +96,7 @@ export function validateBundle(b: ContentBundle, known?: { props?: Set<string>; 
         const ws = `${w} › step ${j + 1}`;
         if (st.type === 'sim') {
           if (!SIM_KINDS.includes(st.sim)) issues.push({ level: 'error', where: ws, msg: `unknown simulation "${st.sim}"` });
+          if (st.sim === 'cashpay' && !st.config?.items?.length) issues.push({ level: 'error', where: ws, msg: 'cash payment needs config.items (name + price)' });
           if (st.sim === 'train' && (!st.config?.to || !stationById(st.config.to))) issues.push({ level: 'error', where: ws, msg: 'train simulation needs a valid config.to station' });
         }
         if ((st.type === 'card' || ((st.type === 'choice' || st.type === 'sim') && st.cardId)) && !cardIds.has((st as any).cardId))

@@ -106,6 +106,7 @@ export const jejuAdventure: Course = {
           ok('No – the village fishing grounds belong to the haenyeo; buy from them instead', 'Correct. Gathering seafood there is illegal.', { manner: 8, money: -20000 }),
           no('Yes, the sea is free', 'Haenyeo and police disagree. Fine!', { manner: -12, money: -100000 }),
         ]),
+        simulate('cashpay', 'money', 'Buy from the haenyeo', 'The haenyeo sell their fresh catch on the rocks – cash only. Pay for a plate of sea urchin and conch.', { shop: '해녀의 집 Haenyeo seafood stand', items: [{ name: '성게·소라 한 접시 Sea urchin & conch plate', price: 20000 }, { name: '소주 Soju (to share)', price: 5000 }], cashOnly: true }),
         ask('etiquette', 'You want a portrait of a haenyeo grandmother.', [
           ok('Ask politely first and accept a "no"', 'She agrees, smiling.', { manner: 6 }, 'camera'),
           no('Zoom in from behind a rock', 'Taking photos of people secretly is a big problem in Korea.', { manner: -10 }),
