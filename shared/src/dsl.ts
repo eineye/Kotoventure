@@ -34,3 +34,14 @@ export const event = (
 ): Step => ({ type: 'event', kind, title: { en: title }, text: { en: text }, ...(effects ? { effects } : {}), ...(prop ? { prop } : {}), ...opt });
 
 export const P = (hangul: string, roman: string, meaning: string): Phrase => ({ hangul, roman, meaning });
+
+/** hands-on simulation step */
+export const simulate = (
+  sim: 'exchange' | 'atm' | 'tmoney' | 'train',
+  topic: TopicId,
+  title: string,
+  intro: string,
+  config?: import('./types').SimConfig,
+  cardId?: string,
+  opt: Opt = {},
+): Step => ({ type: 'sim', sim, topic, title: { en: title }, intro: { en: intro }, ...(config ? { config } : {}), ...(cardId ? { cardId } : {}), ...opt });

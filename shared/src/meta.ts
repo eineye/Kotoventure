@@ -51,7 +51,7 @@ export const PRODUCTS: Product[] = [
 
 export const DEFAULT_CONFIG: AppConfig = {
   // Reference values only – the admin should update these. Players are always told to check a live rate.
-  fxRates: { USD: 1400, AUD: 910, EUR: 1520, GBP: 1800, JPY: 9.3, CNY: 195 },
+  fxRates: { USD: 1400, AUD: 910, EUR: 1520, GBP: 1800, JPY: 9.3, CNY: 195, TWD: 44, VND: 0.055, THB: 41, PHP: 24, SGD: 1080, INR: 16.4, CAD: 1010, BRL: 255 },
   fxUpdatedAt: '2026-11-01',
   emergencyNumbers: [
     { label: { en: 'Police', ko: '경찰' }, number: '112' },

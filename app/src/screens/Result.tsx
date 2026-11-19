@@ -68,6 +68,18 @@ export function Result({ id, onHome, onReplay }: { id: string; onHome: () => voi
         <Stat k={L.wallet} v={won(p.stats.money)} color={p.stats.money < 0 ? C.red : C.green} />
       </Panel>
 
+      {(p.stats.sims ?? 0) > 0 && (
+        <Panel style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <Text style={{ fontSize: 30 }}>🎮</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontWeight: '900', color: C.ink }}>{lang === 'ko' ? '실전 시뮬레이션' : 'Hands-on simulations'}</Text>
+            <Text style={{ color: C.inkSoft, fontWeight: '700' }}>
+              {p.stats.sims} × · {lang === 'ko' ? '평균' : 'avg'} {Math.round((p.stats.simPoints ?? 0) / (p.stats.sims ?? 1))} / 100
+            </Text>
+          </View>
+        </Panel>
+      )}
+
       <Panel>
         <H size={17}>📚 {L.learned}</H>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>

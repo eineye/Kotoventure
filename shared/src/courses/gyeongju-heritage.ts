@@ -1,5 +1,5 @@
 import type { Course } from '../types';
-import { ask, event, learn, no, ok, P, say, talk } from '../dsl';
+import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
 /** 문화 – Gyeongju, the 1,000-year capital of Silla. Gimhae Airport in & out. */
 export const gyeongjuHeritage: Course = {
@@ -8,11 +8,11 @@ export const gyeongjuHeritage: Course = {
   title: { en: 'Gyeongju: Museum Without Walls', ko: '경주: 지붕 없는 박물관' },
   subtitle: { en: 'Silla heritage & temple stay – 3 nights / 4 days', ko: '신라 천년 고도 3박4일' },
   description: {
-    en: 'Land at Gimhae, ride to Gyeongju, sleep in a hanok, cycle between royal tombs and the 1,400-year-old Cheomseongdae observatory, bow at UNESCO-listed Bulguksa Temple and spend a night as a monk.',
-    ko: '김해공항 → 경주 한옥 → 대릉원·첨성대 → 불국사·석굴암 → 템플스테이 → 교촌마을.',
+    en: 'Land at Incheon, read the KTX map and buy your own train ticket to Gyeongju, sleep in a hanok, cycle between royal tombs and the 1,400-year-old Cheomseongdae observatory, bow at UNESCO-listed Bulguksa Temple and spend a night as a monk.',
+    ko: '인천공항 → 서울역 KTX 발권 → 신경주 → 한옥 → 대릉원·첨성대 → 불국사 → 템플스테이 → 김해공항.',
   },
   region: { en: 'Gyeongju, North Gyeongsang', ko: '경상북도 경주' },
-  entry: { kind: 'airport', code: 'PUS', name: { en: 'Gimhae International Airport', ko: '김해국제공항' } },
+  entry: { kind: 'airport', code: 'ICN', name: { en: 'Incheon International Airport', ko: '인천국제공항' } },
   exit: { kind: 'airport', code: 'PUS', name: { en: 'Gimhae International Airport', ko: '김해국제공항' } },
   nights: 3,
   days: 4,
@@ -33,22 +33,21 @@ export const gyeongjuHeritage: Course = {
   scenes: [
     {
       id: 'gj-1', day: 1, bg: 'airport',
-      title: { en: 'Gimhae Airport → Gyeongju', ko: '김해공항 → 경주' },
-      location: { en: 'Gimhae International Airport', ko: '김해국제공항' },
+      title: { en: 'Incheon → Seoul Station → KTX', ko: '인천공항 → 서울역 → KTX' },
+      location: { en: 'Incheon Airport & Seoul Station', ko: '인천공항 · 서울역' },
       steps: [
-        say('You land at Gimhae (Busan) International Airport. Gyeongju is about an hour away.'),
-        ask('transport', 'What\'s the easiest way to Gyeongju?', [
-          ok('The direct intercity airport limousine bus to Gyeongju', 'Comfortable and direct – buy a ticket at the counter outside arrivals.', { money: -10000 }, 'bus'),
-          no('A taxi all the way', 'Possible, but very expensive (well over ₩100,000).', { money: -130000 }, 'taxi'),
-        ]),
-        say('Tip: coming from Seoul instead? The KTX high-speed train reaches Singyeongju Station in about 2 hours.'),
-        learn('tr-ktx'),
+        say('You land at Incheon in the morning. Gyeongju has no international airport – the fastest way is the KTX high-speed train from Seoul Station (about 2 hours).'),
+        ask('transport', 'How do you get from Incheon Airport to Seoul Station?', [
+          ok('AREX airport railroad to Seoul Station', 'Direct and about 45–50 minutes on the Express.', { money: -11000 }, 'arex'),
+          no('A taxi all the way', 'Possible, but expensive and slower in traffic.', { money: -75000 }, 'taxi'),
+        ], 'tr-arex'),
+        simulate('train', 'transport', 'KTX map & ticket machine', 'At Seoul Station, find Gyeongju on the KTX map, then buy a ticket for your whole party at the self-service machine. Your hanok check-in is at 13:00 – arrive in time!', { from: 'seoul', to: 'singyeongju', arriveBy: '13:00' }, 'tr-ktx'),
         event('weather', 'Autumn in Gyeongju', 'It\'s late October – clear blue skies and ginkgo trees turning gold. But mornings are chilly (8 °C) and afternoons warm (22 °C).', undefined, 'autumn'),
         ask('weather', 'How do you pack for a day like this?', [
           ok('Layers: T-shirt + light jacket', 'Perfect. Big day–night temperature gaps are typical in spring and autumn.', { energy: 5 }, 'autumn'),
           no('Only shorts and a tank top', 'You shiver at sunset.', { energy: -10 }),
         ], 'we-seasons'),
-        learn('mo-atm'),
+        say('From Singyeongju Station, city buses (or a taxi) take you to the historic centre in about 30 minutes.'),
       ],
     },
     {

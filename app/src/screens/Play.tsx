@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Animated, Easing, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import {
   applyEffects,
+  applySim,
   initialStats,
   score,
   tr,
@@ -11,6 +12,7 @@ import {
   type Effects,
   type Phrase,
   type RunStats,
+  type SimStep,
   type Step,
 } from '@kotoventure/shared';
 import { Background } from '../art/backgrounds';
@@ -20,8 +22,10 @@ import { useStore } from '../data/store';
 import { t } from '../i18n';
 import { Bar, Btn, CardView, H, P, PhraseBox, TopicChip, won } from '../ui/kit';
 import { C, R, shadow } from '../ui/theme';
+import { SIM_ICON, SimRunner } from '../sim/SimRunner';
+import { PARTY_SIZE, type SimResult } from '../sim/kit';
 
-type Phase = 'intro' | 'step' | 'feedback' | 'card';
+type Phase = 'intro' | 'step' | 'feedback' | 'card' | 'sim';
 
 const phraseKey = (p: Phrase) => `${p.hangul}|${p.roman}|${p.meaning}`;
 
@@ -159,6 +163,23 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     advance(stats, cs, ps);
   };
 
+  const onSimDone = (r: SimResult) => {
+    const sim = step as SimStep;
+    const st = applySim(effects(r.effects).st, r.score);
+    setStats(st);
+    const { cs, ps } = collect(sim.cardId);
+    advance(st, cs, ps);
+  };
+
+  if (phase === 'sim' && step?.type === 'sim')
+    return (
+      <SimRunner
+        step={step}
+        ctx={{ lang, party, partySize: PARTY_SIZE[party], country: profile?.country ?? 'US', fxRates: content.config.fxRates }}
+        onDone={onSimDone}
+      />
+    );
+
   const sceneH = Math.min(height * 0.36, 300);
   const speaker = step?.type === 'dialog' ? step.speaker : null;
   const overlayProp = step?.type === 'event' ? step.prop : phase === 'card' ? undefined : undefined;
@@ -276,6 +297,20 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
                 })()}
                 <Text style={{ marginTop: 14, color: C.inkSoft, fontWeight: '800' }}>▸ {L.tapContinue}</Text>
               </Pressable>
+            )}
+
+            {step.type === 'sim' && (
+              <View>
+                <TopicChip topic={step.topic} lang={lang} />
+                <View style={{ backgroundColor: '#FFF', borderRadius: R.l, padding: 16, marginTop: 10, borderLeftWidth: 6, borderLeftColor: C.yellow, ...shadow }}>
+                  <Text style={{ fontWeight: '900', color: C.orange, fontSize: 12 }}>🎮 HANDS-ON SIMULATION · up to 100 pts</Text>
+                  <H size={20} style={{ marginTop: 4 }}>
+                    {SIM_ICON[step.sim]} {tr(step.title, lang)}
+                  </H>
+                  <P style={{ marginTop: 6 }}>{tr(step.intro, lang)}</P>
+                </View>
+                <Btn testID="sim-start" label={lang === 'ko' ? '시뮬레이션 시작' : 'Start simulation'} style={{ marginTop: 14 }} onPress={() => setPhase('sim')} />
+              </View>
             )}
 
             {step.type === 'choice' && phase !== 'card' && (
