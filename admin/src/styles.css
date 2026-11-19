@@ -166,3 +166,4 @@ details.step.dialog { border-left: 4px solid #7a4fd6; }
   .scene-list { position: static; max-height: none; }
   table { display: block; overflow-x: auto; }
 }
+details.step.sim { border-left: 4px solid #E5383B; }

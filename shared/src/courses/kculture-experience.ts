@@ -1,5 +1,5 @@
 import type { Course } from '../types';
-import { ask, event, learn, no, ok, P, say, talk } from '../dsl';
+import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
 /** 체험 – K-culture hands-on: K-pop dance, kimchi class, Han River ramyeon, PC bang, DMZ tour. */
 export const kcultureExperience: Course = {
@@ -41,10 +41,7 @@ export const kcultureExperience: Course = {
           ok('Express trains skip stations – check that my stop is an express stop', 'Right! The board shows 급행 (express) or 일반 (local).', { energy: 5 }, 'subway-sign'),
           no('All trains stop everywhere', 'You zoom past your station on an express.', { energy: -10 }),
         ], 'tr-transfer'),
-        ask('money', 'You need a transit card and some payment method in one. What could you get?', [
-          ok('A visitor prepaid card (e.g. WOWPASS) or T-money, topped up with cash', 'Handy – some visitor cards also exchange cash into the card.', { money: -5000 }, 'tmoney'),
-          no('Nothing – I\'ll pay the subway with my foreign coins', 'Gates take cards, not coins.', { energy: -8 }),
-        ], 'tr-tmoney'),
+        simulate('tmoney', 'transport', 'Get your T-money at Gimpo', 'Subway gates only take transit cards. Buy a T-money card, top it up at the machine and ride Line 9 to Hongdae.', { buyCard: true }, 'tr-tmoney'),
         learn('mo-card'),
         event('weather', 'Spring yellow dust', 'It\'s April. Cherry blossoms are out – but so is "hwangsa" (yellow dust) blowing from the continent.', { energy: -5 }, 'fine-dust'),
         learn('we-dust'),

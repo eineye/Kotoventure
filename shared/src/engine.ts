@@ -1,6 +1,15 @@
 /** Pure game logic shared by app (gameplay) and admin (preview / validation). */
 import type { ContentBundle, Course, Effects, KnowledgeCard, L, PartyType, RunStats, Scene, Step, TopicId } from './types';
 import { TOPICS } from './meta';
+import { stationById } from './rail';
+
+export const SIM_KINDS = ['exchange', 'atm', 'tmoney', 'train'] as const;
+
+/** Record a finished simulation (score 0..100) in the run stats. */
+export function applySim(s: RunStats, points: number): RunStats {
+  const p = Math.max(0, Math.min(100, Math.round(points)));
+  return { ...s, answered: s.answered + 1, correct: s.correct + p / 100, sims: (s.sims ?? 0) + 1, simPoints: (s.simPoints ?? 0) + p };
+}
 
 export const tr = (l: L | undefined, lang = 'en'): string => (l ? l[lang] || l.en || '' : '');
 
@@ -47,7 +56,8 @@ export function courseTopics(course: Course, cards: KnowledgeCard[]): Set<TopicI
   const out = new Set<TopicId>();
   for (const sc of course.scenes)
     for (const st of sc.steps) {
-      if (st.type === 'choice') out.add(st.topic);
+      if (st.type === 'choice' || st.type === 'sim') out.add(st.topic);
+      if (st.type === 'sim' && st.cardId && byId.get(st.cardId)) out.add(byId.get(st.cardId)!.topic);
       if (st.type === 'card' && byId.get(st.cardId)) out.add(byId.get(st.cardId)!.topic);
     }
   return out;
@@ -82,7 +92,11 @@ export function validateBundle(b: ContentBundle, known?: { props?: Set<string>; 
       if (known?.bgs && !known.bgs.has(sc.bg)) issues.push({ level: 'warn', where: w, msg: `unknown background "${sc.bg}"` });
       sc.steps.forEach((st, j) => {
         const ws = `${w} › step ${j + 1}`;
-        if ((st.type === 'card' || (st.type === 'choice' && st.cardId)) && !cardIds.has((st as any).cardId))
+        if (st.type === 'sim') {
+          if (!SIM_KINDS.includes(st.sim)) issues.push({ level: 'error', where: ws, msg: `unknown simulation "${st.sim}"` });
+          if (st.sim === 'train' && (!st.config?.to || !stationById(st.config.to))) issues.push({ level: 'error', where: ws, msg: 'train simulation needs a valid config.to station' });
+        }
+        if ((st.type === 'card' || ((st.type === 'choice' || st.type === 'sim') && st.cardId)) && !cardIds.has((st as any).cardId))
           issues.push({ level: 'error', where: ws, msg: `unknown card ${(st as any).cardId}` });
         if (st.type === 'choice') {
           if (!st.options.some((o) => o.correct)) issues.push({ level: 'error', where: ws, msg: 'choice has no correct option' });
@@ -95,7 +109,7 @@ export function validateBundle(b: ContentBundle, known?: { props?: Set<string>; 
     });
   }
   const used = new Set(
-    b.courses.flatMap((c) => c.scenes.flatMap((s) => s.steps.flatMap((st) => (st.type === 'card' ? [st.cardId] : st.type === 'choice' && st.cardId ? [st.cardId] : [])))),
+    b.courses.flatMap((c) => c.scenes.flatMap((s) => s.steps.flatMap((st) => (st.type === 'card' ? [st.cardId] : (st.type === 'choice' || st.type === 'sim') && st.cardId ? [st.cardId] : [])))),
   );
   for (const card of b.cards) if (!used.has(card.id)) issues.push({ level: 'warn', where: `card ${card.id}`, msg: 'not used in any course' });
   return issues;

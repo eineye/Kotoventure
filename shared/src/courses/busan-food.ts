@@ -1,5 +1,5 @@
 import type { Course } from '../types';
-import { ask, event, learn, no, ok, P, say, talk } from '../dsl';
+import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
 /** 식도락 – Busan food trail. Starts at a PORT (ferry from Fukuoka), ends at Gimhae Airport. */
 export const busanFood: Course = {
@@ -47,10 +47,7 @@ export const busanFood: Course = {
           ok('Watch the forecast & phone alerts and keep a buffer in my plans', 'Good. Flights and ferries are cancelled during typhoons.', { energy: 5 }, 'typhoon'),
           no('Ignore it, typhoons never reach Korea', 'They do – mostly Jeju and the south coast in Aug–Sep.', { energy: -5 }),
         ], 'we-rain'),
-        ask('money', 'You need won. The terminal has a bank and ATMs. Which ATM do you choose?', [
-          ok('One marked "Global ATM / Foreign Card", in English, declining conversion (DCC)', 'You get won at your bank\'s rate.', { money: 10000 }, 'atm'),
-          no('Any ATM, and accept "convert to my currency"', 'The DCC conversion added a hidden ~5% fee.', { money: -15000 }),
-        ], 'mo-atm'),
+        simulate('atm', 'money', 'Global ATM at the ferry terminal', 'You need about ₩100,000 in cash for the fish market and street food. Use the Global ATM: choose the right menu, insert your card, enter your PIN, pick the amount – and don\'t fall for the currency-conversion trap. Bonus: practise a Korean passbook update.', { targetKRW: 100000, passbookPractice: true }, 'mo-atm'),
         say('You take the subway – T-money cards work in Busan too. Line 1 (orange) runs to Jagalchi.'),
       ],
     },

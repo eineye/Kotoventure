@@ -118,7 +118,36 @@ export interface EventStep extends StepBase {
   effects?: Effects;
 }
 
-export type Step = NarrationStep | DialogStep | ChoiceStep | CardStep | EventStep;
+/** Hands-on simulations of real Korean machines / counters. */
+export type SimKind = 'exchange' | 'atm' | 'tmoney' | 'train';
+
+export interface SimConfig {
+  /** exchange: where you exchange – airport rates are worse than downtown money changers */
+  venue?: 'airport' | 'downtown';
+  /** exchange: how much cash (KRW) the mission suggests you need */
+  targetKRW?: number;
+  /** atm: also practise a Korean passbook (통장) update after the withdrawal */
+  passbookPractice?: boolean;
+  /** tmoney: buy a new card first (otherwise you already have one) */
+  buyCard?: boolean;
+  /** train: departure / destination station ids (see rail.ts) and latest acceptable arrival "HH:MM" */
+  from?: string;
+  to?: string;
+  arriveBy?: string;
+}
+
+export interface SimStep extends StepBase {
+  type: 'sim';
+  sim: SimKind;
+  topic: TopicId;
+  title: L;
+  intro: L;
+  config?: SimConfig;
+  /** card unlocked after the simulation */
+  cardId?: string;
+}
+
+export type Step = NarrationStep | DialogStep | ChoiceStep | CardStep | EventStep | SimStep;
 
 export interface Scene {
   id: string;
@@ -200,8 +229,12 @@ export interface RunStats {
   energy: number;
   money: number;
   manner: number;
+  /** fractional for simulations (score/100) */
   correct: number;
   answered: number;
+  /** number of simulations played and their summed score (0..100 each) */
+  sims?: number;
+  simPoints?: number;
 }
 
 export interface CourseProgress {

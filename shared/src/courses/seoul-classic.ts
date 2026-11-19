@@ -1,5 +1,5 @@
 import type { Course } from '../types';
-import { ask, event, learn, no, ok, P, say, talk } from '../dsl';
+import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
 /**
  * 관광 – Seoul Classic. Based on the most popular first-timer route for foreign visitors:
@@ -49,18 +49,15 @@ export const seoulClassic: Course = {
         ], 'la-safety'),
         event('weather', 'Welcome weather', 'The arrival screen shows today\'s weather. Korea has four distinct seasons – and they\'ve been getting more extreme lately.', undefined, 'seasons'),
         learn('we-seasons'),
-        ask('money', 'You need cash for the T-money card and street food. Where do you exchange money now?', [
-          ok('Only a small amount here, the rest later in Myeongdong', 'Smart! Airport rates are poor; Myeongdong changers are usually better.', { money: 20000 }, 'exchange'),
-          no('Change my whole budget at the airport', 'It works, but you just lost a chunk to a weak rate.', { money: -30000 }),
-        ], 'mo-exchange'),
+        simulate('exchange', 'money', 'Airport exchange counter', 'You need some won for the T-money card and street food. Read the rate board for your currency, decide how much to change at the (expensive) airport counter, count the cash and get to know every Korean note and coin.', { venue: 'airport', targetKRW: 100000 }, 'mo-exchange'),
+        learn('mo-notes'),
         ask('transport', 'You have one big suitcase. Which is the best way into central Seoul?', [
           ok('AREX train to Seoul Station', 'Fast, cheap and on time. Follow the "Train to Seoul" signs to B1.', { money: -11000 }, 'arex'),
           ok('Airport limousine bus to Myeongdong', 'Also great with luggage – it stops near big hotels.', { money: -18000 }, 'bus'),
           no('Regular taxi all the way', 'Possible, but about ₩60,000–90,000 with tolls and a late-night surcharge.', { money: -75000 }, 'taxi'),
         ], 'tr-arex'),
-        say('In the arrivals hall you buy a T-money card at the convenience store and top it up with cash.', { parties: ['solo', 'couple', 'friends'] }),
-        say('For a group this size, one person buys T-money cards for everyone at the convenience store – they can\'t be shared on the same ride.', { parties: ['group'] }),
-        learn('tr-tmoney'),
+        say('For a group this size, everyone needs their own T-money card – one card can\'t pay for several people on the subway.', { parties: ['group'] }),
+        simulate('tmoney', 'transport', 'T-money: buy, top up, tap', 'Buy a T-money card at the convenience store, top it up with cash at the station machine, then get through the ticket gates like a local.', { buyCard: true }, 'tr-tmoney'),
       ],
     },
     {

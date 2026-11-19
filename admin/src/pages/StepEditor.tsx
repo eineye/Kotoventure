@@ -1,4 +1,4 @@
-import { PROP_IDS, TOPICS, tr, type ChoiceOption, type Effects, type KnowledgeCard, type PartyType, type Speaker, type Step } from '@kotoventure/shared';
+import { PROP_IDS, STATIONS, TOPICS, tr, type ChoiceOption, type SimConfig, type Effects, type KnowledgeCard, type PartyType, type Speaker, type Step } from '@kotoventure/shared';
 import { Check, Field, LText, Num, Select } from '../ui';
 
 const SPEAKERS: Speaker[] = ['guide', 'player', 'local', 'staff', 'driver', 'police', 'doctor', 'pharmacist', 'elder', 'monk', 'haenyeo'];
@@ -14,6 +14,14 @@ export const STEP_TYPES: [Step['type'], string][] = [
   ['choice', '❓ 선택(터치 결정)'],
   ['card', '📖 지식카드'],
   ['event', '⚡ 이벤트'],
+  ['sim', '🎮 시뮬레이션'],
+];
+
+const SIMS: [string, string][] = [
+  ['exchange', '💱 환전 (환율판·금액결정·지폐/동전 확인)'],
+  ['atm', '🏧 ATM (카드·PIN·금액·DCC·통장정리)'],
+  ['tmoney', '🟧 T머니 (구입·충전기·개찰구)'],
+  ['train', '🚄 KTX (노선도·승차권 발매기·승강장)'],
 ];
 
 export const blankStep = (type: Step['type']): Step => {
@@ -36,6 +44,8 @@ export const blankStep = (type: Step['type']): Step => {
       return { type, cardId: '' };
     case 'event':
       return { type, kind: 'surprise', title: { en: '' }, text: { en: '' } };
+    case 'sim':
+      return { type, sim: 'exchange', topic: 'money', title: { en: 'Exchange counter' }, intro: { en: '' }, config: { venue: 'airport', targetKRW: 100000 } };
   }
 };
 
@@ -144,6 +154,30 @@ export function StepEditor({ step, onChange, cards }: { step: Step; onChange: (s
         </>
       )}
 
+      {step.type === 'sim' && (
+        <>
+          <div className="grid2">
+            <Field label="시뮬레이션 종류">
+              <Select value={step.sim} onChange={(sim) => onChange({ ...step, sim: sim as typeof step.sim })} options={SIMS} />
+            </Field>
+            <Field label="주제 (8대 필수 주제)">
+              <Select value={step.topic} onChange={(topic) => onChange({ ...step, topic })} options={TOPICS.map((t) => [t.id, `${t.icon} ${t.name.ko}`] as [typeof t.id, string])} />
+            </Field>
+            <Field label="완료 후 지급 카드">
+              <Select value={step.cardId ?? ''} onChange={(cardId) => onChange({ ...step, cardId: cardId || undefined })} options={cardOptions} />
+            </Field>
+          </div>
+          <Field label="제목" wide>
+            <LText value={step.title} onChange={(title) => onChange({ ...step, title })} />
+          </Field>
+          <Field label="미션 안내 (시작 전 설명)" wide>
+            <LText multiline value={step.intro} onChange={(intro) => onChange({ ...step, intro })} />
+          </Field>
+          <SimConfigEdit sim={step.sim} value={step.config ?? {}} onChange={(config) => onChange({ ...step, config })} />
+          <p className="hint">점수: 0~100점 (실수할 때마다 감점). 완료 시 정답률·점수에 반영되고, 환전 손실·수수료·요금이 지갑에서 차감됩니다.</p>
+        </>
+      )}
+
       {step.type === 'choice' && (
         <>
           <div className="grid2">
@@ -202,5 +236,51 @@ export const stepSummary = (s: Step) => {
       return `카드 ${s.cardId}`;
     case 'event':
       return `[${s.kind}] ${s.title.en}`;
+    case 'sim':
+      return `🎮 ${s.sim}: ${s.title.en}`;
   }
 };
+
+function SimConfigEdit({ sim, value, onChange }: { sim: string; value: SimConfig; onChange: (c: SimConfig) => void }) {
+  const set = (p: Partial<SimConfig>) => onChange({ ...value, ...p });
+  const stations: [string, string][] = STATIONS.filter((s) => s.fare).map((s) => [s.id, `${s.ko} ${s.en}`]);
+  return (
+    <div className="grid2">
+      {sim === 'exchange' && (
+        <>
+          <Field label="환전 장소">
+            <Select value={value.venue ?? 'airport'} onChange={(venue) => set({ venue })} options={[['airport', '공항 (환율 불리, 6%)'], ['downtown', '시내 환전소 (1.5%)']]} />
+          </Field>
+          <Field label="권장 환전액 (₩)">
+            <Num value={value.targetKRW ?? 100000} step={10000} onChange={(targetKRW) => set({ targetKRW })} />
+          </Field>
+        </>
+      )}
+      {sim === 'atm' && (
+        <>
+          <Field label="권장 인출액 (₩)">
+            <Num value={value.targetKRW ?? 100000} step={10000} onChange={(targetKRW) => set({ targetKRW })} />
+          </Field>
+          <Field label="통장정리 연습">
+            <Check checked={!!value.passbookPractice} onChange={(passbookPractice) => set({ passbookPractice })} label="출금 후 통장 투입 연습 포함" />
+          </Field>
+        </>
+      )}
+      {sim === 'tmoney' && (
+        <Field label="카드 구입부터">
+          <Check checked={value.buyCard ?? true} onChange={(buyCard) => set({ buyCard })} label="편의점에서 카드 구입(현금 결제) 단계 포함" />
+        </Field>
+      )}
+      {sim === 'train' && (
+        <>
+          <Field label="도착역 (서울역 출발)">
+            <Select value={value.to ?? 'singyeongju'} onChange={(to) => set({ to, from: 'seoul' })} options={stations} />
+          </Field>
+          <Field label="도착 기한 (HH:MM)">
+            <input value={value.arriveBy ?? '13:00'} onChange={(e) => set({ arriveBy: e.target.value })} />
+          </Field>
+        </>
+      )}
+    </div>
+  );
+}

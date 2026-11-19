@@ -1,5 +1,5 @@
 import type { Course } from '../types';
-import { ask, event, learn, no, ok, P, say, talk } from '../dsl';
+import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
 /** 모험 – Jeju Island: Hallasan, Seongsan Ilchulbong, Olle trails and a typhoon. */
 export const jejuAdventure: Course = {
@@ -38,6 +38,7 @@ export const jejuAdventure: Course = {
       steps: [
         say('You land on Jeju, a volcanic island and UNESCO natural heritage site. Palm trees and black lava stones everywhere!'),
         talk('guide', 'Look – the stone grandfathers! They are dol hareubang, guardians of Jeju.'),
+        simulate('exchange', 'money', 'Exchange at Jeju Airport', 'Change a little money for the village markets and fuel for the trip – most places on Jeju take cards, but small shops and haenyeo kitchens like cash.', { venue: 'airport', targetKRW: 100000 }, 'mo-exchange'),
         say('Rental car companies run shuttle buses from the airport to a big rental-car centre.', { parties: ['couple', 'friends', 'group'] }),
         say('Travelling solo, you think about renting a small car – or using Jeju\'s express buses.', { parties: ['solo'] }),
         ask('transport', 'At the rental counter, which documents do you need?', [
