@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Pressable, ScrollView, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import React, { useId, useState } from 'react';
+import Svg, { Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
+import { Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { breakdownKRW, type Cash, type Effects, type PartyType, type SimStep } from '@kotoventure/shared';
 import { Banknote, Coin } from '../art/Money';
 import { Btn, H, P, won } from '../ui/kit';
@@ -311,10 +312,13 @@ export function Slot({
         style={{
           width,
           height,
-          borderRadius: 5,
+          borderRadius: 6,
           backgroundColor: color,
           borderWidth: 3,
-          borderColor: blink ? '#22C55E' : '#9CA3AF',
+          borderTopColor: blink ? '#4ADE80' : '#E5E7EB',
+          borderLeftColor: blink ? '#4ADE80' : '#D1D5DB',
+          borderRightColor: blink ? '#16A34A' : '#6B7280',
+          borderBottomColor: blink ? '#16A34A' : '#4B5563',
           alignItems: 'center',
           justifyContent: 'center',
         }}
@@ -326,3 +330,65 @@ export function Slot({
     </Pressable>
   );
 }
+
+const cleanId = (s: string) => s.replace(/[^a-zA-Z0-9]/g, '');
+
+/** Brushed-metal machine body: vertical gradient, fine brushing lines, top highlight and bevel. */
+export function Metal({
+  colors,
+  children,
+  style,
+  radius = 14,
+}: {
+  colors: [string, string, string];
+  children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+  radius?: number;
+}) {
+  const id = 'm' + cleanId(useId());
+  return (
+    <View style={[{ borderRadius: radius, overflow: 'hidden', borderWidth: 1, borderColor: '#0006', backgroundColor: colors[1], ...shadowStrong }, style]}>
+      <Svg style={StyleSheet.absoluteFill} width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" pointerEvents="none">
+        <Defs>
+          <LinearGradient id={id} x1="0" y1="0" x2="0.25" y2="1">
+            <Stop offset="0" stopColor={colors[0]} />
+            <Stop offset="0.45" stopColor={colors[1]} />
+            <Stop offset="1" stopColor={colors[2]} />
+          </LinearGradient>
+        </Defs>
+        <Rect x="0" y="0" width="100" height="100" fill={`url(#${id})`} />
+        <Path d={Array.from({ length: 50 }, (_, i) => `M0 ${i * 2 + 0.5}H100`).join('')} stroke="#FFFFFF" strokeWidth="0.15" opacity={0.08} />
+        <Rect x="0" y="0" width="100" height="2.5" fill="#FFFFFF" opacity={0.25} />
+        <Rect x="0" y="97.5" width="100" height="2.5" fill="#000000" opacity={0.25} />
+      </Svg>
+      {children}
+    </View>
+  );
+}
+
+/** Touch screen: dark bezel, softly lit LCD and a diagonal glass reflection. */
+export function Glass({ children, minHeight = 160, tint = '#E8F4FF', style }: { children: React.ReactNode; minHeight?: number; tint?: string; style?: StyleProp<ViewStyle> }) {
+  const id = 'g' + cleanId(useId());
+  return (
+    <View style={[{ backgroundColor: '#0B1220', borderRadius: 10, padding: 6, borderWidth: 2, borderColor: '#334155' }, style]}>
+      <View style={{ borderRadius: 5, overflow: 'hidden', minHeight, backgroundColor: tint }}>
+        <Svg style={StyleSheet.absoluteFill} width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" pointerEvents="none">
+          <Defs>
+            <LinearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+              <Stop offset="0" stopColor="#FFFFFF" />
+              <Stop offset="1" stopColor={tint} />
+            </LinearGradient>
+          </Defs>
+          <Rect x="0" y="0" width="100" height="100" fill={`url(#${id})`} />
+        </Svg>
+        <View style={{ padding: 8, gap: 8, flexGrow: 1, justifyContent: 'center' }}>{children}</View>
+        <Svg style={StyleSheet.absoluteFill} width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" pointerEvents="none">
+          <Path d="M0 0 L42 0 L18 100 L0 100 Z" fill="#FFFFFF" opacity={0.18} />
+          <Path d="M50 0 L56 0 L32 100 L26 100 Z" fill="#FFFFFF" opacity={0.12} />
+        </Svg>
+      </View>
+    </View>
+  );
+}
+
+const shadowStrong = { shadowColor: '#000', shadowOpacity: 0.3, shadowRadius: 12, shadowOffset: { width: 0, height: 8 }, elevation: 8 };

@@ -1,57 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View, useWindowDimensions } from 'react-native';
-import Svg, { Circle, G, Path, Rect, Text as T } from 'react-native-svg';
 import { addCash, tr, type Cash } from '@kotoventure/shared';
 import { Btn, H, P, won } from '../ui/kit';
 import { C } from '../ui/theme';
-import { Box, DoneCard, OptBtn, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
+import { TmoneyCard } from '../art/TmoneyCard';
+import { Box, DoneCard, Glass, Metal, OptBtn, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
 import { CashPicker } from './CashPay';
 
 const CARD_PRICE = 3000; // plain T-money card ≈ ₩2,500–4,000
 const FARE = 1550; // Seoul subway base fare with a transit card (2025)
-
-/** Detailed T-money card (ISO card size 85.6 × 54 mm). */
-export function TmoneyCard({ width, side = 'front', balance }: { width: number; side?: 'front' | 'back'; balance?: number }) {
-  return (
-    <Svg width={width} height={(width * 54) / 85.6} viewBox="0 0 85.6 54">
-      <Rect x="0.3" y="0.3" width="85" height="53.4" rx="3.2" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="0.6" />
-      {side === 'front' ? (
-        <G>
-          <Path d="M0.3 36 Q30 22 85.3 34 L85.3 50.5 Q85.3 53.7 82 53.7 L3.5 53.7 Q0.3 53.7 0.3 50.5Z" fill="#F08A24" />
-          <Path d="M0.3 42 Q36 30 85.3 42" stroke="#FFC93C" strokeWidth="1.6" fill="none" />
-          {/* logo */}
-          <Circle cx="12" cy="12" r="6.5" fill="#E5383B" />
-          <T x="12" y="15" fontSize="8.5" fontWeight="900" fill="#FFF" textAnchor="middle">T</T>
-          <T x="21" y="14.5" fontSize="9" fontWeight="900" fill="#1B2140">money</T>
-          <T x="6" y="25" fontSize="4.2" fontWeight="800" fill="#5A6283">티머니 · 대중교통 선불카드</T>
-          <T x="6" y="30" fontSize="3.4" fontWeight="700" fill="#5A6283">Prepaid transit card · Subway · Bus · Taxi · Store</T>
-          {/* contactless mark */}
-          <G stroke="#1B2140" strokeWidth="0.9" fill="none" strokeLinecap="round">
-            <Path d="M72 9 q2 3 0 6" />
-            <Path d="M75 7.5 q3.5 4.5 0 9" />
-            <Path d="M78 6 q5 6 0 12" />
-          </G>
-          <T x="80" y="49" fontSize="4" fontWeight="900" fill="#FFF" textAnchor="end">TAP ▶ 삑!</T>
-        </G>
-      ) : (
-        <G>
-          <Rect x="0.3" y="5" width="85" height="7" fill="#1B2140" />
-          <T x="5" y="19" fontSize="3.8" fontWeight="900" fill="#1B2140">T-money</T>
-          <T x="5" y="24.5" fontSize="3.6" fontWeight="700" fill="#1B2140">1010-0123-4567-8901</T>
-          <T x="5" y="31" fontSize="3.1" fontWeight="700" fill="#5A6283">• 충전 Top up: convenience stores, subway machines</T>
-          <T x="5" y="35.5" fontSize="3.1" fontWeight="700" fill="#5A6283">• 잔액 환불 Refund: stores / service centres (fee)</T>
-          <T x="5" y="40" fontSize="3.1" fontWeight="700" fill="#5A6283">• Tap ON and OFF (bus) for free transfers</T>
-          {balance !== undefined && (
-            <G>
-              <Rect x="52" y="44" width="30" height="7" rx="1.5" fill="#FEF3C7" />
-              <T x="67" y="49" fontSize="3.6" fontWeight="900" fill="#92400E" textAnchor="middle">잔액 {won(balance)}</T>
-            </G>
-          )}
-        </G>
-      )}
-    </Svg>
-  );
-}
 
 type S = 'store' | 'menu' | 'place' | 'amount' | 'cash' | 'charging' | 'charged' | 'gates' | 'exit' | 'bus' | 'done';
 
@@ -244,13 +201,13 @@ export function TmoneySim({ step, ctx, onDone }: SimProps) {
       {['menu', 'place', 'amount', 'cash', 'charging', 'charged'].includes(s) && (
         <>
           {s === 'menu' && <P>Subway station: find the machine marked “교통카드 충전 / Card top-up”. The card is empty when you buy it!</P>}
-          <View style={{ width: Math.min(width - 28, 400), alignSelf: 'center', backgroundColor: '#475569', borderRadius: 14, padding: 10, borderWidth: 3, borderColor: '#1E293B' }}>
+          <Metal colors={['#94A3B8', '#475569', '#1E293B']} style={{ width: Math.min(width - 28, 400), alignSelf: 'center', padding: 10 }}>
             <View style={{ backgroundColor: '#0EA5E9', borderRadius: 6, paddingVertical: 4, marginBottom: 8 }}>
               <Text style={{ color: '#FFF', fontWeight: '900', textAlign: 'center', fontSize: 12 }}>1회용 발매 · 교통카드 충전기{'\n'}Ticket & Card Top-up Machine</Text>
             </View>
-            <View style={{ backgroundColor: '#0F172A', borderRadius: 8, padding: 6 }}>
-              <View style={{ backgroundColor: '#F0F9FF', borderRadius: 4, padding: 8, minHeight: 150, gap: 6, justifyContent: 'center' }}>{machineScreen()}</View>
-            </View>
+            <Glass minHeight={150} tint="#DCEFFF">
+              {machineScreen()}
+            </Glass>
             <View style={{ flexDirection: 'row', marginTop: 10, gap: 10, alignItems: 'flex-start' }}>
               {/* card pad */}
               <Pressable
@@ -270,7 +227,7 @@ export function TmoneySim({ step, ctx, onDone }: SimProps) {
             <View style={{ marginTop: 8 }}>
               <Slot testID="slot-change" label="거스름돈 · 영수증 Change / Receipt" width={Math.min(width - 90, 330)} height={22} onPress={() => sc.info('Change and receipts come out here.')} />
             </View>
-          </View>
+          </Metal>
           <WalletBar
             items={wallet}
             selected={held}
@@ -381,3 +338,5 @@ export function TmoneySim({ step, ctx, onDone }: SimProps) {
 function Scr({ children, big }: { children: React.ReactNode; big?: boolean }) {
   return <Text style={{ textAlign: 'center', fontWeight: '900', color: '#0C4A6E', fontSize: big ? 16 : 13, lineHeight: big ? 24 : 18 }}>{children}</Text>;
 }
+
+export { TmoneyCard };

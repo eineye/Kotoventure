@@ -4,7 +4,7 @@ import Svg, { Circle, G, Line, Polyline, Rect, Text as T } from 'react-native-sv
 import { LINES, STATIONS, stationById, timetable, toMin, tr, type TrainRun } from '@kotoventure/shared';
 import { Btn, H, P, won } from '../ui/kit';
 import { C } from '../ui/theme';
-import { Box, DoneCard, OptBtn, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
+import { Box, DoneCard, Glass, Metal, OptBtn, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
 
 type S = 'map' | 'line' | 'home' | 'dest' | 'pax' | 'trains' | 'seat' | 'pay' | 'card' | 'print' | 'ticket' | 'board' | 'done';
 
@@ -105,26 +105,26 @@ export function TrainSim({ step, ctx, onDone }: SimProps) {
   }, [s]);
 
   const machine = (content: React.ReactNode) => (
-    <View style={{ width: Math.min(width - 28, 420), alignSelf: 'center', backgroundColor: '#0B4DA2', borderRadius: 14, padding: 10, borderWidth: 3, borderColor: '#062C5E' }}>
+    <Metal colors={['#3B82F6', '#0B4DA2', '#062C5E']} style={{ width: Math.min(width - 28, 420), alignSelf: 'center', padding: 10 }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
         <Text style={{ color: '#FFF', fontWeight: '900' }}>🚄 승차권 자동발매기 · Ticket Machine</Text>
         <Pressable testID="lang-toggle" onPress={() => setLang(lang === 'ko' ? 'en' : 'ko')} style={{ backgroundColor: '#FFF', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 }}>
           <Text style={{ fontWeight: '900', color: '#0B4DA2', fontSize: 12 }}>{lang === 'ko' ? 'English' : '한국어'}</Text>
         </Pressable>
       </View>
-      <View style={{ backgroundColor: '#F8FAFC', borderRadius: 6, padding: 8, minHeight: 260, gap: 8 }}>
+      <Glass minHeight={260} tint="#EEF4FB" style={{ padding: 4 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Text style={{ fontSize: 11, fontWeight: '800', color: C.inkSoft }}>{L('출발역: 서울', 'From: Seoul')}</Text>
           <Text style={{ fontSize: 11, fontWeight: '800', color: C.inkSoft }}>{L('오늘', 'Today')} 08:12</Text>
         </View>
         {content}
-      </View>
+      </Glass>
       <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-around', alignItems: 'flex-end' }}>
         <Slot testID="slot-card" label="카드 CARD" sub="IC chip ▲" width={80} onPress={tapCardSlot} blink={s === 'card'} />
         <Slot testID="slot-cash" label="지폐 CASH" width={80} onPress={() => sc.info(L('현금 결제 시 사용', 'Used if you pay with cash.'))} />
         <Slot testID="slot-ticket" label="승차권 TICKET" width={90} height={30} onPress={() => sc.info(L('승차권이 나오는 곳', 'Your ticket prints here.'))} blink={s === 'print'} />
       </View>
-    </View>
+    </Metal>
   );
 
   function tapCardSlot() {

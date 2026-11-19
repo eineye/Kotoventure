@@ -4,6 +4,8 @@ import { Background } from '../art/backgrounds';
 import { AVATARS, Kachi, PartyArt, SpeakerPortrait, Traveller } from '../art/Characters';
 import { Logo, LogoMark } from '../art/Logo';
 import { Prop } from '../art/props';
+import { Banknote, Coin } from '../art/Money';
+import { TmoneyCard } from '../art/TmoneyCard';
 
 /** Dev/design review page: every illustration id. Open the web build with ?gallery */
 export function ArtGallery() {
@@ -11,6 +13,26 @@ export function ArtGallery() {
   return (
     <ScrollView contentContainerStyle={{ padding: 12, backgroundColor: '#FFF' }}>
       <Logo width={340} />
+      {[1000, 5000, 10000, 50000].map((v) => (
+        <View key={v} style={{ flexDirection: 'row', gap: 6, marginBottom: 6 }}>
+          <Banknote value={v} width={(360 * [136, 142, 148, 154][[1000, 5000, 10000, 50000].indexOf(v)]) / 154} />
+        </View>
+      ))}
+      {[1000, 5000, 10000, 50000].map((v) => (
+        <View key={'b' + v} style={{ marginBottom: 6 }}>
+          <Banknote value={v} side="back" width={(360 * [136, 142, 148, 154][[1000, 5000, 10000, 50000].indexOf(v)]) / 154} />
+        </View>
+      ))}
+      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-end' }}>
+        {[10, 50, 100, 500].map((v) => <Coin key={v} value={v} pxPerMm={3.2} />)}
+      </View>
+      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-end', marginTop: 6 }}>
+        {[10, 50, 100, 500].map((v) => <Coin key={v} value={v} side="back" pxPerMm={3.2} />)}
+      </View>
+      <View style={{ flexDirection: 'row', gap: 8, marginTop: 6 }}>
+        <TmoneyCard width={170} />
+        <TmoneyCard width={170} side="back" balance={8450} />
+      </View>
       <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
         <LogoMark size={96} />
         <Kachi size={96} />
