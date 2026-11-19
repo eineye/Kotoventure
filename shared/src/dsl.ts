@@ -4,7 +4,7 @@
  */
 import type { ChoiceOption, Effects, PartyType, Phrase, Speaker, Step, TopicId } from './types';
 
-type Opt = { parties?: PartyType[] };
+type Opt = { parties?: PartyType[]; ifFlags?: string[]; unlessFlags?: string[]; chance?: number };
 
 export const say = (text: string, opt: Opt = {}): Step => ({ type: 'narration', text: { en: text }, ...opt });
 
@@ -37,7 +37,7 @@ export const P = (hangul: string, roman: string, meaning: string): Phrase => ({ 
 
 /** hands-on simulation step */
 export const simulate = (
-  sim: 'exchange' | 'atm' | 'tmoney' | 'train' | 'cashpay',
+  sim: import('./types').SimKind,
   topic: TopicId,
   title: string,
   intro: string,

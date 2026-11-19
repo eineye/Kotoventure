@@ -1,6 +1,8 @@
 import type { Course } from '../types';
 import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
+const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
+
 /**
  * 관광 – Seoul Classic. Based on the most popular first-timer route for foreign visitors:
  * Incheon → Myeongdong → Gyeongbokgung/Bukchon → Seongsu → Namsan → Han River/Hongdae → Incheon.
@@ -12,7 +14,7 @@ export const seoulClassic: Course = {
   title: { en: 'Seoul Classic', ko: '서울 클래식' },
   subtitle: { en: 'First-timer\'s 5 nights / 7 days', ko: '첫 한국 여행 5박7일' },
   description: {
-    en: 'Fly in from Australia and survive your first Seoul trip: get out of Incheon Airport, eat and sing in Myeongdong, deal with a sudden "che-haet-da" indigestion, wear hanbok at Gyeongbokgung, hop the trendy cafés of Seongsu and fly home with a tax refund.',
+    en: 'Fly in from Australia and survive your first Seoul trip: get out of Incheon Airport, eat and sing in Myeongdong, deal with a sudden "che-haet-da" indigestion, then PLAN two free days yourself – opening days, weather, lunch, energy and the last subway all matter. Your early decisions (insurance, umbrella…) come back later!',
     ko: '호주에서 출발! 인천공항 탈출부터 명동, 노래방, 급체, 경복궁, 성수동, 남산, 한강까지.',
   },
   region: { en: 'Seoul', ko: '서울' },
@@ -32,7 +34,7 @@ export const seoulClassic: Course = {
   coverBg: 'palace',
   access: 'base',
   isPublished: true,
-  version: 1,
+  version: 2,
   sortOrder: 1,
   scenes: [
     {
@@ -42,6 +44,11 @@ export const seoulClassic: Course = {
       steps: [
         say('After a 10-hour overnight flight from Sydney you land at Incheon International Airport. Signs are in Korean, English, Chinese and Japanese.'),
         talk('guide', 'Annyeong! I\'m Kachi the magpie – magpies bring good news in Korea. I\'ll guide your trip!', P('안녕하세요', 'An-nyeong-ha-se-yo', 'Hello')),
+        talk('guide', 'Quick question before we start – your choices on this trip will come back later. Think ahead!'),
+        ask('medical', 'Back home, before flying: did you buy travel insurance?', [
+          flag(ok('Yes – travel insurance for the whole trip (≈₩35,000)', 'A small cost now… we\'ll see if it pays off.', { money: -35000 }, 'insurance'), 'insured'),
+          no('No – nothing ever happens to me, I\'ll save the money', 'Saved ₩35,000. Let\'s hope nothing happens…', {}),
+        ]),
         ask('law', 'At immigration the officer asks for your documents. What should you have ready?', [
           ok('Passport + my entry approval (K-ETA/visa if my nationality needs one) + hotel address', 'Perfect. Rules for K-ETA/visa change – always check the official site before flying.', { manner: 5 }, 'passport'),
           no('Just a photo of my passport on my phone', 'A photo is not accepted. You need the physical passport.', { energy: -10 }),
@@ -98,6 +105,10 @@ export const seoulClassic: Course = {
         say('Myeongdong\'s street food stalls open in the afternoon: tteokbokki, egg bread, grilled cheese lobster, hotteok…'),
         simulate('cashpay', 'money', 'Street-food stall: pay in cash', 'The stall only takes cash. Pick the right notes and coins from your wallet for a cup of tteokbokki and an egg bread – and check your change.', { shop: '명동 노점 Myeongdong street stall', items: [{ name: '떡볶이 Tteokbokki cup', price: 5000 }, { name: '계란빵 Egg bread', price: 2500 }], cashOnly: true }),
         learn('fo-street'),
+        ask('weather', 'Your weather app warns of heavy showers on WEDNESDAY afternoon. The convenience store sells compact umbrellas for ₩6,000.', [
+          flag(ok('Buy one now – it fits in my bag', 'Prepared for the monsoon-style downpours.', { money: -6000 }, 'umbrella'), 'umbrella'),
+          no('Skip it – I\'ll deal with rain when it comes', 'Saved ₩6,000… for now.', {}),
+        ]),
         ask('etiquette', 'You finished your snack. There\'s no bin in sight. What now?', [
           ok('Keep the cup in a bag and throw it away at the hotel', 'That\'s exactly what Koreans do – public bins are rare.', { manner: 6 }, 'trash-bins'),
           no('Leave it on a ledge', 'Littering can be fined, and someone else has to clean it.', { manner: -10, money: -20000 }),
@@ -115,6 +126,13 @@ export const seoulClassic: Course = {
         say('The sign says "2인분 이상" – minimum order 2 portions. As a solo traveller you look for a place showing "1인분 가능".', { parties: ['solo'] }),
         learn('fo-solo', { parties: ['solo'] }),
         say('You sit down. The table has a gas grill, scissors, tongs – and a small button.'),
+        simulate('phrase', 'food', 'Order in Korean', 'The ajumma doesn\'t speak English. Build the Korean sentences from word tiles (watch the word order!) and listen to the pronunciation.', {
+          phrases: [
+            { ko: '삼겹살 2인분 주세요', roman: 'Sam-gyeop-sal i-in-bun ju-se-yo', en: 'Two portions of pork belly, please', extra: ['한', '잔'] },
+            { ko: '물 좀 주세요', roman: 'Mul jom ju-se-yo', en: 'Some water, please', extra: ['저기요'] },
+            { ko: '여기 계산해 주세요', roman: 'Yeo-gi gye-san-hae ju-se-yo', en: 'The bill here, please', extra: ['맛있어요'] },
+          ],
+        }),
         ask('food', 'You want to order. How do you call the staff?', [
           ok('Press the call bell (or raise a hand and say "Jeogiyo!")', 'Exactly. In Korea calling the staff like this is totally normal.', { manner: 3 }, 'call-bell'),
           no('Wait silently until they come', 'You wait… and wait. Staff won\'t come unless you call.', { energy: -5 }),
@@ -180,6 +198,8 @@ export const seoulClassic: Course = {
           no('Call 119 for an ambulance', '119 is for emergencies. You can walk – choose a clinic.', { manner: -5 }),
         ], 'me-clinic'),
         learn('me-hanui'),
+        event('money', 'The bill', 'Because you have travel insurance, you can claim the clinic and pharmacy costs back later. Keep every receipt!', { money: 30000 }, 'insurance', { ifFlags: ['insured'] }),
+        event('money', 'The bill – no insurance', 'Tourists are not covered by Korean health insurance and you skipped travel insurance: you pay everything yourself, including the extra tests (−₩45,000).', { money: -45000 }, 'insurance', { unlessFlags: ['insured'] }),
         ask('medical', 'You paid the clinic. What do you keep for your travel insurance claim?', [
           ok('The receipt and ask for a medical certificate (진단서) in English', 'Exactly. Tourists aren\'t covered by Korean health insurance – your travel insurance will be.', { money: 30000 }, 'insurance'),
           no('Nothing, it was cheap', 'You can\'t claim anything now.', {}),
@@ -188,37 +208,25 @@ export const seoulClassic: Course = {
       ],
     },
     {
-      id: 'sc-7', day: 4, bg: 'palace',
-      title: { en: 'Gyeongbokgung Palace in hanbok', ko: '경복궁 한복 체험' },
-      location: { en: 'Gyeongbokgung, Jongno', ko: '경복궁, 종로' },
+      id: 'sc-p1', day: 4, bg: 'street',
+      title: { en: 'Free day 1: plan your Tuesday', ko: '자유일정 1: 화요일 계획' },
+      location: { en: 'Seoul – your choice', ko: '서울 – 내가 고른 곳' },
       steps: [
-        say('Feeling better! Day 4: Gyeongbokgung, the main royal palace of the Joseon dynasty (built 1395). In front of you stands Gwanghwamun Gate.'),
-        ask('money', 'You rented a hanbok nearby. What\'s the advantage at the palace?', [
-          ok('Free admission for visitors wearing hanbok', 'Yes! Adults normally pay about ₩3,000.', { money: 3000 }, 'hanbok'),
-          no('You can enter closed areas', 'No – closed areas stay closed for everyone.', {}),
-        ]),
-        say('You and your partner rented matching hanbok – the photo spots around Gyeonghoeru Pavilion are perfect.', { parties: ['couple'] }),
-        event('surprise', 'Changing of the Royal Guard', 'At 10:00 the royal guards in colourful uniforms perform the changing ceremony with drums at Gwanghwamun.'),
-        event('weather', 'Heatwave alert', 'Your phone buzzes loudly: a heatwave alert. It\'s 34 °C and climbing – summers have been getting hotter in recent years.', { energy: -10 }, 'heatwave'),
-        ask('weather', 'How do you continue your palace visit?', [
-          ok('Drink water, rest in shade or a heat shelter, and visit indoor halls at noon', 'Sensible. Heatstroke is a real risk in recent Korean summers.', { energy: 10 }, 'heatwave'),
-          no('Keep walking in full sun in your hanbok', 'You feel dizzy – heat exhaustion!', { energy: -20 }),
-        ], 'we-heat'),
-        learn('we-alert'),
-        learn('me-firstaid'),
-        ask('etiquette', 'A guard in costume is standing still. You want a photo.', [
-          ok('Take a photo from a respectful distance without touching', 'Correct. Don\'t touch or block the guards.', { manner: 4 }, 'camera'),
-          no('Put your arm around him and tug his beard', 'Not cool. He\'s working.', { manner: -10 }),
-        ], 'et-photo'),
-        say('Tip: Gyeongbokgung is closed on Tuesdays. Plan around it!'),
+        talk('guide', 'Today and tomorrow are FREE days. You plan them! Check opening days, last entry, the weather and lunch – and don\'t burn all your energy.'),
+        simulate('dayplan', 'transport', 'Plan your Tuesday', 'Choose where to go, in which order and how to travel. Places you visit become scenes later today.', {
+          weekday: 'Tue',
+          hotel: 'hotel-myeongdong',
+          weather: { kind: 'heat', from: '13:00', to: '16:00', text: 'Heatwave 33°C in the afternoon' },
+          places: ['gyeongbokgung', 'changdeokgung', 'bukchon', 'insadong', 'gwangjang', 'nseoultower'],
+        }, 'we-heat'),
       ],
     },
     {
-      id: 'sc-8', day: 4, bg: 'hanok',
+      id: 'sc-8', day: 4, bg: 'hanok', requires: ['visit:bukchon'],
       title: { en: 'Bukchon Hanok Village', ko: '북촌 한옥마을' },
       location: { en: 'Bukchon, Jongno', ko: '북촌, 종로' },
       steps: [
-        say('A 10-minute walk east brings you to Bukchon, alleys of 600-year-old-style hanok houses – where real people still live.'),
+        say('Your plan brings you to Bukchon, alleys of 600-year-old-style hanok houses – where real people still live.'),
         ask('law', 'It\'s 18:30 and you want photos in the famous alley. A sign shows visiting hours. What do you do?', [
           ok('Respect the hours and come back in the daytime', 'Right. Parts of Bukchon restrict tourist visits in the evening and fines can apply.', { manner: 8 }, 'quiet'),
           no('Sneak in anyway, it\'s only a photo', 'A guide stops you. Outside permitted hours you can be fined.', { manner: -8, money: -50000 }),
@@ -231,11 +239,68 @@ export const seoulClassic: Course = {
       ],
     },
     {
-      id: 'sc-9', day: 5, bg: 'cafe',
+      id: 'sc-10', day: 4, bg: 'tower', requires: ['visit:nseoultower'],
+      title: { en: 'N Seoul Tower at sunset', ko: '남산 N서울타워' },
+      location: { en: 'Namsan', ko: '남산' },
+      steps: [
+        say('Late afternoon. You take the yellow Namsan circular bus to N Seoul Tower, on top of Namsan mountain.'),
+        ask('transport', 'Getting off the bus, what must you not forget?', [
+          ok('Tap my card again at the back door', 'Right – otherwise you lose the free transfer later.', { money: 1500 }, 'tmoney'),
+          no('Nothing, I already paid when I got on', 'You lose the transfer discount on your next ride.', { money: -1500 }),
+        ], 'tr-bus'),
+        say('Couples attach "love locks" to the fence at the top. You write both names on a lock.', { parties: ['couple'] }),
+        event('weather', 'Sudden downpour!', 'Out of nowhere, a violent rain shower hits – but you have your compact umbrella. Smart purchase!', { energy: -2 }, 'umbrella', { ifFlags: ['umbrella'] }),
+        event('weather', 'Sudden downpour!', 'Out of nowhere, a violent rain shower hits and you have no umbrella. Soaked! (The tower shop sells them for ₩15,000…)', { energy: -10, money: -15000 }, 'typhoon', { unlessFlags: ['umbrella'] }),
+        ask('weather', 'Water is gushing down the steps. What do you do?', [
+          ok('Wait inside the tower building until it passes; avoid underpasses on the way down', 'Smart. Flash flooding in underpasses is a real danger during cloudbursts.', { energy: 5 }, 'umbrella'),
+          no('Run down the hill through the flooded underpass', 'Dangerous! Water rises fast in underpasses.', { energy: -15 }),
+        ], 'we-rain'),
+        say('The rain stops. The city lights turn on below – 10 million people, the Han River glittering. Worth it.'),
+      ],
+    },
+    {
+      id: 'sc-p2', day: 5, bg: 'street',
+      title: { en: 'Free day 2: plan your Wednesday', ko: '자유일정 2: 수요일 계획' },
+      location: { en: 'Seoul – your choice', ko: '서울 – 내가 고른 곳' },
+      steps: [
+        say('Wednesday morning. The forecast you saw on day 1 was right: heavy showers this afternoon.'),
+        simulate('dayplan', 'weather', 'Plan your Wednesday', 'Rain from 15:00 to 18:00. Indoor places stay dry – outdoor ones are miserable without an umbrella.', {
+          weekday: 'Wed',
+          hotel: 'hotel-myeongdong',
+          weather: { kind: 'rain', from: '15:00', to: '18:00', text: 'Heavy showers' },
+          places: ['gyeongbokgung', 'museum', 'seongsu', 'starfield', 'ikseon', 'nseoultower'],
+        }, 'we-rain'),
+      ],
+    },
+    {
+      id: 'sc-7', day: 5, bg: 'palace', requires: ['visit:gyeongbokgung'],
+      title: { en: 'Gyeongbokgung Palace in hanbok', ko: '경복궁 한복 체험' },
+      location: { en: 'Gyeongbokgung, Jongno', ko: '경복궁, 종로' },
+      steps: [
+        simulate('transfer', 'transport', 'Subway to the palace', 'Find the fastest subway route from Myeongdong to Gyeongbokgung station before the train leaves. Tip: bold circles are transfer stations.', { fromStation: 'myeongdong', toStation: 'gyeongbokgung', timeLimit: 60 }, 'tr-transfer'),
+        say('Day 5: Gyeongbokgung, the main royal palace of the Joseon dynasty (built 1395). In front of you stands Gwanghwamun Gate.'),
+        ask('money', 'You rented a hanbok nearby. What\'s the advantage at the palace?', [
+          ok('Free admission for visitors wearing hanbok', 'Yes! Adults normally pay about ₩3,000.', { money: 3000 }, 'hanbok'),
+          no('You can enter closed areas', 'No – closed areas stay closed for everyone.', {}),
+        ]),
+        say('You and your partner rented matching hanbok – the photo spots around Gyeonghoeru Pavilion are perfect.', { parties: ['couple'] }),
+        event('surprise', 'Changing of the Royal Guard', 'At 10:00 the royal guards in colourful uniforms perform the changing ceremony with drums at Gwanghwamun.'),
+        learn('we-alert'),
+        learn('me-firstaid'),
+        ask('etiquette', 'A guard in costume is standing still. You want a photo.', [
+          ok('Take a photo from a respectful distance without touching', 'Correct. Don\'t touch or block the guards.', { manner: 4 }, 'camera'),
+          no('Put your arm around him and tug his beard', 'Not cool. He\'s working.', { manner: -10 }),
+        ], 'et-photo'),
+        say('Remember: Gyeongbokgung is closed on Tuesdays – good thing you planned it for Wednesday!'),
+      ],
+    },
+    {
+      id: 'sc-9', day: 5, bg: 'cafe', requires: ['visit:seongsu'],
       title: { en: 'Seongsu-dong cafés & pop-ups', ko: '성수동 카페 & 팝업' },
       location: { en: 'Seongsu-dong', ko: '성수동' },
       steps: [
-        say('Day 5. Seongsu-dong – old factories turned into cafés, galleries and brand pop-up stores. Take Line 2 (green) to Seongsu Station.'),
+        say('Seongsu-dong – old factories turned into cafés, galleries and brand pop-up stores.'),
+        simulate('transfer', 'transport', 'Subway to Seongsu', 'Get from Myeongdong to Seongsu station by subway – find the fastest route (Line 2 is the green circle line).', { fromStation: 'myeongdong', toStation: 'seongsu', timeLimit: 60 }),
         say('Your fine-dust app shows "bad" (나쁨) air quality today.', undefined),
         ask('weather', 'The fine-dust index is "bad". What\'s the best move?', [
           ok('Wear a KF94 mask from the convenience store and stay indoors more', 'Good choice. Spring often has fine dust and yellow-dust days.', { energy: 5, money: -2000 }, 'fine-dust'),
@@ -246,34 +311,12 @@ export const seoulClassic: Course = {
           ok('Register on the waiting tablet (or app) and wait your turn', 'Yes. Queueing is sacred in Korea.', { manner: 5 }, 'queue'),
           no('Squeeze in next to a friend in the middle of the line', 'Line-cutting is a big no. People call staff.', { manner: -10 }),
         ]),
-        ask('money', 'The café sign says "Card only / No cash". You only have coins and notes.', [
-          ok('Pay with my foreign Visa/Mastercard', 'Cards work almost everywhere, even for one coffee.', { money: -6000 }, 'phone-pay'),
-          no('Insist on paying cash', 'They can\'t accept it – more and more places are cashless.', { energy: -5 }),
-        ], 'mo-coins'),
-        ask('etiquette', 'You finished your iced latte. At the return station there are separate bins.', [
+        simulate('kiosk', 'money', 'Café kiosk – Korean only', 'This café has only a Korean kiosk and people are queueing behind you. Order exactly what you want and pay by card – fast!', { menu: 'cafe', order: [{ id: 'americano', qty: 1, temp: 'ice', size: 'R' }, { id: 'croffle', qty: 1 }], dineIn: true, english: false }, 'fo-solo'),
+        ask('etiquette', 'You finished your iced americano. At the return station there are separate bins.', [
           ok('Pour leftover ice/liquid in the sink, put the cup and straw in recycling', 'Exactly how Koreans do it.', { manner: 6 }, 'trash-bins'),
           no('Throw the full cup into general waste', 'The staff sigh – liquids in bins make a mess.', { manner: -6 }),
         ], 'et-trash'),
         learn('mo-fx'),
-      ],
-    },
-    {
-      id: 'sc-10', day: 5, bg: 'tower',
-      title: { en: 'N Seoul Tower at sunset', ko: '남산 N서울타워' },
-      location: { en: 'Namsan', ko: '남산' },
-      steps: [
-        say('Late afternoon. You take the yellow Namsan circular bus to N Seoul Tower, on top of Namsan mountain.'),
-        ask('transport', 'Getting off the bus, what must you not forget?', [
-          ok('Tap my card again at the back door', 'Right – otherwise you lose the free transfer later.', { money: 1500 }, 'tmoney'),
-          no('Nothing, I already paid when I got on', 'You lose the transfer discount on your next ride.', { money: -1500 }),
-        ], 'tr-bus'),
-        say('Couples attach "love locks" to the fence at the top. You write both names on a lock.', { parties: ['couple'] }),
-        event('weather', 'Sudden downpour!', 'Out of nowhere, a violent rain shower hits. Short, intense downpours have become more frequent in Korean summers.', { energy: -8 }, 'typhoon'),
-        ask('weather', 'Water is gushing down the steps. What do you do?', [
-          ok('Wait inside the tower building until it passes; avoid underpasses on the way down', 'Smart. Flash flooding in underpasses is a real danger during cloudbursts.', { energy: 5 }, 'umbrella'),
-          no('Run down the hill through the flooded underpass', 'Dangerous! Water rises fast in underpasses.', { energy: -15 }),
-        ], 'we-rain'),
-        say('The rain stops. The city lights turn on below – 10 million people, the Han River glittering. Worth it.'),
       ],
     },
     {
@@ -296,6 +339,10 @@ export const seoulClassic: Course = {
           no('Why not, it\'s legal at home', 'Not in Korea. Drug crimes mean arrest and deportation.', { manner: -20, energy: -20 }),
         ], 'la-drugs'),
         learn('la-safety'),
+        ask('law', '😱 Bad luck: you left your phone in the taxi back from Hongdae! What do you do?', [
+          ok('Check the ride in Kakao T / my taxi receipt, call 1330 or 112, and look on lost112.go.kr', 'The driver drops it at a police box – you get it back the next morning.', { manner: 3 }, 'police'),
+          no('Give up – it\'s gone forever', 'Lost items are very often returned in Korea. Never give up too soon!', { money: -300000 }),
+        ], 'la-police', { chance: 0.45 }),
         ask('transport', 'The pedestrian light is red but the road looks empty.', [
           ok('Wait for the green walker and watch for delivery motorbikes', 'Good. Bikes and right-turning cars can appear suddenly.', { manner: 4 }, 'crosswalk'),
           no('Jaywalk across', 'A scooter nearly hits you – and jaywalking can be fined.', { energy: -10, money: -20000 }),

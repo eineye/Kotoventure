@@ -1,5 +1,5 @@
-import { PROP_IDS, STATIONS, TOPICS, tr, type ChoiceOption, type SimConfig, type Effects, type KnowledgeCard, type PartyType, type Speaker, type Step } from '@kotoventure/shared';
-import { Check, Field, LText, Num, Select } from '../ui';
+import { PLACES, PROP_IDS, STATIONS, SUBWAY_STATIONS, TOPICS, tr, type ChoiceOption, type SimConfig, type Effects, type KnowledgeCard, type PartyType, type Speaker, type Step } from '@kotoventure/shared';
+import { Check, Field, JsonEdit, LText, Num, Select } from '../ui';
 
 const SPEAKERS: Speaker[] = ['guide', 'player', 'local', 'staff', 'driver', 'police', 'doctor', 'pharmacist', 'elder', 'monk', 'haenyeo'];
 const PARTIES: [PartyType, string][] = [
@@ -23,6 +23,10 @@ const SIMS: [string, string][] = [
   ['tmoney', '🟧 T머니 (구입·충전기·개찰구)'],
   ['train', '🚄 KTX (노선도·승차권 발매기·승강장)'],
   ['cashpay', '💵 현금 결제 (보유 현금에서 지폐·동전 골라 내기·거스름돈)'],
+  ['dayplan', '🗓️ 하루 일정 짜기 (장소·순서·이동수단, 휴무일·날씨·점심·막차)'],
+  ['transfer', '🚇 지하철 환승 퍼즐 (제한시간 안에 최단 경로)'],
+  ['kiosk', '🖥️ 키오스크 주문 (한국어 전용·옵션·대기열 압박)'],
+  ['phrase', '🗣️ 한국어 문장 만들기 (단어 조각·발음 듣기)'],
 ];
 
 export const blankStep = (type: Step['type']): Step => {
@@ -83,6 +87,35 @@ export function StepEditor({ step, onChange, cards }: { step: Step; onChange: (s
           <Check key={p} checked={parties.includes(p)} onChange={(b) => togglePartiy(p, b)} label={l} />
         ))}
         <span className="dim small">(선택 안 하면 모두에게 표시)</span>
+      </div>
+      <div className="row wrap parties">
+        <span className="dim small">조건:</span>
+        <label className="small">
+          플래그 있을 때만{' '}
+          <input
+            style={{ width: 150 }}
+            placeholder="insured, visit:bukchon"
+            value={(step.ifFlags ?? []).join(', ')}
+            onChange={(e) => onChange({ ...step, ifFlags: splitFlags(e.target.value) })}
+          />
+        </label>
+        <label className="small">
+          플래그 없을 때만{' '}
+          <input style={{ width: 130 }} placeholder="umbrella" value={(step.unlessFlags ?? []).join(', ')} onChange={(e) => onChange({ ...step, unlessFlags: splitFlags(e.target.value) })} />
+        </label>
+        <label className="small">
+          랜덤 확률{' '}
+          <input
+            type="number"
+            min={0}
+            max={1}
+            step={0.05}
+            style={{ width: 70 }}
+            value={step.chance ?? ''}
+            placeholder="1"
+            onChange={(e) => onChange({ ...step, chance: e.target.value === '' ? undefined : Number(e.target.value) })}
+          />
+        </label>
       </div>
 
       {step.type === 'narration' && (
@@ -212,6 +245,10 @@ export function StepEditor({ step, onChange, cards }: { step: Step; onChange: (s
                     <LText multiline value={o.feedback} onChange={(feedback) => setO({ feedback })} />
                   </Field>
                   <EffectsEdit value={o.effects} onChange={(effects) => setO({ effects })} />
+                  <label className="small">
+                    선택 시 플래그 설정 (나중 장면/이벤트 조건){' '}
+                    <input style={{ width: 200 }} placeholder="insured" value={(o.setFlags ?? []).join(', ')} onChange={(e) => setO({ setFlags: splitFlags(e.target.value) })} />
+                  </label>
                 </div>
               );
             })}
@@ -224,6 +261,11 @@ export function StepEditor({ step, onChange, cards }: { step: Step; onChange: (s
     </div>
   );
 }
+
+const splitFlags = (v: string) => {
+  const a = v.split(',').map((x) => x.trim()).filter(Boolean);
+  return a.length ? a : undefined;
+};
 
 export const stepSummary = (s: Step) => {
   switch (s.type) {
@@ -296,6 +338,75 @@ function SimConfigEdit({ sim, value, onChange }: { sim: string; value: SimConfig
             <span className="hint">합계: ₩{(value.items ?? []).reduce((a, b) => a + (b.price || 0), 0).toLocaleString('en-US')} · 플레이어는 게임 속 지갑(환전·ATM으로 받은 실제 지폐·동전)에서 골라 냅니다.</span>
           </Field>
         </>
+      )}
+      {sim === 'dayplan' && (
+        <>
+          <Field label="요일 (휴무일 판정)">
+            <Select value={value.weekday ?? 'Tue'} onChange={(weekday) => set({ weekday: weekday as SimConfig['weekday'] })} options={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']} />
+          </Field>
+          <Field label="날씨 이벤트">
+            <div className="row wrap">
+              <Select value={value.weather?.kind ?? ''} onChange={(kind) => set({ weather: kind ? { kind: kind as 'heat' | 'rain', from: value.weather?.from ?? '13:00', to: value.weather?.to ?? '16:00', text: value.weather?.text ?? '' } : undefined })} options={[['', '없음'], ['heat', '폭염'], ['rain', '비']]} />
+              {value.weather && (
+                <>
+                  <input style={{ width: 70 }} value={value.weather.from} onChange={(e) => set({ weather: { ...value.weather!, from: e.target.value } })} />
+                  ~
+                  <input style={{ width: 70 }} value={value.weather.to} onChange={(e) => set({ weather: { ...value.weather!, to: e.target.value } })} />
+                  <input placeholder="예보 문구" value={value.weather.text} onChange={(e) => set({ weather: { ...value.weather!, text: e.target.value } })} />
+                </>
+              )}
+            </div>
+          </Field>
+          <Field label="선택 가능한 장소 (방문 시 visit:장소ID 플래그 → 해당 장면 열림)" wide>
+            <div className="row wrap">
+              {PLACES.filter((p) => !p.id.startsWith('hotel')).map((p) => (
+                <Check
+                  key={p.id}
+                  checked={(value.places ?? []).includes(p.id)}
+                  onChange={(b) => set({ places: b ? [...(value.places ?? []), p.id] : (value.places ?? []).filter((x) => x !== p.id) })}
+                  label={`${p.ko} (${p.open}–${p.close}${p.closedOn?.length ? ', 휴무 ' + p.closedOn.join(',') : ''})`}
+                />
+              ))}
+            </div>
+            <span className="hint">장소의 영업시간·휴무일·요금은 shared/src/places.ts 에서 관리합니다.</span>
+          </Field>
+        </>
+      )}
+      {sim === 'transfer' && (
+        <>
+          <Field label="출발역 → 도착역">
+            <div className="row">
+              <Select value={value.fromStation ?? 'myeongdong'} onChange={(fromStation) => set({ fromStation })} options={SUBWAY_STATIONS.map((x) => [x.id, x.ko] as [string, string])} />
+              →
+              <Select value={value.toStation ?? 'seongsu'} onChange={(toStation) => set({ toStation })} options={SUBWAY_STATIONS.map((x) => [x.id, x.ko] as [string, string])} />
+            </div>
+          </Field>
+          <Field label="제한 시간(초)">
+            <Num value={value.timeLimit ?? 60} min={20} onChange={(timeLimit) => set({ timeLimit })} />
+          </Field>
+        </>
+      )}
+      {sim === 'kiosk' && (
+        <>
+          <Field label="메뉴">
+            <Select value={value.menu ?? 'cafe'} onChange={(menu) => set({ menu: menu as 'cafe' | 'snack' })} options={[['cafe', '카페'], ['snack', '분식']]} />
+          </Field>
+          <Field label="옵션">
+            <div className="row wrap">
+              <Check checked={value.dineIn ?? true} onChange={(dineIn) => set({ dineIn })} label="매장 식사 (해제 시 포장)" />
+              <Check checked={!!value.english} onChange={(english) => set({ english })} label="영어 버튼 있음" />
+            </div>
+          </Field>
+          <Field label="주문할 것 (JSON: id, qty, temp ice|hot, size R|L)" wide>
+            <JsonEdit value={value.order ?? []} onChange={(order) => set({ order })} rows={5} />
+            <span className="hint">카페 id: americano, latte, vanilla, lemonade, greentea, croffle, cheesecake · 분식 id: gimbap, tuna, tteokbokki, ramyeon, sundae, cola</span>
+          </Field>
+        </>
+      )}
+      {sim === 'phrase' && (
+        <Field label="문장 (JSON: ko, roman, en, extra=헷갈리게 할 단어)" wide>
+          <JsonEdit value={value.phrases ?? []} onChange={(phrases) => set({ phrases })} rows={8} />
+        </Field>
       )}
       {sim === 'train' && (
         <>

@@ -72,6 +72,12 @@ export type Speaker =
 interface StepBase {
   /** Only show this step for these party types. Empty/undefined = everyone. */
   parties?: PartyType[];
+  /** Only show if ALL these flags are set (delayed consequences of earlier choices). */
+  ifFlags?: string[];
+  /** Hide if ANY of these flags is set. */
+  unlessFlags?: string[];
+  /** Random event: probability 0..1 that the step happens on a given play. */
+  chance?: number;
 }
 
 export interface NarrationStep extends StepBase {
@@ -93,6 +99,8 @@ export interface ChoiceOption {
   correct: boolean;
   feedback: L;
   effects?: Effects;
+  /** flags set when this option is picked (checked later by ifFlags/unlessFlags) */
+  setFlags?: string[];
 }
 
 export interface ChoiceStep extends StepBase {
@@ -119,7 +127,7 @@ export interface EventStep extends StepBase {
 }
 
 /** Hands-on simulations of real Korean machines / counters. */
-export type SimKind = 'exchange' | 'atm' | 'tmoney' | 'train' | 'cashpay';
+export type SimKind = 'exchange' | 'atm' | 'tmoney' | 'train' | 'cashpay' | 'dayplan' | 'transfer' | 'kiosk' | 'phrase';
 
 export interface SimConfig {
   /** exchange: where you exchange – airport rates are worse than downtown money changers */
@@ -139,6 +147,22 @@ export interface SimConfig {
   items?: { name: string; price: number }[];
   /** cashpay: the shop does not take cards (markets, street stalls) */
   cashOnly?: boolean;
+  /** dayplan: plan a free day */
+  weekday?: 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
+  places?: string[];
+  hotel?: string;
+  weather?: { kind: 'heat' | 'rain'; from: string; to: string; text: string };
+  /** transfer: subway route puzzle (station ids from subway.ts) */
+  fromStation?: string;
+  toStation?: string;
+  timeLimit?: number;
+  /** kiosk: order at a self-service kiosk */
+  menu?: 'cafe' | 'snack';
+  order?: { id: string; qty: number; temp?: 'ice' | 'hot'; size?: 'R' | 'L' }[];
+  dineIn?: boolean;
+  english?: boolean;
+  /** phrase: build Korean sentences from word tiles */
+  phrases?: { ko: string; roman: string; en: string; extra?: string[] }[];
 }
 
 export interface SimStep extends StepBase {
@@ -161,6 +185,8 @@ export interface Scene {
   location: L;
   /** background id (see app/src/art/backgrounds) */
   bg: string;
+  /** scene only happens if ALL flags are set (e.g. visit:bukchon from the day planner) */
+  requires?: string[];
   steps: Step[];
 }
 
@@ -242,6 +268,8 @@ export interface RunStats {
   simPoints?: number;
   /** physical cash in the wallet: denomination (KRW) → count. Part of `money`. */
   cash?: Record<string, number>;
+  /** consequence flags set by choices and simulations */
+  flags?: string[];
 }
 
 export interface CourseProgress {

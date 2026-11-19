@@ -362,6 +362,15 @@ function CourseEditor({ initial, originalId, onClose, onSaved }: { initial: Cour
                 <Field label="장소" wide>
                   <LText value={scene.location} onChange={(location) => setScene({ location })} />
                 </Field>
+                <Field label="장면 등장 조건 (플래그, 쉼표 구분)" hint="예: visit:bukchon – 일정 짜기에서 해당 장소를 방문했을 때만 등장" wide>
+                  <input
+                    value={(scene.requires ?? []).join(', ')}
+                    onChange={(e) => {
+                      const a = e.target.value.split(',').map((x) => x.trim()).filter(Boolean);
+                      setScene({ requires: a.length ? a : undefined });
+                    }}
+                  />
+                </Field>
               </div>
 
               <h4>스텝 ({scene.steps.length}) – 위에서부터 순서대로 진행</h4>

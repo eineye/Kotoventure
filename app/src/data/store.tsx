@@ -19,6 +19,8 @@ export interface Profile {
   party: PartyType;
   avatar: string;
   lang: 'en' | 'ko';
+  /** guide = instant feedback; real = results revealed in a nightly summary */
+  mode?: 'guide' | 'real';
 }
 
 interface State {

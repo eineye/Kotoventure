@@ -39,6 +39,16 @@ export function Me() {
           <Chip label="한국어" active={lang === 'ko'} onPress={() => updateProfile({ lang: 'ko' })} />
         </View>
         <H size={17} style={{ marginTop: 14 }}>
+          {lang === 'ko' ? '난이도' : 'Difficulty'}
+        </H>
+        <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
+          <Chip testID="mode-guide" label={lang === 'ko' ? '🧭 가이드 모드' : '🧭 Guide'} active={(profile.mode ?? 'guide') === 'guide'} onPress={() => updateProfile({ mode: 'guide' })} color={C.green} />
+          <Chip testID="mode-real" label={lang === 'ko' ? '🔥 실전 모드' : '🔥 Real trip'} active={profile.mode === 'real'} onPress={() => updateProfile({ mode: 'real' })} color={C.red} />
+        </View>
+        <P dim style={{ fontSize: 12, marginTop: 4 }}>
+          {lang === 'ko' ? '실전 모드: 선택 즉시 정답을 알려주지 않고, 하루가 끝날 때 정산합니다.' : 'Real trip: no instant answers – you find out at the end of each day.'}
+        </P>
+        <H size={17} style={{ marginTop: 14 }}>
           {L.party}
         </H>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
