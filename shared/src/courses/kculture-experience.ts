@@ -1,6 +1,8 @@
 import type { Course } from '../types';
 import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
+const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
+
 /** 체험 – K-culture hands-on: K-pop dance, kimchi class, Han River ramyeon, PC bang, DMZ tour. */
 export const kcultureExperience: Course = {
   id: 'kculture-experience',
@@ -28,7 +30,7 @@ export const kcultureExperience: Course = {
   coverBg: 'stage',
   access: 'base',
   isPublished: true,
-  version: 1,
+  version: 2,
   sortOrder: 5,
   scenes: [
     {
@@ -64,6 +66,19 @@ export const kcultureExperience: Course = {
           ok('Stand to the side, keep the walkway open, tip if I enjoyed it', 'Buskers love respectful fans.', { manner: 5, money: -5000 }, 'walk-right'),
           no('Stand in the middle of the street blocking everyone', 'People bump into you all the time.', { manner: -5 }),
         ], 'et-right'),
+        ask('law', '🎫 A stranger in the crowd offers "sold-out" idol concert tickets at half price – pay by bank transfer now.', [
+          ok('No thanks – only buy from the official ticket site', 'Smart. Ticket-resale scams are common; transfers can\'t be reversed.', { manner: 4 }, 'police'),
+          no('Transfer the money quickly before someone else does', 'The "tickets" never arrive. Report it at 112 – but the money is gone.', { money: -80000 }),
+        ], 'la-police', { chance: 0.45 }),
+        say('Back at the guesthouse you book the DMZ tour for the day after tomorrow.'),
+        ask('law', 'The DMZ tour booking form asks for your passport number. What else should you do?', [
+          flag(ok('Note that I must carry my PASSPORT on the day', 'Right – IDs are checked at military checkpoints.', { manner: 3 }, 'passport'), 'passport'),
+          no('Nothing, a photo of my passport will do', 'Hmm… we\'ll see.', {}),
+        ]),
+        ask('weather', 'Spring nights in Seoul drop to 8 °C and the DMZ hills are windy. What do you pack for the next days?', [
+          flag(ok('A light warm jacket and a KF94 mask for the yellow dust', 'Prepared for cold wind and dust.', { energy: 2 }, 'fine-dust'), 'jacket'),
+          no('T-shirts only – it\'s spring!', 'We\'ll see…', {}),
+        ], 'we-seasons'),
       ],
     },
     {
@@ -71,7 +86,9 @@ export const kcultureExperience: Course = {
       title: { en: 'Kimchi & bibimbap class', ko: '김치 & 비빔밥 쿠킹클래스' },
       location: { en: 'Insadong cooking studio', ko: '인사동 쿠킹스튜디오' },
       steps: [
-        say('Day 2. A cooking class! You put on red rubber gloves – essential for kimchi.'),
+        say('Day 2. Your cooking class is in Insadong, across the city. Take the subway!'),
+        simulate('transfer', 'transport', 'Subway: Hongdae → Insadong', 'Find the fastest route from Hongik Univ. to Anguk station (Insadong). Line 2 is the green one – where do you change?', { fromStation: 'hongik', toStation: 'anguk', timeLimit: 60 }, 'tr-transfer'),
+        say('A cooking class! You put on red rubber gloves – essential for kimchi.'),
         learn('fo-kimchi'),
         ask('food', 'You make bibimbap. Before eating, what do you do?', [
           ok('Add gochujang and mix everything thoroughly with a spoon', 'That\'s the "bibim" – mixing!', { energy: 12 }, 'bibimbap'),
@@ -88,7 +105,23 @@ export const kcultureExperience: Course = {
       ],
     },
     {
-      id: 'kc-4', day: 2, bg: 'river',
+      id: 'kc-p1', day: 2, bg: 'street',
+      title: { en: 'Free afternoon: plan your Tuesday', ko: '자유일정: 화요일 오후' },
+      location: { en: 'Seoul – your choice', ko: '서울 – 내가 고른 곳' },
+      steps: [
+        talk('guide', 'The class ends at 13:00 – the rest of Tuesday is yours. You already ate lunch. Remember palace closing days, and spring showers in the evening!'),
+        simulate('dayplan', 'transport', 'Plan your K-culture afternoon', 'Start from Insadong at 13:00 and finish at your Hongdae guesthouse. Places you visit become scenes.', {
+          weekday: 'Tue',
+          hotel: 'hotel-hongdae',
+          startAt: 'insadong',
+          start: '13:00',
+          weather: { kind: 'rain', from: '17:00', to: '19:00', text: 'Spring shower' },
+          places: ['gyeongbokgung', 'changdeokgung', 'myeongdong-shop', 'lotteworld', 'nseoultower', 'hongdae', 'mangwon', 'sinchon-pc'],
+        }),
+      ],
+    },
+    {
+      id: 'kc-4', day: 2, bg: 'river', requires: ['visit:mangwon'],
       title: { en: 'Han River ramyeon', ko: '한강 라면' },
       location: { en: 'Mangwon Hangang Park', ko: '망원 한강공원' },
       steps: [
@@ -119,7 +152,8 @@ export const kcultureExperience: Course = {
           ok('For the instant tax-free refund – the VAT is taken off right away', 'You save several thousand won.', { money: 6000 }, 'tax-refund'),
           no('It\'s a scam, refuse', 'It\'s legit: tax-free shopping needs your passport.', {}),
         ], 'mo-tax'),
-        say('In the afternoon you try a PC bang – a huge gaming café with fast PCs, ramyeon delivered to your seat and comfy chairs.'),
+        say('In the afternoon you try a PC bang – a huge gaming café with fast PCs, ramyeon delivered to your seat and comfy chairs. Everything is ordered at the kiosk.'),
+        simulate('kiosk', 'money', 'PC bang kiosk', 'Charge 3 hours of PC time, then order Jjapaghetti and a large iced tea to your seat. Korean only!', { menu: 'pcbang', order: [{ id: 'pc3', qty: 1 }, { id: 'jjapa', qty: 1 }, { id: 'icetea', qty: 1, size: 'L' }], dineIn: true, english: false }),
         ask('law', 'The PC bang staff ask for ID in the evening. Why?', [
           ok('Minors can\'t stay late in PC bangs – staff check age at night', 'Right. Keep a copy/ID on you.', { manner: 3 }, 'passport'),
           no('To keep my passport as a deposit', 'No – never leave your passport as a deposit.', {}),
@@ -133,15 +167,14 @@ export const kcultureExperience: Course = {
       location: { en: 'Imjingak & the DMZ', ko: '임진각 & DMZ' },
       steps: [
         say('An official tour bus takes you to the DMZ, the 4 km-wide buffer zone between South and North Korea.'),
-        ask('law', 'What must you bring on a DMZ tour?', [
-          ok('My passport – ID is checked at military checkpoints', 'Without it you\'d be turned back.', { manner: 5 }, 'passport'),
-          no('Nothing, it\'s just sightseeing', 'You can\'t pass the checkpoint without your passport.', { energy: -20 }),
-        ]),
+        event('law', 'Checkpoint', 'A soldier checks your passport against the tour list. You\'re through to the Third Tunnel and the observatory.', { manner: 3 }, 'passport', { ifFlags: ['passport'] }),
+        event('law', 'Turned back!', 'A passport photo on your phone is not accepted. You wait at Imjingak while the group goes into the DMZ (−₩30,000 for nothing).', { energy: -10, money: -30000 }, 'passport', { unlessFlags: ['passport'] }),
         ask('law', 'A soldier says "No photos here." Your phone is in your hand.', [
           ok('Put it away and only shoot at marked photo points', 'Correct. Military rules here are strict.', { manner: 8 }, 'camera'),
           no('Sneak a quick photo', 'The soldier makes you delete it. The tour is delayed.', { manner: -15 }),
         ], 'la-camera'),
-        event('weather', 'Cold wind', 'The open hills near the border are windy and colder than Seoul.', { energy: -8 }, 'winter'),
+        event('weather', 'Cold wind', 'The open hills near the border are windy – glad you packed that jacket.', { energy: -2 }, 'winter', { ifFlags: ['jacket'] }),
+        event('weather', 'Cold wind', 'The open hills near the border are windy and much colder than Seoul – and you\'re in a T-shirt.', { energy: -12 }, 'winter', { unlessFlags: ['jacket'] }),
         learn('we-cold'),
         talk('guide', 'The DMZ is also an accidental nature reserve – cranes and rare animals live here.'),
       ],
@@ -151,7 +184,8 @@ export const kcultureExperience: Course = {
       title: { en: 'Caught a cold', ko: '감기에 걸렸어요' },
       location: { en: 'Sinchon clinic', ko: '신촌 의원' },
       steps: [
-        event('health', 'Sniffles & fever', 'Dust, wind and dancing – by evening you have a sore throat and 38 °C fever.', { energy: -20 }, 'medicine'),
+        event('health', 'Sore throat', 'Dust and dancing – by evening your throat is scratchy and you feel a bit feverish, even with the jacket.', { energy: -8 }, 'medicine', { ifFlags: ['jacket'] }),
+        event('health', 'Sniffles & fever', 'Dust, cold wind and no jacket – by evening you have a sore throat and 38 °C fever.', { energy: -22 }, 'medicine', { unlessFlags: ['jacket'] }),
         ask('medical', 'It\'s 18:30 on a weekday. What\'s your best move?', [
           ok('Find an ENT (이비인후과) or internal-medicine clinic open in the evening', 'Many clinics stay open until 19:00–21:00. A quick consult and a prescription.', { energy: 15, money: -15000 }, 'hospital'),
           no('Go to a university-hospital ER', 'For a cold? Long wait and high fees.', { money: -100000, energy: -10 }, 'er'),
@@ -160,6 +194,13 @@ export const kcultureExperience: Course = {
           ok('At a pharmacy (약국) – usually right next to the clinic', 'Yes. In Korea, clinics prescribe and pharmacies dispense.', { energy: 10, money: -5000 }, 'pharmacy'),
           no('The doctor will hand it to me', 'In Korea clinics usually don\'t dispense pills themselves.', {}),
         ], 'me-pharmacy'),
+        simulate('phrase', 'medical', 'Tell the doctor in Korean', 'Explain your symptoms – build the sentences from the word tiles and listen.', {
+          phrases: [
+            { ko: '목이 아파요', roman: 'Mo-gi a-pa-yo', en: 'My throat hurts', extra: ['배가'] },
+            { ko: '열이 나요', roman: 'Yeo-ri na-yo', en: 'I have a fever', extra: ['없어요'] },
+            { ko: '약국이 어디예요', roman: 'Yak-gu-gi eo-di-ye-yo?', en: 'Where is the pharmacy?', extra: ['병원'] },
+          ],
+        }),
         ask('medical', 'You can\'t explain your symptoms well in Korean. Who can help?', [
           ok('Call 1330 for free interpretation', 'They connect you with an interpreter on speakerphone.', { manner: 3 }, 'hotline'),
           no('Give up and leave', 'You don\'t get the right treatment.', { energy: -10 }),

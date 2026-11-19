@@ -56,7 +56,9 @@ export const visibleSteps = (scene: Scene, party: PartyType, flags: string[] = [
       (st.chance === undefined || roll(`${seed}|${scene.id}|${i}`) < st.chance),
   );
 
-export const sceneVisible = (scene: Scene, flags: string[] = []) => !scene.requires || scene.requires.every((f) => flags.includes(f));
+/** `requires` entries are flags; a leading "!" means the flag must be absent. */
+export const sceneVisible = (scene: Scene, flags: string[] = []) =>
+  !scene.requires || scene.requires.every((f) => (f.startsWith('!') ? !flags.includes(f.slice(1)) : flags.includes(f)));
 
 /** Index of the next playable scene after `from` (skips scenes whose requirements aren't met). */
 export function nextScene(course: Course, from: number, flags: string[], minDay?: number): number {
@@ -127,6 +129,12 @@ export function validateBundle(b: ContentBundle, known?: { props?: Set<string>; 
           if (!SIM_KINDS.includes(st.sim)) issues.push({ level: 'error', where: ws, msg: `unknown simulation "${st.sim}"` });
           if (st.sim === 'dayplan' && (!st.config?.places?.length || st.config.places.some((p) => !placeById(p))))
             issues.push({ level: 'error', where: ws, msg: 'day plan needs valid config.places' });
+          if (st.sim === 'dayplan') {
+            const h = placeById(st.config?.hotel ?? 'hotel-myeongdong');
+            if (!h || (st.config?.startAt && !placeById(st.config.startAt))) issues.push({ level: 'error', where: ws, msg: 'day plan hotel/startAt not found' });
+            else if ((st.config?.places ?? []).some((p) => (placeById(p)?.region ?? 'seoul') !== (h.region ?? 'seoul')))
+              issues.push({ level: 'error', where: ws, msg: 'day plan places must be in the same region as the hotel' });
+          }
           if (st.sim === 'transfer' && (!stationOf(st.config?.fromStation) || !stationOf(st.config?.toStation)))
             issues.push({ level: 'error', where: ws, msg: 'transfer puzzle needs valid fromStation/toStation' });
           if (st.sim === 'phrase' && !st.config?.phrases?.length) issues.push({ level: 'error', where: ws, msg: 'phrase builder needs config.phrases' });

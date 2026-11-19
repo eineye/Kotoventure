@@ -28,6 +28,7 @@ const MENUS: Record<string, { cats: [string, string][]; items: Item[] }> = {
       { id: 'vanilla', ko: '바닐라라떼', en: 'Vanilla latte', price: 5500, cat: '커피', icon: '🍦', opts: ['temp', 'size'] },
       { id: 'lemonade', ko: '레몬에이드', en: 'Lemonade', price: 5500, cat: '음료', icon: '🍋', opts: ['size'] },
       { id: 'greentea', ko: '녹차라떼', en: 'Green-tea latte', price: 5500, cat: '음료', icon: '🍵', opts: ['temp'] },
+      { id: 'hallabong', ko: '한라봉에이드', en: 'Hallabong (Jeju orange) ade', price: 6500, cat: '음료', icon: '🍊', opts: ['size'] },
       { id: 'croffle', ko: '크로플', en: 'Croffle', price: 4500, cat: '디저트', icon: '🧇' },
       { id: 'cheesecake', ko: '치즈케이크', en: 'Cheesecake', price: 6000, cat: '디저트', icon: '🍰' },
     ],
@@ -45,6 +46,36 @@ const MENUS: Record<string, { cats: [string, string][]; items: Item[] }> = {
       { id: 'ramyeon', ko: '라면', en: 'Ramyeon', price: 4500, cat: '분식', icon: '🍜' },
       { id: 'sundae', ko: '순대', en: 'Sundae (blood sausage)', price: 5000, cat: '분식', icon: '🌭' },
       { id: 'cola', ko: '콜라', en: 'Cola', price: 2000, cat: '음료', icon: '🥤' },
+    ],
+  },
+  gukbap: {
+    cats: [
+      ['국밥', 'Rice soup'],
+      ['면·수육', 'Noodles & meat'],
+      ['추가', 'Extras'],
+    ],
+    items: [
+      { id: 'dwaeji', ko: '돼지국밥', en: 'Pork rice soup', price: 9000, cat: '국밥', icon: '🍲' },
+      { id: 'sundaeguk', ko: '순대국밥', en: 'Sundae rice soup', price: 9500, cat: '국밥', icon: '🥘' },
+      { id: 'milmyeon', ko: '밀면', en: 'Milmyeon (Busan cold noodles)', price: 8000, cat: '면·수육', icon: '🍜' },
+      { id: 'suyuk', ko: '수육 (소)', en: 'Boiled pork slices (small)', price: 15000, cat: '면·수육', icon: '🥩' },
+      { id: 'rice', ko: '공기밥 추가', en: 'Extra bowl of rice', price: 1000, cat: '추가', icon: '🍚' },
+      { id: 'cider', ko: '사이다', en: 'Cider (lemon-lime soda)', price: 2000, cat: '추가', icon: '🥤' },
+    ],
+  },
+  pcbang: {
+    cats: [
+      ['시간충전', 'PC time'],
+      ['식사', 'Meals'],
+      ['음료', 'Drinks'],
+    ],
+    items: [
+      { id: 'pc1', ko: '1시간 충전', en: '1 hour PC time', price: 1500, cat: '시간충전', icon: '⏱️' },
+      { id: 'pc3', ko: '3시간 충전', en: '3 hours PC time', price: 4000, cat: '시간충전', icon: '⏳' },
+      { id: 'jjapa', ko: '짜파게티', en: 'Jjapaghetti (black-bean noodles)', price: 4500, cat: '식사', icon: '🍝' },
+      { id: 'pcramyeon', ko: '라면', en: 'Ramyeon', price: 4000, cat: '식사', icon: '🍜' },
+      { id: 'fries', ko: '감자튀김', en: 'French fries', price: 3500, cat: '식사', icon: '🍟' },
+      { id: 'icetea', ko: '아이스티', en: 'Iced tea', price: 2500, cat: '음료', icon: '🧋', opts: ['size'] },
     ],
   },
 };
