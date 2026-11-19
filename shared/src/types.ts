@@ -151,13 +151,16 @@ export interface SimConfig {
   weekday?: 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
   places?: string[];
   hotel?: string;
-  weather?: { kind: 'heat' | 'rain'; from: string; to: string; text: string };
+  /** dayplan: start place (defaults to the hotel) and start time (default 09:00) */
+  startAt?: string;
+  start?: string;
+  weather?: { kind: 'heat' | 'rain' | 'storm'; from: string; to: string; text: string };
   /** transfer: subway route puzzle (station ids from subway.ts) */
   fromStation?: string;
   toStation?: string;
   timeLimit?: number;
   /** kiosk: order at a self-service kiosk */
-  menu?: 'cafe' | 'snack';
+  menu?: 'cafe' | 'snack' | 'gukbap' | 'pcbang';
   order?: { id: string; qty: number; temp?: 'ice' | 'hot'; size?: 'R' | 'L' }[];
   dineIn?: boolean;
   english?: boolean;

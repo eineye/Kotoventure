@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Circle, G, Polyline, Rect, Text as T } from 'react-native-svg';
-import { SUBWAY_LINES, SUBWAY_STATIONS, bestRoute, linesBetween, routeTime, stationOf, tr } from '@kotoventure/shared';
+import { SUBWAY_LINES, SUBWAY_STATIONS, bestRoute, linesBetween, routeTime, stationOf, tr, netOf } from '@kotoventure/shared';
 import { Btn, H, P } from '../ui/kit';
 import { C } from '../ui/theme';
 import { Box, DoneCard, SimShell, useScore, type SimProps } from './kit';
@@ -39,6 +39,9 @@ export function TransferSim({ step, ctx, onDone }: SimProps) {
   const k = Math.min(width - 40, 400) / MW;
   const cur = path[path.length - 1];
   const rt = routeTime(path);
+  const net = netOf(from);
+  const LINES = SUBWAY_LINES.filter((l) => (l.net ?? 'seoul') === net);
+  const STATIONS = SUBWAY_STATIONS.filter((st) => (st.net ?? 'seoul') === net);
 
   useEffect(() => {
     if (done) return;
@@ -74,7 +77,7 @@ export function TransferSim({ step, ctx, onDone }: SimProps) {
     }
   };
 
-  const nb = new Set(SUBWAY_STATIONS.filter((s) => linesBetween(cur, s.id).length).map((s) => s.id));
+  const nb = new Set(STATIONS.filter((s) => linesBetween(cur, s.id).length).map((s) => s.id));
 
   return (
     <SimShell title={tr(step.title, ctx.lang)} stage={done ? 1 : 0} stages={[ko ? '경로 찾기' : 'Find route', ko ? '결과' : 'Result']} fb={sc.fb}>
@@ -98,12 +101,12 @@ export function TransferSim({ step, ctx, onDone }: SimProps) {
         <View style={{ width: MW * k, height: MH * k }}>
           <Svg width={MW * k} height={MH * k} viewBox={`0 0 ${MW} ${MH}`}>
             <Rect x="0" y="0" width={MW} height={MH} rx="8" fill="#F8FAFC" />
-            {SUBWAY_LINES.map((l) => (
+            {LINES.map((l) => (
               <Polyline key={l.id} points={l.stations.map((s) => `${stationOf(s)!.x},${stationOf(s)!.y}`).join(' ')} stroke={l.color} strokeWidth="5" fill="none" strokeLinejoin="round" opacity={0.85} />
             ))}
             {path.length > 1 && <Polyline points={path.map((s) => `${stationOf(s)!.x},${stationOf(s)!.y}`).join(' ')} stroke="#E5383B" strokeWidth="2.6" strokeDasharray="5 3" fill="none" />}
-            {SUBWAY_STATIONS.map((s) => {
-              const inter = SUBWAY_LINES.filter((l) => l.stations.includes(s.id)).length > 1;
+            {STATIONS.map((s) => {
+              const inter = LINES.filter((l) => l.stations.includes(s.id)).length > 1;
               const isCur = s.id === cur;
               const isGoal = s.id === to;
               const near = nb.has(s.id) && !done;
@@ -111,13 +114,13 @@ export function TransferSim({ step, ctx, onDone }: SimProps) {
                 <G key={s.id}>
                   {near && <Circle cx={s.x} cy={s.y} r="8" fill="#FDE68A" opacity={0.7} />}
                   <Circle cx={s.x} cy={s.y} r={inter ? 5 : 3.6} fill={isCur ? '#E5383B' : isGoal ? '#FACC15' : '#FFFFFF'} stroke="#1B2140" strokeWidth={inter ? 1.8 : 1.2} />
-                  <T x={s.x} y={s.y - 7} fontSize="7" fontWeight="900" fill="#1B2140" textAnchor="middle">
+                  <T x={s.x} y={s.below ? s.y + 12 : s.y - 7} fontSize={net === 'busan' ? '6' : '7'} fontWeight="900" fill="#1B2140" textAnchor="middle">
                     {s.ko}
                   </T>
                 </G>
               );
             })}
-            {SUBWAY_LINES.map((l, i) => (
+            {LINES.map((l, i) => (
               <G key={l.id} transform={`translate(${6 + i * 44},${MH - 8})`}>
                 <Rect x="0" y="-5" width="10" height="5" rx="2" fill={l.color} />
                 <T x="13" y="0" fontSize="6.5" fontWeight="800" fill="#1B2140">
@@ -126,7 +129,7 @@ export function TransferSim({ step, ctx, onDone }: SimProps) {
               </G>
             ))}
           </Svg>
-          {SUBWAY_STATIONS.map((s) => (
+          {STATIONS.map((s) => (
             <Pressable
               key={s.id}
               testID={`stn-${s.id}`}

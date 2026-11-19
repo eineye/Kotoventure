@@ -341,12 +341,21 @@ function SimConfigEdit({ sim, value, onChange }: { sim: string; value: SimConfig
       )}
       {sim === 'dayplan' && (
         <>
+          <Field label="숙소 (지역 결정: 서울·부산·경주·제주)">
+            <Select value={value.hotel ?? 'hotel-myeongdong'} onChange={(hotel) => set({ hotel, places: [] })} options={PLACES.filter((p) => p.visitMin === 0).map((p) => [p.id, `${p.ko} (${p.region ?? 'seoul'})`] as [string, string])} />
+          </Field>
+          <Field label="출발 장소 · 시각 (비우면 숙소 09:00)">
+            <div className="row">
+              <Select value={value.startAt ?? ''} onChange={(startAt) => set({ startAt: startAt || undefined })} options={[['', '숙소'], ...PLACES.filter((p) => (p.region ?? 'seoul') === (PLACES.find((h) => h.id === (value.hotel ?? 'hotel-myeongdong'))?.region ?? 'seoul')).map((p) => [p.id, p.ko] as [string, string])]} />
+              <input style={{ width: 70 }} placeholder="09:00" value={value.start ?? ''} onChange={(e) => set({ start: e.target.value || undefined })} />
+            </div>
+          </Field>
           <Field label="요일 (휴무일 판정)">
             <Select value={value.weekday ?? 'Tue'} onChange={(weekday) => set({ weekday: weekday as SimConfig['weekday'] })} options={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']} />
           </Field>
           <Field label="날씨 이벤트">
             <div className="row wrap">
-              <Select value={value.weather?.kind ?? ''} onChange={(kind) => set({ weather: kind ? { kind: kind as 'heat' | 'rain', from: value.weather?.from ?? '13:00', to: value.weather?.to ?? '16:00', text: value.weather?.text ?? '' } : undefined })} options={[['', '없음'], ['heat', '폭염'], ['rain', '비']]} />
+              <Select value={value.weather?.kind ?? ''} onChange={(kind) => set({ weather: kind ? { kind: kind as 'heat' | 'rain' | 'storm', from: value.weather?.from ?? '13:00', to: value.weather?.to ?? '16:00', text: value.weather?.text ?? '' } : undefined })} options={[['', '없음'], ['heat', '폭염'], ['rain', '비'], ['storm', '태풍 (야외 장소 폐쇄)']]} />
               {value.weather && (
                 <>
                   <input style={{ width: 70 }} value={value.weather.from} onChange={(e) => set({ weather: { ...value.weather!, from: e.target.value } })} />
@@ -359,7 +368,7 @@ function SimConfigEdit({ sim, value, onChange }: { sim: string; value: SimConfig
           </Field>
           <Field label="선택 가능한 장소 (방문 시 visit:장소ID 플래그 → 해당 장면 열림)" wide>
             <div className="row wrap">
-              {PLACES.filter((p) => !p.id.startsWith('hotel')).map((p) => (
+              {PLACES.filter((p) => p.visitMin > 0 && (p.region ?? 'seoul') === (PLACES.find((h) => h.id === (value.hotel ?? 'hotel-myeongdong'))?.region ?? 'seoul')).map((p) => (
                 <Check
                   key={p.id}
                   checked={(value.places ?? []).includes(p.id)}
@@ -376,9 +385,9 @@ function SimConfigEdit({ sim, value, onChange }: { sim: string; value: SimConfig
         <>
           <Field label="출발역 → 도착역">
             <div className="row">
-              <Select value={value.fromStation ?? 'myeongdong'} onChange={(fromStation) => set({ fromStation })} options={SUBWAY_STATIONS.map((x) => [x.id, x.ko] as [string, string])} />
+              <Select value={value.fromStation ?? 'myeongdong'} onChange={(fromStation) => set({ fromStation })} options={SUBWAY_STATIONS.map((x) => [x.id, `${x.ko}${x.net === 'busan' ? ' (부산)' : ''}`] as [string, string])} />
               →
-              <Select value={value.toStation ?? 'seongsu'} onChange={(toStation) => set({ toStation })} options={SUBWAY_STATIONS.map((x) => [x.id, x.ko] as [string, string])} />
+              <Select value={value.toStation ?? 'seongsu'} onChange={(toStation) => set({ toStation })} options={SUBWAY_STATIONS.filter((x) => (x.net ?? 'seoul') === (SUBWAY_STATIONS.find((f) => f.id === (value.fromStation ?? 'myeongdong'))?.net ?? 'seoul')).map((x) => [x.id, x.ko] as [string, string])} />
             </div>
           </Field>
           <Field label="제한 시간(초)">
@@ -389,7 +398,7 @@ function SimConfigEdit({ sim, value, onChange }: { sim: string; value: SimConfig
       {sim === 'kiosk' && (
         <>
           <Field label="메뉴">
-            <Select value={value.menu ?? 'cafe'} onChange={(menu) => set({ menu: menu as 'cafe' | 'snack' })} options={[['cafe', '카페'], ['snack', '분식']]} />
+            <Select value={value.menu ?? 'cafe'} onChange={(menu) => set({ menu: menu as SimConfig['menu'] })} options={[['cafe', '카페'], ['snack', '분식'], ['gukbap', '국밥집 (부산)'], ['pcbang', 'PC방']]} />
           </Field>
           <Field label="옵션">
             <div className="row wrap">

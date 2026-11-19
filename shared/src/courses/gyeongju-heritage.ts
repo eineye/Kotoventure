@@ -1,6 +1,8 @@
 import type { Course } from '../types';
 import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
+const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
+
 /** 문화 – Gyeongju, the 1,000-year capital of Silla. Gimhae Airport in & out. */
 export const gyeongjuHeritage: Course = {
   id: 'gyeongju-heritage',
@@ -28,7 +30,7 @@ export const gyeongjuHeritage: Course = {
   coverBg: 'temple',
   access: 'base',
   isPublished: true,
-  version: 1,
+  version: 2,
   sortOrder: 3,
   scenes: [
     {
@@ -37,6 +39,11 @@ export const gyeongjuHeritage: Course = {
       location: { en: 'Incheon Airport & Seoul Station', ko: '인천공항 · 서울역' },
       steps: [
         say('You land at Incheon in the morning. Gyeongju has no international airport – the fastest way is the KTX high-speed train from Seoul Station (about 2 hours).'),
+        talk('guide', 'Remember: choices you make today can come back days later. Think ahead!'),
+        ask('medical', 'Before the trip: did you buy travel insurance? (Gyeongju means lots of hiking and cycling…)', [
+          flag(ok('Yes – travel insurance for the whole trip (≈₩35,000)', 'A small cost now… we\'ll see if it pays off.', { money: -35000 }, 'insurance'), 'insured'),
+          no('No – I\'ll save the money', 'Saved ₩35,000. Let\'s hope nothing happens…', {}),
+        ]),
         ask('transport', 'How do you get from Incheon Airport to Seoul Station?', [
           ok('AREX airport railroad to Seoul Station', 'Direct and about 45–50 minutes on the Express.', { money: -11000 }, 'arex'),
           no('A taxi all the way', 'Possible, but expensive and slower in traffic.', { money: -75000 }, 'taxi'),
@@ -47,7 +54,14 @@ export const gyeongjuHeritage: Course = {
           ok('Layers: T-shirt + light jacket', 'Perfect. Big day–night temperature gaps are typical in spring and autumn.', { energy: 5 }, 'autumn'),
           no('Only shorts and a tank top', 'You shiver at sunset.', { energy: -10 }),
         ], 'we-seasons'),
-        say('From Singyeongju Station, city buses (or a taxi) take you to the historic centre in about 30 minutes.'),
+        say('From Singyeongju Station, city buses (or a taxi) take you to the historic centre in about 30 minutes. You take a taxi – and the driver speaks only Korean.'),
+        simulate('phrase', 'transport', 'Taxi Korean', 'Build the taxi sentences from the word tiles and listen to the pronunciation.', {
+          phrases: [
+            { ko: '황리단길로 가 주세요', roman: 'Hwang-ni-dan-gil-lo ga ju-se-yo', en: 'To Hwangnidan-gil, please', extra: ['에서'] },
+            { ko: '얼마나 걸려요', roman: 'Eol-ma-na geol-lyeo-yo', en: 'How long does it take?', extra: ['얼마예요'] },
+            { ko: '여기서 세워 주세요', roman: 'Yeo-gi-seo se-wo ju-se-yo', en: 'Please stop here', extra: ['가'] },
+          ],
+        }),
       ],
     },
     {
@@ -66,6 +80,16 @@ export const gyeongjuHeritage: Course = {
           ok('Unfold the yo mattress on the warm ondol floor', 'The heated floor is wonderfully cosy.', { energy: 15 }, 'hanok'),
           no('Complain and ask for a refund', 'It\'s a traditional room – that\'s the experience!', { manner: -5 }),
         ]),
+        ask('lodging', 'Your host asks about tomorrow night\'s temple stay at a famous temple. What did you do?', [
+          flag(ok('I booked it online weeks ago (templestay.com)', 'Great – popular temples fill up, especially in autumn.', { money: -70000 }, 'temple'), 'templeBooked'),
+          no('Nothing yet – I\'ll just show up', 'Hmm… we\'ll see tomorrow.', {}),
+        ], 'lo-temple'),
+        ask('lodging', '😓 Midnight: the ondol floor is so hot you can\'t sleep. What do you do?', [
+          ok('Turn down the ondol thermostat on the wall and open the window a little', 'Sweet dreams – the floor heating has its own controller.', { energy: 8 }, 'hanok'),
+          no('Pour water on the floor to cool it down', 'Never! Water on ondol floors and paper doors causes damage.', { manner: -10, energy: -8 }),
+        ], undefined, { chance: 0.45 }),
+        say('Next morning you grab breakfast in a hanok café on Hwangnidan-gil – ordering is by kiosk only.'),
+        simulate('kiosk', 'money', 'Hanok café kiosk', 'Korean-only kiosk, people waiting behind you. Order a large hot café latte and a croffle to take away, and pay by card.', { menu: 'cafe', order: [{ id: 'latte', qty: 1, temp: 'hot', size: 'L' }, { id: 'croffle', qty: 1 }], dineIn: false, english: false }),
         learn('lo-airbnb'),
       ],
     },
@@ -113,7 +137,9 @@ export const gyeongjuHeritage: Course = {
       title: { en: 'Temple stay night', ko: '템플스테이' },
       location: { en: 'Golgulsa-area temple', ko: '사찰' },
       steps: [
-        say('Tonight you join a temple stay. You change into the loose grey/orange temple clothes.'),
+        event('surprise', 'Your booking is ready', 'Your name is on the list. A monk hands you temple clothes and shows you the dormitory.', { energy: 3 }, 'temple', { ifFlags: ['templeBooked'] }),
+        event('surprise', 'Fully booked!', 'Without a reservation the temple stay is full. A kind monk lets you join the evening programme only – then you need a last-minute room in town (−₩80,000, a late taxi and less sleep).', { money: -80000, energy: -10 }, 'temple', { unlessFlags: ['templeBooked'] }),
+        say('You change into the loose grey/orange temple clothes.'),
         learn('lo-temple'),
         talk('monk', 'At the meal we eat in silence and leave nothing behind – not even one grain.'),
         ask('food', 'At the barugongyang (monastic meal), how much food do you take?', [
@@ -128,7 +154,21 @@ export const gyeongjuHeritage: Course = {
       ],
     },
     {
-      id: 'gj-6', day: 3, bg: 'restaurant',
+      id: 'gj-p1', day: 3, bg: 'street',
+      title: { en: 'Free day: plan your Monday', ko: '자유일정: 월요일 계획' },
+      location: { en: 'Gyeongju – your choice', ko: '경주 – 내가 고른 곳' },
+      steps: [
+        talk('guide', 'Today you plan! Gyeongju has no subway – buses are slow and infrequent, taxis are quick. Monday closures, rain this afternoon and the last bus at 22:30… choose wisely.'),
+        simulate('dayplan', 'transport', 'Plan your Gyeongju Monday', 'Pick places, order and transport. Where you go becomes the next scenes.', {
+          weekday: 'Mon',
+          hotel: 'hotel-hwangnidan',
+          weather: { kind: 'rain', from: '14:00', to: '17:00', text: 'Autumn showers' },
+          places: ['gyochon', 'gjmuseum', 'hwangnyongsa', 'namsan-gj', 'seokguram', 'hwangnidan-cafe', 'wolji'],
+        }, 'tr-bus'),
+      ],
+    },
+    {
+      id: 'gj-6', day: 3, bg: 'restaurant', requires: ['visit:gyochon'],
       title: { en: 'Gyeongju flavours', ko: '경주의 맛' },
       location: { en: 'Gyochon Traditional Village', ko: '교촌마을' },
       steps: [
@@ -148,11 +188,12 @@ export const gyeongjuHeritage: Course = {
     },
     {
       id: 'gj-7', day: 3, bg: 'mountain',
-      title: { en: 'Twisted ankle on Namsan', ko: '남산 등산 중 발목 부상' },
-      location: { en: 'Gyeongju Namsan', ko: '경주 남산' },
+      title: { en: 'Twisted ankle!', ko: '발목 부상' },
+      location: { en: 'Gyeongju', ko: '경주' },
       steps: [
-        say('Gyeongju\'s Namsan mountain is full of Buddha statues carved in rock. The trail is rocky…'),
-        event('health', 'Twisted ankle!', 'You slip on a stone and twist your ankle. It swells quickly.', { energy: -25 }, 'firstaid'),
+        say('Gyeongju\'s Namsan mountain is full of Buddha statues carved in rock. The trail is rocky – and wet from the showers…', { ifFlags: ['visit:namsan-gj'] }),
+        say('Back in town in the evening, the old stone steps near Wolji are slippery from the afternoon rain…', { unlessFlags: ['visit:namsan-gj'] }),
+        event('health', 'Twisted ankle!', 'You slip on a wet stone and twist your ankle. It swells quickly.', { energy: -25 }, 'firstaid'),
         ask('medical', 'First aid first. What do you do?', [
           ok('Rest, cold compress, bandage, raise the leg – then get help down', 'R.I.C.E. – the classic first aid for sprains.', { energy: 10 }, 'firstaid'),
           no('Keep hiking to the summit', 'It gets much worse.', { energy: -20 }),
@@ -162,6 +203,8 @@ export const gyeongjuHeritage: Course = {
           ok('A Korean medicine clinic for acupuncture and cupping', 'Popular for sprains in Korea. You feel looser.', { energy: 12, money: -30000 }, 'hanuiwon'),
           no('The ER of a big hospital', 'Long wait, high fees for a non-emergency.', { money: -150000 }, 'er'),
         ], 'me-clinic'),
+        event('money', 'The bill', 'Your travel insurance covers the clinic – keep the receipt and ask for an English diagnosis. (+₩50,000 back later)', { money: 50000 }, 'insurance', { ifFlags: ['insured'] }),
+        event('money', 'The bill – no insurance', 'Tourists are not covered by Korean health insurance and you skipped travel insurance. A follow-up visit and an ankle brace: −₩40,000 more.', { money: -40000 }, 'insurance', { unlessFlags: ['insured'] }),
         learn('me-hanui'),
         learn('me-insurance'),
         learn('me-er'),

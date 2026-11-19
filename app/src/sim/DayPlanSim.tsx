@@ -1,8 +1,14 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Circle, G, Line, Path, Polyline, Rect, Text as T } from 'react-native-svg';
 import {
+  MODE_ICON,
+  MODE_NAME,
+  REGIONS,
   WEEKDAY_KO,
+  modesFor,
+  regionOf,
+  type Region,
   hhmm,
   placeById,
   simulatePlan,
@@ -18,17 +24,12 @@ import { Btn, H, P, won } from '../ui/kit';
 import { C, R } from '../ui/theme';
 import { Box, DoneCard, OptBtn, SimShell, useScore, type SimProps } from './kit';
 
-const MODES: [Transport, string][] = [
-  ['subway', '🚇'],
-  ['taxi', '🚕'],
-  ['walk', '🚶'],
-];
 const DAY_EN: Record<string, string> = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday' };
 
 /** Naive preview: times only (does NOT reveal closures or weather – that's for the player to work out). */
-function preview(stops: PlanStop[], hotel: Place, ret: Transport) {
-  let t = 9 * 60;
-  let at = hotel;
+function preview(stops: PlanStop[], hotel: Place, ret: Transport, start: Place, startMin: number) {
+  let t = startMin;
+  let at = start;
   let cost = 0;
   let energy = 0;
   const rows = stops.map((s) => {
@@ -54,12 +55,18 @@ export function DayPlanSim({ step, ctx, onDone }: SimProps) {
   const ko = ctx.lang === 'ko';
   const hotel = placeById(cfg.hotel ?? 'hotel-myeongdong')!;
   const places = (cfg.places ?? []).map((id) => placeById(id)).filter(Boolean) as Place[];
+  const region = regionOf(hotel);
+  const startPlace = placeById(cfg.startAt) ?? hotel;
+  const startMin = toMinutes(cfg.start ?? '09:00');
+  const modes = modesFor(region, ctx.flags);
+  const MODES: [Transport, string][] = modes.map((m) => [m, MODE_ICON[m]]);
+  const last = REGIONS[region].last;
   const sc = useScore();
   const [stops, setStops] = useState<PlanStop[]>([]);
-  const [ret, setRet] = useState<Transport>('subway');
+  const [ret, setRet] = useState<Transport>(modes[0]);
   const [result, setResult] = useState<PlanResult | null>(null);
   const [shown, setShown] = useState(0);
-  const pv = useMemo(() => preview(stops, hotel, ret), [stops, hotel, ret]);
+  const pv = preview(stops, hotel, ret, startPlace, startMin);
   const mapW = Math.min(width - 40, 380);
 
   useEffect(() => {
@@ -70,7 +77,7 @@ export function DayPlanSim({ step, ctx, onDone }: SimProps) {
 
   const add = (id: string) => {
     if (stops.length >= 6) return sc.info(ko ? '하루 최대 6곳까지 계획할 수 있어요.' : 'Max 6 stops per day.');
-    setStops((s) => [...s, { placeId: id, mode: 'subway' }]);
+    setStops((s) => [...s, { placeId: id, mode: modes[0] }]);
     sc.clear();
   };
   const move = (i: number, d: number) =>
@@ -148,35 +155,33 @@ export function DayPlanSim({ step, ctx, onDone }: SimProps) {
       <P>{tr(step.intro, ctx.lang)}</P>
       <Box style={{ gap: 4 }}>
         <Text style={{ fontWeight: '900', color: C.ink, fontSize: 16 }}>
-          📅 {ko ? WEEKDAY_KO[cfg.weekday ?? 'Mon'] : DAY_EN[cfg.weekday ?? 'Mon']} · 09:00 {ko ? '숙소 출발' : 'leave the hotel'}
+          📅 {ko ? WEEKDAY_KO[cfg.weekday ?? 'Mon'] : DAY_EN[cfg.weekday ?? 'Mon']} · {cfg.start ?? '09:00'} {startPlace === hotel ? (ko ? '숙소 출발' : 'leave the hotel') : ko ? `${startPlace.ko} 출발` : `start at ${startPlace.name.en}`}
         </Text>
         {W && (
-          <Text style={{ fontWeight: '800', color: W.kind === 'heat' ? C.orange : C.blue }}>
-            {W.kind === 'heat' ? '🥵' : '🌧️'} {ko ? '일기예보' : 'Forecast'}: {W.text} ({W.from}–{W.to})
+          <Text style={{ fontWeight: '800', color: W.kind === 'heat' ? C.orange : W.kind === 'storm' ? C.red : C.blue }}>
+            {W.kind === 'heat' ? '🥵' : W.kind === 'storm' ? '🌀' : '🌧️'} {ko ? '일기예보' : 'Forecast'}: {W.text} ({W.from}–{W.to})
           </Text>
         )}
         <Text style={{ color: C.inkSoft, fontSize: 12 }}>
-          ⚡ {ko ? '현재 체력' : 'Energy now'} {ctx.energy} · {ko ? '점심을 꼭 챙기세요 (11:00–14:30)' : 'Remember lunch (11:00–14:30)'} · {ko ? '지하철 막차 ~24:00' : 'Last subway ~24:00'}
+          ⚡ {ko ? '현재 체력' : 'Energy now'} {ctx.energy} · {ko ? '점심을 꼭 챙기세요 (11:00–14:30)' : 'Remember lunch (11:00–14:30)'} {last ? ` · ${ko ? `${MODE_NAME[last.mode] === 'Bus' ? '버스' : '지하철'} 막차 ~${last.at}` : `Last ${MODE_NAME[last.mode].toLowerCase()} ~${last.at}`}` : ''}
+          {modes.length ? ` · ${modes.map((m) => `${MODE_ICON[m]} ${MODE_NAME[m]}`).join(' / ')}` : ''}
         </Text>
       </Box>
 
       {/* map */}
       <Box style={{ alignItems: 'center', padding: 6 }}>
         <Svg width={mapW} height={mapW * 0.8} viewBox="0 0 100 80">
-          <Rect x="0" y="0" width="100" height="80" rx="3" fill="#EEF5E9" />
-          <Path d="M0 62 Q30 56 50 64 Q70 72 100 66 L100 72 Q70 78 50 70 Q30 62 0 68Z" fill="#9ED3F5" />
-          <T x="72" y="76" fontSize="2.6" fill="#1D4ED8" fontWeight="700">한강 Han River</T>
-          <Path d="M30 20 Q40 6 54 14" stroke="#86B97A" strokeWidth="4" fill="none" opacity={0.5} />
+          <MapDeco region={region} />
           {stops.length > 0 && (
             <Polyline
-              points={[hotel, ...stops.map((s) => placeById(s.placeId)!), hotel].map((p) => `${p.x},${p.y * 0.8}`).join(' ')}
+              points={[startPlace, ...stops.map((s) => placeById(s.placeId)!), hotel].map((p) => `${p.x},${p.y * 0.8}`).join(' ')}
               stroke={C.red}
               strokeWidth="0.8"
               strokeDasharray="1.6 1"
               fill="none"
             />
           )}
-          {[hotel, ...places].map((p) => {
+          {[hotel, ...(startPlace !== hotel ? [startPlace] : []), ...places].map((p) => {
             const idx = stops.findIndex((s) => s.placeId === p.id);
             return (
               <G key={p.id}>
@@ -193,7 +198,7 @@ export function DayPlanSim({ step, ctx, onDone }: SimProps) {
             );
           })}
           <Line x1="4" y1="76" x2="16" y2="76" stroke={C.ink} strokeWidth="0.4" />
-          <T x="10" y="75" fontSize="2.2" fill={C.inkSoft} textAnchor="middle">~1.5 km</T>
+          <T x="10" y="75" fontSize="2.2" fill={C.inkSoft} textAnchor="middle">{REGIONS[region].mapKm}</T>
         </Svg>
       </Box>
 
@@ -291,5 +296,48 @@ function Stat({ k, v }: { k: string; v: string }) {
       <Text style={{ fontWeight: '900', fontSize: 16, color: C.ink }}>{v}</Text>
       <Text style={{ fontSize: 11, color: C.inkSoft, fontWeight: '800' }}>{k}</Text>
     </View>
+  );
+}
+
+/** Region-specific map background (schematic). */
+function MapDeco({ region }: { region: Region }) {
+  if (region === 'busan')
+    return (
+      <G>
+        <Rect x="0" y="0" width="100" height="80" rx="3" fill="#9ED3F5" />
+        <Path d="M0 0 H100 V30 Q92 34 88 40 Q80 34 72 34 Q66 40 58 44 Q44 46 34 56 Q26 62 18 62 Q10 56 0 58Z" fill="#EEF5E9" />
+        <Path d="M22 70 Q30 66 38 72 Q34 78 24 78Z" fill="#EEF5E9" />
+        <Path d="M30 14 Q44 4 60 14" stroke="#86B97A" strokeWidth="5" fill="none" opacity={0.5} />
+        <T x="60" y="72" fontSize="2.8" fill="#1D4ED8" fontWeight="700">바다 Sea</T>
+      </G>
+    );
+  if (region === 'gyeongju')
+    return (
+      <G>
+        <Rect x="0" y="0" width="100" height="80" rx="3" fill="#EEF5E9" />
+        <Path d="M20 0 Q24 30 18 50 Q14 66 22 80" stroke="#9ED3F5" strokeWidth="3" fill="none" />
+        <T x="6" y="30" fontSize="2.4" fill="#1D4ED8" fontWeight="700">형산강</T>
+        <Path d="M24 64 Q36 56 48 66 Q40 76 26 74Z" fill="#B7D9A8" />
+        <Path d="M78 40 Q90 30 100 40 L100 64 Q88 66 78 58Z" fill="#B7D9A8" />
+        <T x="86" y="62" fontSize="2.4" fill="#3F6212" fontWeight="700">토함산</T>
+      </G>
+    );
+  if (region === 'jeju')
+    return (
+      <G>
+        <Rect x="0" y="0" width="100" height="80" rx="3" fill="#9ED3F5" />
+        <Path d="M6 36 Q10 18 40 12 Q70 8 92 22 Q99 34 92 48 Q70 66 40 66 Q12 62 6 36Z" fill="#EEF5E9" />
+        <Path d="M42 40 L50 28 L58 40Z" fill="#A3B18A" />
+        <T x="50" y="44" fontSize="2.4" fill="#3F6212" fontWeight="700" textAnchor="middle">한라산</T>
+        <Circle cx="97" cy="24" r="3" fill="#EEF5E9" />
+      </G>
+    );
+  return (
+    <G>
+      <Rect x="0" y="0" width="100" height="80" rx="3" fill="#EEF5E9" />
+      <Path d="M0 62 Q30 56 50 64 Q70 72 100 66 L100 72 Q70 78 50 70 Q30 62 0 68Z" fill="#9ED3F5" />
+      <T x="72" y="76" fontSize="2.6" fill="#1D4ED8" fontWeight="700">한강 Han River</T>
+      <Path d="M30 20 Q40 6 54 14" stroke="#86B97A" strokeWidth="4" fill="none" opacity={0.5} />
+    </G>
   );
 }

@@ -1,6 +1,8 @@
 import type { Course } from '../types';
 import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
+const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
+
 /** 모험 – Jeju Island: Hallasan, Seongsan Ilchulbong, Olle trails and a typhoon. */
 export const jejuAdventure: Course = {
   id: 'jeju-adventure',
@@ -28,7 +30,7 @@ export const jejuAdventure: Course = {
   coverBg: 'mountain',
   access: 'base',
   isPublished: true,
-  version: 1,
+  version: 2,
   sortOrder: 4,
   scenes: [
     {
@@ -42,9 +44,13 @@ export const jejuAdventure: Course = {
         say('Rental car companies run shuttle buses from the airport to a big rental-car centre.', { parties: ['couple', 'friends', 'group'] }),
         say('Travelling solo, you think about renting a small car – or using Jeju\'s express buses.', { parties: ['solo'] }),
         ask('transport', 'At the rental counter, which documents do you need?', [
-          ok('Home licence + International Driving Permit + passport (or a Korean licence)', 'All set. Keys please!', { money: -150000 }, 'idp'),
-          no('Just my home driving licence', 'Without an IDP you can\'t rent. You take the bus instead.', { energy: -15 }),
+          flag(ok('Home licence + International Driving Permit + passport (or a Korean licence)', 'All set. Keys please!', { money: -150000 }, 'idp'), 'rentalCar'),
+          no('Just my home driving licence', 'Without an IDP you can\'t rent. You\'ll travel by bus and taxi for the whole trip.', { energy: -15 }),
         ], 'tr-drive'),
+        ask('money', 'The clerk offers "완전자차" – full damage cover with zero excess – for ₩40,000 extra.', [
+          flag(ok('Take full cover and film the car all around before driving off', 'Peace of mind. The video is your proof of old scratches.', { money: -40000 }, 'insurance'), 'carInsured'),
+          no('No thanks, I\'m a careful driver', 'Saved ₩40,000… for now.', {}),
+        ], 'me-insurance', { ifFlags: ['rentalCar'] }),
         ask('law', 'On the road, which side do you drive on and what about speed?', [
           ok('Right side; follow limits – there are many speed cameras', 'Safe driving. Cameras flash often on Jeju.', { manner: 5 }, 'crosswalk'),
           no('Left side like in Australia/Japan, as fast as I want', 'Wrong side – a near-miss and a speeding fine.', { money: -60000, energy: -15 }),
@@ -70,6 +76,10 @@ export const jejuAdventure: Course = {
           ok('Separate them and use the village "clean house" bins on the right days', 'Great. Jeju works hard to stay clean.', { manner: 8 }, 'trash-bins'),
           no('Put everything in one bag by the road', 'Neighbours report it. Fine!', { manner: -10, money: -50000 }),
         ], 'et-trash'),
+        ask('law', 'Tomorrow is Hallasan. Your host asks: "Did you reserve the summit trail?"', [
+          flag(ok('Yes – I booked Seongpanak online (free, QR code) and will start before 08:00', 'Perfect. Summit trails need a reservation and close the summit section around noon.', { manner: 5 }, 'passport'), 'hallaBooked'),
+          no('Reserve? I\'ll just turn up', 'Hmm… we\'ll see.', {}),
+        ]),
       ],
     },
     {
@@ -78,10 +88,8 @@ export const jejuAdventure: Course = {
       location: { en: 'Hallasan National Park (1,947 m)', ko: '한라산국립공원' },
       steps: [
         say('Day 2. Hallasan, 1,947 m – Korea\'s highest mountain, with a crater lake (Baengnokdam) on top.'),
-        ask('law', 'You want to hike the Seongpanak trail to the summit. What must you do first?', [
-          ok('Make an online reservation in advance and arrive before the cut-off time', 'Correct – summit trails require reservations and have time limits.', { manner: 5 }),
-          no('Just show up at noon', 'Too late – the summit section has already closed for the day.', { energy: -10 }),
-        ]),
+        event('surprise', 'QR check at the gate', 'The ranger scans your reservation QR code: "Summit section closes at 13:30 – have a good hike!"', { energy: 3 }, 'passport', { ifFlags: ['hallaBooked'] }),
+        event('law', 'No reservation!', 'The Seongpanak summit trail is reservation-only and today\'s slots are gone. You take the Eorimok trail to Witse-oreum (1,700 m) instead – beautiful, but no crater lake.', { energy: 5 }, 'passport', { unlessFlags: ['hallaBooked'] }),
         event('weather', 'Four seasons in one day', 'At the bottom it\'s 20 °C. Halfway up, fog rolls in, the wind howls and it drops below 8 °C.', { energy: -10 }, 'winter'),
         ask('weather', 'What should be in your backpack?', [
           ok('Water, snacks, windbreaker, warm layer and a headlamp', 'Prepared like a pro.', { energy: 15 }),
@@ -91,7 +99,8 @@ export const jejuAdventure: Course = {
           ok('Call 119, tell them the trail marker number, keep him warm', 'Rescue arrives. Trail post numbers help 119 find you.', { manner: 10 }, 'er'),
           no('Take a photo and keep walking', 'Never. Call 119.', { manner: -20 }),
         ], 'me-er'),
-        say('You reach the summit and see the crater lake through the clouds. Incredible!'),
+        say('You reach the summit and see the crater lake through the clouds. Incredible!', { ifFlags: ['hallaBooked'] }),
+        say('From Witse-oreum you can see the summit wall above you. Next time: reserve!', { unlessFlags: ['hallaBooked'] }),
       ],
     },
     {
@@ -127,6 +136,8 @@ export const jejuAdventure: Course = {
           ok('Wear a helmet, ride on the right, one person per bike', 'Good. Same rules as for e-scooters: one rider, helmet.', { energy: 5, money: -20000 }, 'bike'),
           no('Put my kid on the handlebars', 'Dangerous and illegal.', { manner: -10, energy: -10 }),
         ], 'tr-bike'),
+        say('You stop at a seaside café – it has a Korean-only kiosk.'),
+        simulate('kiosk', 'food', 'Café kiosk on the Olle trail', 'Order a LARGE hallabong ade and a regular ICED americano to drink here, then pay by card. The cyclists behind you are waiting!', { menu: 'cafe', order: [{ id: 'hallabong', qty: 1, size: 'L' }, { id: 'americano', qty: 1, temp: 'ice', size: 'R' }], dineIn: true, english: false }),
         ask('weather', 'The sun is blazing and there\'s no shade along the coast.', [
           ok('Sunscreen, hat, lots of water and a break in a café at the hottest hour', 'Your skin thanks you.', { energy: 8, money: -6000 }, 'heatwave'),
           no('Push on until 2 pm without water', 'Heat exhaustion: headache and nausea.', { energy: -20 }),
@@ -138,7 +149,7 @@ export const jejuAdventure: Course = {
       title: { en: 'Typhoon day!', ko: '태풍 상륙!' },
       location: { en: 'Jeju City', ko: '제주시' },
       steps: [
-        event('weather', 'Typhoon warning', 'Your phone blasts an emergency alert: a typhoon will pass Jeju tonight. All flights tomorrow morning may be cancelled.', { energy: -10 }, 'alert-phone'),
+        event('weather', 'Typhoon warning', 'Your phone blasts an emergency alert: a typhoon reaches Jeju this afternoon (strong winds from 13:00). Flights tomorrow morning may be cancelled.', { energy: -10 }, 'alert-phone'),
         learn('we-alert'),
         ask('weather', 'What\'s your typhoon plan?', [
           ok('Stay indoors, stock water & snacks, charge phones, away from the coast', 'Safe. The storm roars all night but you\'re fine.', { energy: 5, money: -15000 }, 'typhoon'),
@@ -152,11 +163,44 @@ export const jejuAdventure: Course = {
       ],
     },
     {
+      id: 'jj-p1', day: 4, bg: 'storm',
+      title: { en: 'Plan around the typhoon', ko: '태풍 속 일정 짜기' },
+      location: { en: 'Jeju – your choice', ko: '제주 – 내가 고른 곳' },
+      steps: [
+        talk('guide', 'The morning is still calm, but from 13:00 outdoor places close and ferries stop. Jeju is big – without a rental car, buses are slow!'),
+        simulate('dayplan', 'weather', 'Typhoon-day plan', 'Plan your Thursday: outdoor spots only in the morning, indoor ones once the wind picks up.', {
+          weekday: 'Thu',
+          hotel: 'pension-aewol',
+          weather: { kind: 'storm', from: '13:00', to: '22:00', text: 'Typhoon – gale-force winds' },
+          places: ['hyeopjae', 'udo', 'manjanggul', 'osulloc', 'aquaplanet', 'jejumuseum', 'dongmun', 'aewol-cafe'],
+        }, 'we-alert'),
+      ],
+    },
+    {
+      id: 'jj-m', day: 4, bg: 'market', requires: ['visit:dongmun'],
+      title: { en: 'Dongmun Market', ko: '동문시장' },
+      location: { en: 'Jeju City', ko: '제주시' },
+      steps: [
+        say('Under the market roof you\'re safe from the wind. Tangerines, hallabong, fish and steaming snacks everywhere.'),
+        simulate('phrase', 'food', 'Market Korean', 'Shop like a local – build the sentences from word tiles and listen.', {
+          phrases: [
+            { ko: '귤 한 봉지 주세요', roman: 'Gyul han bong-ji ju-se-yo', en: 'One bag of tangerines, please', extra: ['두'] },
+            { ko: '카드 돼요', roman: 'Ka-deu dwae-yo?', en: 'Can I pay by card?', extra: ['현금'] },
+            { ko: '택배 보낼 수 있어요', roman: 'Taek-bae bo-nael su i-sseo-yo?', en: 'Can you ship it?', extra: ['없어요'] },
+          ],
+        }),
+        ask('law', 'You want to take a box of tangerines home on the plane abroad.', [
+          ok('Check my country\'s plant/food import rules first', 'Many countries ban fresh fruit. Buy chocolate or tea instead if so.', { manner: 4 }),
+          no('Hide them in my suitcase', 'Customs at home may fine you heavily.', { money: -50000 }),
+        ]),
+      ],
+    },
+    {
       id: 'jj-7', day: 4, bg: 'restaurant',
       title: { en: 'Black pork BBQ', ko: '흑돼지 구이' },
       location: { en: 'Jeju City black-pork street', ko: '제주 흑돼지거리' },
       steps: [
-        say('The storm has passed. Time for Jeju\'s famous black pork (heuk-dwaeji), grilled thick over charcoal.'),
+        say('The wind howls outside, but the black-pork restaurant near your stay is warm. Time for Jeju\'s famous black pork (heuk-dwaeji), grilled thick over charcoal.'),
         talk('staff', 'Dip it in the anchovy sauce (myeolchi-jeot)! I\'ll grill it for you.'),
         ask('food', 'The staff starts grilling your meat for you. What do you do?', [
           ok('Let them – they know exactly when to cut and flip it', 'Juicy perfection.', { energy: 15, money: -60000 }, 'bbq'),
@@ -175,11 +219,18 @@ export const jejuAdventure: Course = {
       title: { en: 'Fly home from Jeju', ko: '제주공항 출국' },
       location: { en: 'Jeju International Airport', ko: '제주국제공항' },
       steps: [
-        say('Day 5. You return the car, fill up the tank and ride the shuttle back to the airport.'),
+        say('Day 5. The typhoon has passed. You return the car, fill up the tank and ride the shuttle back to the airport.', { ifFlags: ['rentalCar'] }),
+        say('Day 5. The typhoon has passed. You take the airport limousine bus from Aewol.', { unlessFlags: ['rentalCar'] }),
         ask('money', 'The rental car tank must be returned full. You pay at a self-service gas station.', [
           ok('Pay with card at the pump (choose "가득/Full"), or ask the attendant', 'Done. Many stations still have attendants.', { money: -40000 }),
           no('Return it empty and hope', 'The rental company charges a refuelling fee.', { money: -80000 }),
-        ]),
+        ], undefined, { ifFlags: ['rentalCar'] }),
+        ask('money', '😬 At the return, the staff points at a small scratch on the rear bumper. What do you do?', [
+          flag(ok('Stay calm, show my pick-up video and check the insurance terms', 'Calm and prepared – the right way.', { manner: 4 }, 'insurance'), 'scratch'),
+          flag(no('Shout that it wasn\'t me and walk away', 'They hold your deposit. Shouting never helps.', { manner: -10 }), 'scratch'),
+        ], 'me-insurance', { ifFlags: ['rentalCar'], chance: 0.5 }),
+        event('money', 'Covered', 'Your full-cover insurance (완전자차) pays for the scratch – no charge.', undefined, 'insurance', { ifFlags: ['scratch', 'carInsured'] }),
+        event('money', 'Repair bill', 'Without full cover you pay the excess for the repair: −₩150,000.', { money: -150000 }, 'insurance', { ifFlags: ['scratch'], unlessFlags: ['carInsured'] }),
         learn('mo-exchange'),
         talk('guide', 'Volcano conquered, typhoon survived. You\'re a true adventurer!', P('수고하셨습니다', 'Su-go-ha-syeot-seum-ni-da', 'Thank you for your hard work')),
       ],

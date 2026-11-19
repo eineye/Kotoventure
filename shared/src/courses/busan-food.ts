@@ -1,6 +1,8 @@
 import type { Course } from '../types';
 import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
+const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
+
 /** 식도락 – Busan food trail. Starts at a PORT (ferry from Fukuoka), ends at Gimhae Airport. */
 export const busanFood: Course = {
   id: 'busan-food',
@@ -28,7 +30,7 @@ export const busanFood: Course = {
   coverBg: 'market',
   access: 'base',
   isPublished: true,
-  version: 1,
+  version: 2,
   sortOrder: 2,
   scenes: [
     {
@@ -48,6 +50,10 @@ export const busanFood: Course = {
           no('Ignore it, typhoons never reach Korea', 'They do – mostly Jeju and the south coast in Aug–Sep.', { energy: -5 }),
         ], 'we-rain'),
         simulate('atm', 'money', 'Global ATM at the ferry terminal', 'You need about ₩100,000 in cash for the fish market and street food. Use the Global ATM: choose the right menu, insert your card, enter your PIN, pick the amount – and don\'t fall for the currency-conversion trap. Bonus: practise a Korean passbook update.', { targetKRW: 100000, passbookPractice: true }, 'mo-atm'),
+        ask('lodging', 'Before leaving the terminal: how do you keep your hotel\'s address handy?', [
+          flag(ok('Save a screenshot of the address in KOREAN (Hangul) + the phone number', 'Smart – many taxi drivers can\'t read romanised addresses.', { manner: 2 }, 'hotel'), 'hangulAddr'),
+          no('The English hotel name is enough', 'We\'ll see…', {}),
+        ], 'lo-hotel'),
         say('You take the subway – T-money cards work in Busan too. Line 1 (orange) runs to Jagalchi.'),
       ],
     },
@@ -66,6 +72,13 @@ export const busanFood: Course = {
           ok('Ask first: "Sajin jjigeodo dwaeyo?"', 'She laughs and poses with the octopus!', { manner: 6 }, 'camera'),
           no('Shove the camera in her face', 'She waves you off. Ask first.', { manner: -6 }),
         ], 'et-photo'),
+        simulate('phrase', 'food', 'Bargain in Korean', 'The ajumma speaks only Busan dialect. Build the market sentences from the word tiles and listen to how they sound.', {
+          phrases: [
+            { ko: '이거 얼마예요', roman: 'I-geo eol-ma-ye-yo', en: 'How much is this?', extra: ['주세요'] },
+            { ko: '조금 깎아 주세요', roman: 'Jo-geum kka-kka ju-se-yo', en: 'A small discount, please', extra: ['많이'] },
+            { ko: '위층에서 먹을게요', roman: 'Wi-cheung-e-seo meo-geul-ge-yo', en: 'We\'ll eat upstairs', extra: ['포장'] },
+          ],
+        }),
         say('Your table fills: raw fish, spicy fish stew (maeuntang) – and more banchan.'),
         learn('fo-bell'),
       ],
@@ -95,6 +108,7 @@ export const busanFood: Course = {
       steps: [
         say('Day 2. Busan\'s soul food for breakfast: dwaeji gukbap – milky pork-bone soup with rice.'),
         say('Gukbap shops are honbap (solo dining) heaven: single seats at the counter.', { parties: ['solo'] }),
+        simulate('kiosk', 'money', 'Order at the gukbap kiosk', 'The shop has a Korean-only ordering kiosk by the door and the queue is growing. Order one pork rice soup, an extra bowl of rice and a cider, to eat here.', { menu: 'gukbap', order: [{ id: 'dwaeji', qty: 1 }, { id: 'rice', qty: 1 }, { id: 'cider', qty: 1 }], dineIn: true, english: false }, 'fo-solo'),
         ask('food', 'Your soup arrives plain, with small bowls of salted shrimp, chives and chili paste. What do you do?', [
           ok('Season it myself with saeujeot and buchu, to taste', 'That\'s the way. Every Busan local has their own mix.', { energy: 15 }, 'gukbap'),
           no('Complain that it has no taste', 'It\'s meant to be seasoned by you!', { manner: -5, energy: 10 }),
@@ -113,7 +127,23 @@ export const busanFood: Course = {
       ],
     },
     {
-      id: 'bf-5', day: 2, bg: 'village',
+      id: 'bf-p1', day: 2, bg: 'street',
+      title: { en: 'Free day: plan your Friday', ko: '자유일정: 금요일 계획' },
+      location: { en: 'Busan – your choice', ko: '부산 – 내가 고른 곳' },
+      steps: [
+        talk('guide', 'Busan is BIG – Nampo in the west and Haeundae in the east are almost an hour apart. Plan the order well, find a lunch spot, and beware the afternoon heat!'),
+        simulate('dayplan', 'transport', 'Plan your Busan day', 'You start in Seomyeon after breakfast at 10:00. Where you go becomes the next scenes.', {
+          weekday: 'Fri',
+          hotel: 'hotel-nampo',
+          startAt: 'bs-seomyeon',
+          start: '10:00',
+          weather: { kind: 'heat', from: '12:00', to: '16:00', text: 'Heatwave 34°C, very humid' },
+          places: ['gamcheon', 'huinnyeoul', 'busantower', 'haeundae', 'haeundae-market', 'blueline', 'yonggungsa', 'spaland'],
+        }, 'we-heat'),
+      ],
+    },
+    {
+      id: 'bf-5', day: 2, bg: 'village', requires: ['visit:gamcheon'],
       title: { en: 'Gamcheon Culture Village', ko: '감천문화마을' },
       location: { en: 'Gamcheon, Saha-gu', ko: '감천, 사하구' },
       steps: [
@@ -131,17 +161,16 @@ export const busanFood: Course = {
       ],
     },
     {
-      id: 'bf-6', day: 2, bg: 'beach',
+      id: 'bf-6', day: 2, bg: 'beach', requires: ['visit:haeundae'],
       title: { en: 'Haeundae Beach', ko: '해운대 해수욕장' },
       location: { en: 'Haeundae', ko: '해운대' },
       steps: [
         say('Haeundae: Korea\'s most famous beach, with skyscrapers on one side and the sea on the other.'),
         say('Your family sets up under a rented parasol – lifeguards watch the swimming zone.', { parties: ['group'] }),
-        event('health', 'Jellyfish sting!', 'Ouch! Something stung your leg while swimming. A red line appears – a jellyfish.', { energy: -12 }, 'firstaid'),
-        ask('medical', 'What\'s the right first aid?', [
-          ok('Get out, rinse with SEAWATER, remove bits with a card, go to the lifeguard first-aid post', 'Correct! Fresh water can make it worse.', { energy: 8 }, 'firstaid'),
-          no('Rinse with bottled fresh water and rub it hard', 'Fresh water and rubbing can trigger more venom.', { energy: -8 }),
-        ], 'me-firstaid'),
+        ask('medical', '😱 Ouch! Something stung your leg while swimming – a red line appears. A jellyfish! What\'s the right first aid?', [
+          ok('Get out, rinse with SEAWATER, remove bits with a card, go to the lifeguard first-aid post', 'Correct! Fresh water can make it worse.', { energy: -4 }, 'firstaid'),
+          no('Rinse with bottled fresh water and rub it hard', 'Fresh water and rubbing can trigger more venom.', { energy: -20 }),
+        ], 'me-firstaid', { chance: 0.6 }),
         ask('law', 'You want to smoke a cigarette on the sand.', [
           ok('Find the designated smoking area off the beach', 'Right. Smoking on the beach can be fined.', { manner: 4 }, 'no-smoking'),
           no('Smoke on the sand and bury the butt', 'Fined – and kids play here.', { money: -50000, manner: -10 }),
@@ -158,7 +187,9 @@ export const busanFood: Course = {
       title: { en: 'Gwangalli chimaek & drone show', ko: '광안리 치맥 & 드론쇼' },
       location: { en: 'Gwangalli Beach', ko: '광안리 해수욕장' },
       steps: [
-        say('Day 3 night. Gwangan Bridge glows in colours. On Saturday nights hundreds of drones draw pictures above the sea.'),
+        say('Day 3, Saturday evening. You head from your hotel in Nampo to Gwangalli by subway.'),
+        simulate('transfer', 'transport', 'Busan Metro to Gwangalli', 'Find the fastest route from Nampo to Gwangan station on the Busan Metro before the drone show starts. Lines 1, 2 and 3 – which transfer is quickest?', { fromStation: 'bs-nampo', toStation: 'bs-gwangan', timeLimit: 60 }, 'tr-transfer'),
+        say('Gwangan Bridge glows in colours. On Saturday nights hundreds of drones draw pictures above the sea.'),
         ask('food', 'You order fried chicken. What comes in the little square container?', [
           ok('Pickled radish (chikin-mu) to refresh your palate', 'Exactly – it\'s free with every chicken.', { energy: 8 }, 'chicken'),
           no('Dessert', 'Not quite – it\'s tangy pickled radish!', {}),
@@ -172,6 +203,8 @@ export const busanFood: Course = {
           ok('Take a taxi – drink-riding is illegal on scooters too', 'Right. Korea\'s limit is 0.03% and police check scooters too.', { money: -9000, manner: 5 }, 'taxi'),
           no('Ride the scooter back, it\'s only 2 km', 'Police checkpoint! Fine and licence trouble.', { money: -100000, manner: -15 }),
         ], 'la-traffic'),
+        event('surprise', 'Taxi home', 'The driver can\'t read English – you show him the Korean address screenshot you saved on day 1. "Ah, 남포동! OK!" Straight there.', { energy: 3 }, 'taxi', { ifFlags: ['hangulAddr'] }),
+        event('surprise', 'Taxi home – lost in translation', 'The driver doesn\'t recognise the English hotel name. After phone calls and a detour you arrive 25 minutes later (+₩8,000). Next time save the address in Hangul!', { energy: -6, money: -8000 }, 'taxi', { unlessFlags: ['hangulAddr'] }),
       ],
     },
     {
