@@ -30,7 +30,7 @@ export const jejuAdventure: Course = {
   coverBg: 'mountain',
   access: 'base',
   isPublished: true,
-  version: 3,
+  version: 4,
   sortOrder: 4,
   scenes: [
     {
@@ -62,7 +62,8 @@ export const jejuAdventure: Course = {
       title: { en: 'Pension check-in', ko: '펜션 체크인' },
       location: { en: 'Aewol', ko: '애월' },
       steps: [
-        say('You check into a pension near the sea in Aewol.'),
+        say('You arrive at a pension near the sea in Aewol. The host isn\'t there – it\'s self check-in.'),
+        simulate('checkin', 'lodging', 'Self check-in', 'Read the host\'s message, open the digital door lock, find your room and remember the house rules.', { code: '0614', room: '201', checkout: '11:00' }),
         learn('lo-pension'),
         ask('lodging', 'The pension is booked for 4 people but your group is 6.', [
           ok('Tell the host and pay the extra-guest fee', 'Honest – and safe for fire regulations.', { money: -40000, manner: 5 }, 'pension'),

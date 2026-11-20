@@ -62,7 +62,8 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
   const [picked, setPicked] = useState<number | null>(null);
   const [delta, setDelta] = useState<Effects | null>(null);
   const [pendingCard, setPendingCard] = useState<string | null>(null);
-  const plays = (prev?.plays ?? 0) + (resume ? 0 : 1);
+  // fixed for the whole run (progress is saved mid-run, which would otherwise change prev/resume and re-roll chance steps)
+  const [plays] = useState(() => (prev?.plays ?? 0) + (resume ? 0 : 1));
   const real = profile?.mode === 'real';
   const [dayLog, setDayLog] = useState<DayLogItem[]>([]);
   const [summary, setSummary] = useState<{ day: number; next: number; collapsed: boolean; resumeStep?: number } | null>(null);

@@ -5,9 +5,9 @@ import { stationById } from './rail';
 import { DEFAULT_CASH } from './money';
 import { placeById } from './places';
 import { stationOf } from './subway';
-import { RESTAURANTS, TICKET_SITES, trashById } from './practice';
+import { RESTAURANTS, SYMPTOMS, TICKET_SITES, trashById } from './practice';
 
-export const SIM_KINDS = ['exchange', 'atm', 'tmoney', 'train', 'cashpay', 'dayplan', 'transfer', 'kiosk', 'phrase', 'bus', 'ticket', 'menu', 'recycle'] as const;
+export const SIM_KINDS = ['exchange', 'atm', 'tmoney', 'train', 'cashpay', 'dayplan', 'transfer', 'kiosk', 'phrase', 'bus', 'ticket', 'menu', 'recycle', 'pharmacy', 'taxi', 'checkin', 'locker', 'crosswalk'] as const;
 
 /** Record a finished simulation (score 0..100) in the run stats. */
 export function applySim(s: RunStats, points: number): RunStats {
@@ -151,6 +151,9 @@ export function validateBundle(b: ContentBundle, known?: { props?: Set<string>; 
             issues.push({ level: 'error', where: ws, msg: 'bus needs config.stops and a getOff stop after the first' });
           if (st.sim === 'ticket' && !TICKET_SITES[st.config?.site ?? '']) issues.push({ level: 'error', where: ws, msg: 'ticket needs a known config.site' });
           if (st.sim === 'menu' && !RESTAURANTS[st.config?.restaurant ?? '']) issues.push({ level: 'error', where: ws, msg: 'menu needs a known config.restaurant' });
+          if (st.sim === 'pharmacy' && !SYMPTOMS[st.config?.symptom ?? '']) issues.push({ level: 'error', where: ws, msg: 'pharmacy needs a known config.symptom' });
+          if (st.sim === 'taxi' && (!st.config?.dest || !st.config.addr)) issues.push({ level: 'error', where: ws, msg: 'taxi needs config.dest and config.addr' });
+          if (st.sim === 'checkin' && (!/^\d{4,6}$/.test(st.config?.code ?? '') || !/^\d{3}$/.test(st.config?.room ?? ''))) issues.push({ level: 'error', where: ws, msg: 'checkin needs a 4–6 digit code and a 3-digit room' });
           if (st.sim === 'recycle' && (st.config?.trash ?? []).some((t) => !trashById(t))) issues.push({ level: 'error', where: ws, msg: 'recycle: unknown trash item' });
           if (st.sim === 'dayplan') {
             const h = placeById(st.config?.hotel ?? 'hotel-myeongdong');

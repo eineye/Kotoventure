@@ -1,5 +1,10 @@
 import {
+  BAG_SIZE,
   BUS_FARE,
+  LOCKERS,
+  MEDICINES,
+  SYMPTOMS,
+  TAXI_NIGHT_SURCHARGE,
   PARTY_PEOPLE,
   RESTAURANTS,
   TICKET_SITES,
@@ -79,6 +84,18 @@ export function skipOutcome(step: SimStep, ctx: SimCtx): SimResult {
       const portions = Math.max(size, main?.min ?? 1);
       return { score: 0, log, effects: { money: -(main?.price ?? 0) * portions, energy: 15 } };
     }
+    case 'pharmacy': {
+      const med = MEDICINES.find((m) => m.id === SYMPTOMS[cfg.symptom ?? 'cold']?.med);
+      return { score: 0, log, effects: { money: -(med?.price ?? 0), energy: 8 } };
+    }
+    case 'taxi': {
+      const base = cfg.fare ?? 10000;
+      return { score: 0, log, effects: { money: -Math.round((cfg.night ? base * (1 + TAXI_NIGHT_SURCHARGE) : base) / 100) * 100 } };
+    }
+    case 'checkin':
+      return { score: 0, log, effects: { energy: 10 } };
+    case 'locker':
+      return { score: 0, log, effects: { money: -LOCKERS[BAG_SIZE[cfg.bag ?? 'carryon']].price, energy: 6 } };
     default:
       return { score: 0, log };
   }

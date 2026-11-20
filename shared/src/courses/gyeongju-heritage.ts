@@ -30,7 +30,7 @@ export const gyeongjuHeritage: Course = {
   coverBg: 'temple',
   access: 'base',
   isPublished: true,
-  version: 3,
+  version: 4,
   sortOrder: 3,
   scenes: [
     {
@@ -201,6 +201,7 @@ export const gyeongjuHeritage: Course = {
           ok('A Korean medicine clinic for acupuncture and cupping', 'Popular for sprains in Korea. You feel looser.', { energy: 12, money: -30000 }, 'hanuiwon'),
           no('The ER of a big hospital', 'Long wait, high fees for a non-emergency.', { money: -150000 }, 'er'),
         ], 'me-clinic'),
+        simulate('pharmacy', 'medical', 'Pain patch from the pharmacy', 'The clinic suggests a pain-relief patch. Find the pharmacy, explain your sprain and read how to use it.', { symptom: 'sprain' }, 'me-pharmacy'),
         event('money', 'The bill', 'Your travel insurance covers the clinic – keep the receipt and ask for an English diagnosis. (+₩50,000 back later)', { money: 50000 }, 'insurance', { ifFlags: ['insured'] }),
         event('money', 'The bill – no insurance', 'Tourists are not covered by Korean health insurance and you skipped travel insurance. A follow-up visit and an ankle brace: −₩40,000 more.', { money: -40000 }, 'insurance', { unlessFlags: ['insured'] }),
         learn('me-hanui'),

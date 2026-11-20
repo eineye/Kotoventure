@@ -1,4 +1,4 @@
-import { BUS_COLORS, PLACES, PROP_IDS, RESTAURANTS, TICKET_SITES, TRASH, STATIONS, SUBWAY_STATIONS, TOPICS, tr, type ChoiceOption, type SimConfig, type Effects, type KnowledgeCard, type PartyType, type Speaker, type Step } from '@kotoventure/shared';
+import { BUS_COLORS, SYMPTOMS, PLACES, PROP_IDS, RESTAURANTS, TICKET_SITES, TRASH, STATIONS, SUBWAY_STATIONS, TOPICS, tr, type ChoiceOption, type SimConfig, type Effects, type KnowledgeCard, type PartyType, type Speaker, type Step } from '@kotoventure/shared';
 import { Check, Field, JsonEdit, LText, Num, Select } from '../ui';
 
 const SPEAKERS: Speaker[] = ['guide', 'player', 'local', 'staff', 'driver', 'police', 'doctor', 'pharmacist', 'elder', 'monk', 'haenyeo'];
@@ -31,6 +31,11 @@ const SIMS: [string, string][] = [
   ['ticket', '🎫 관광지 매표소 (요금표·일행별 표·한복 무료·입장 게이트)'],
   ['menu', '📜 식당 메뉴 주문 (한글 메뉴판·2인분 이상·호출벨·반찬 리필·카운터 계산)'],
   ['recycle', '♻️ 분리배출 (일반·음식물·플라스틱·캔·유리·종이·비닐)'],
+  ['pharmacy', '💊 약국 (약 간판·증상 말하기·약 고르기·복용법)'],
+  ['taxi', '🚕 택시 호출 앱 (한글 주소 확인·택시 종류·번호판·안전띠)'],
+  ['checkin', '🔑 숙소 셀프 체크인 (호스트 메시지·도어락·방 찾기·규칙)'],
+  ['locker', '🧳 물품보관함 (크기·결제·비밀번호·찾기)'],
+  ['crosswalk', '🚦 횡단보도 (신호·남은 시간·우회전 차·골목길)'],
 ];
 
 export const blankStep = (type: Step['type']): Step => {
@@ -452,6 +457,41 @@ function SimConfigEdit({ sim, value, onChange }: { sim: string; value: SimConfig
               <Check key={t.id} checked={(value.trash ?? []).includes(t.id)} onChange={(b) => set({ trash: b ? [...(value.trash ?? []), t.id] : (value.trash ?? []).filter((x) => x !== t.id) })} label={`${t.icon} ${t.ko}`} />
             ))}
           </div>
+        </Field>
+      )}
+      {sim === 'pharmacy' && (
+        <Field label="증상">
+          <Select value={value.symptom ?? 'cold'} onChange={(symptom) => set({ symptom })} options={Object.values(SYMPTOMS).map((x) => [x.id, x.phrases[0].ko] as [string, string])} />
+        </Field>
+      )}
+      {sim === 'taxi' && (
+        <>
+          <Field label="목적지 이름 · 한글 주소">
+            <div className="row">
+              <input value={value.dest ?? ''} onChange={(e) => set({ dest: e.target.value })} />
+              <input value={value.addr ?? ''} onChange={(e) => set({ addr: e.target.value })} />
+            </div>
+          </Field>
+          <Field label="예상 요금(₩) · 심야">
+            <div className="row">
+              <Num value={value.fare ?? 10000} min={4800} onChange={(fare) => set({ fare })} />
+              <Check checked={!!value.night} onChange={(night) => set({ night })} label="심야 할증 (22–04시)" />
+            </div>
+          </Field>
+        </>
+      )}
+      {sim === 'checkin' && (
+        <Field label="도어락 비밀번호 · 방 번호(3자리) · 체크아웃">
+          <div className="row">
+            <input style={{ width: 80 }} value={value.code ?? ''} onChange={(e) => set({ code: e.target.value.replace(/\D/g, '') })} />
+            <input style={{ width: 60 }} value={value.room ?? ''} onChange={(e) => set({ room: e.target.value.replace(/\D/g, '').slice(0, 3) })} />
+            <input style={{ width: 70 }} value={value.checkout ?? '11:00'} onChange={(e) => set({ checkout: e.target.value })} />
+          </div>
+        </Field>
+      )}
+      {sim === 'locker' && (
+        <Field label="맡길 짐">
+          <Select value={value.bag ?? 'carryon'} onChange={(bag) => set({ bag: bag as SimConfig['bag'] })} options={[['backpack', '배낭 (소형)'], ['carryon', '기내용 캐리어 (중형)'], ['large', '큰 캐리어 (대형)']]} />
         </Field>
       )}
       {sim === 'phrase' && (

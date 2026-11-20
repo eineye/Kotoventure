@@ -182,3 +182,87 @@ export const TRASH: TrashItem[] = [
   { id: 'cup', ko: '컵라면 용기 (국물 비움)', en: 'Cup-noodle cup (broth drained)', icon: '🍜', bin: 'general', why: 'Drain the broth first; a greasy cup goes to general waste.' },
 ];
 export const trashById = (id: string) => TRASH.find((t) => t.id === id);
+
+/* ───────────── pharmacy ───────────── */
+export interface Medicine {
+  id: string;
+  ko: string;
+  en: string;
+  price: number;
+  icon: string;
+}
+export const MEDICINES: Medicine[] = [
+  { id: 'fever', ko: '해열진통제', en: 'Fever reducer / painkiller (acetaminophen)', price: 3000, icon: '💊' },
+  { id: 'cold', ko: '종합감기약', en: 'Cold medicine (all-in-one)', price: 5000, icon: '🤧' },
+  { id: 'digest', ko: '소화제', en: 'Digestive medicine', price: 3500, icon: '🫄' },
+  { id: 'patch', ko: '파스 (소염진통 패치)', en: 'Pain-relief patch', price: 6000, icon: '🩹' },
+  { id: 'ors', ko: '경구수분보충액', en: 'Oral rehydration solution', price: 4000, icon: '🧃' },
+  { id: 'eye', ko: '인공눈물', en: 'Eye drops', price: 5000, icon: '👁️' },
+];
+export interface Symptom {
+  id: string;
+  /** what you'd say – the first one is right */
+  phrases: { ko: string; en: string }[];
+  med: string;
+  dose: { ko: string; en: string };
+  /** right answer to "how do you take it?" and two wrong ones */
+  howTo: [string, string, string];
+}
+export const SYMPTOMS: Record<string, Symptom> = {
+  stomach: {
+    id: 'stomach',
+    phrases: [
+      { ko: '체한 것 같아요. 배가 답답해요', en: 'I think I have indigestion – my stomach feels heavy' },
+      { ko: '머리가 아파요', en: 'I have a headache' },
+      { ko: '눈이 가려워요', en: 'My eyes are itchy' },
+    ],
+    med: 'digest',
+    dose: { ko: '1일 3회, 1회 1포, 식후 30분', en: '3 times a day, 1 sachet, 30 min after meals' },
+    howTo: ['One sachet 30 minutes after each meal, 3 times a day', 'All three sachets at once now', 'Only before going to bed'],
+  },
+  cold: {
+    id: 'cold',
+    phrases: [
+      { ko: '목이 아프고 열이 나요', en: 'My throat hurts and I have a fever' },
+      { ko: '발목을 삐었어요', en: 'I sprained my ankle' },
+      { ko: '체했어요', en: 'I have indigestion' },
+    ],
+    med: 'cold',
+    dose: { ko: '1일 3회, 1회 2정, 식후 30분. 졸음 주의', en: '3 times a day, 2 tablets, 30 min after meals. May cause drowsiness' },
+    howTo: ['2 tablets after each meal – and no driving if drowsy', '6 tablets at once to get well faster', 'With soju to warm up'],
+  },
+  sprain: {
+    id: 'sprain',
+    phrases: [
+      { ko: '발목을 삐었어요. 붓고 아파요', en: 'I sprained my ankle – it is swollen and hurts' },
+      { ko: '감기에 걸렸어요', en: 'I caught a cold' },
+      { ko: '잠이 안 와요', en: 'I can\'t sleep' },
+    ],
+    med: 'patch',
+    dose: { ko: '1일 1~2회 환부에 부착, 상처 부위 금지', en: 'Stick on the sore area 1–2 times a day, not on open wounds' },
+    howTo: ['On clean, unbroken skin over the sore spot, change once or twice a day', 'On an open cut', 'Eat it'],
+  },
+  heat: {
+    id: 'heat',
+    phrases: [
+      { ko: '더위를 먹었어요. 어지럽고 속이 메스꺼워요', en: 'I think it\'s the heat – I\'m dizzy and nauseous' },
+      { ko: '이가 아파요', en: 'I have a toothache' },
+      { ko: '기침이 나요', en: 'I have a cough' },
+    ],
+    med: 'ors',
+    dose: { ko: '물에 타서 조금씩 자주 마시기', en: 'Mix with water and sip a little, often' },
+    howTo: ['Small sips often, in the shade, and rest', 'Down it in one go and keep hiking', 'Mix it with coffee'],
+  },
+};
+
+/* ───────────── taxi app ───────────── */
+export const TAXI_NIGHT_SURCHARGE = 0.2;
+
+/* ───────────── storage lockers ───────────── */
+export type LockerSize = 'S' | 'M' | 'L';
+export const LOCKERS: Record<LockerSize, { ko: string; en: string; fits: string; price: number }> = {
+  S: { ko: '소형', en: 'Small', fits: 'backpack / shopping bag', price: 2000 },
+  M: { ko: '중형', en: 'Medium', fits: 'carry-on suitcase (≤ 20")', price: 3000 },
+  L: { ko: '대형', en: 'Large', fits: 'large suitcase (24–28")', price: 4000 },
+};
+export const BAG_SIZE: Record<string, LockerSize> = { backpack: 'S', carryon: 'M', large: 'L' };

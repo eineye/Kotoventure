@@ -127,7 +127,7 @@ export interface EventStep extends StepBase {
 }
 
 /** Hands-on simulations of real Korean machines / counters. */
-export type SimKind = 'exchange' | 'atm' | 'tmoney' | 'train' | 'cashpay' | 'dayplan' | 'transfer' | 'kiosk' | 'phrase' | 'bus' | 'ticket' | 'menu' | 'recycle';
+export type SimKind = 'exchange' | 'atm' | 'tmoney' | 'train' | 'cashpay' | 'dayplan' | 'transfer' | 'kiosk' | 'phrase' | 'bus' | 'ticket' | 'menu' | 'recycle' | 'pharmacy' | 'taxi' | 'checkin' | 'locker' | 'crosswalk';
 
 export interface SimConfig {
   /** exchange: where you exchange – airport rates are worse than downtown money changers */
@@ -178,6 +178,19 @@ export interface SimConfig {
   restaurant?: string;
   /** recycle: trash item ids (practice.ts TRASH) */
   trash?: string[];
+  /** pharmacy: symptom id (practice.ts SYMPTOMS) */
+  symptom?: string;
+  /** taxi: destination name, its Korean address, late night?, estimated fare */
+  dest?: string;
+  addr?: string;
+  night?: boolean;
+  fare?: number;
+  /** check-in: door code, room number, check-out time */
+  code?: string;
+  room?: string;
+  checkout?: string;
+  /** locker: what you need to store */
+  bag?: 'backpack' | 'carryon' | 'large';
 }
 
 export interface SimStep extends StepBase {

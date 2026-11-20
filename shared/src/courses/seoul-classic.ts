@@ -34,7 +34,7 @@ export const seoulClassic: Course = {
   coverBg: 'palace',
   access: 'base',
   isPublished: true,
-  version: 3,
+  version: 4,
   sortOrder: 1,
   scenes: [
     {
@@ -164,10 +164,8 @@ export const seoulClassic: Course = {
           ok('Close the door behind you and keep voices down in the corridor', 'Good. The room is for noise – the hallway isn\'t.', { manner: 4 }, 'quiet'),
           no('Leave the door open so everyone can hear your song', 'Other guests complain at the counter.', { manner: -6 }),
         ], 'et-quiet'),
-        ask('transport', 'It\'s 00:30. The subway has stopped. How do you get back?', [
-          ok('Call a taxi with Kakao T or Uber and show the hotel address', 'Easy. Note the late-night surcharge on the meter.', { money: -12000 }, 'taxi'),
-          no('Wait for the first subway at 05:30', 'You fall asleep on a bench. Not fun.', { energy: -25 }),
-        ], 'tr-taxi'),
+        say('It\'s 00:30 and the subway has stopped. Time to call a taxi with an app.'),
+        simulate('taxi', 'transport', 'Call a taxi with an app', 'Set your hotel as the destination (check the Korean address!), choose the ride type, find your car by its plate and get home safely.', { dest: '명동 호텔 Myeongdong Hotel', addr: '서울 중구 명동길 14', night: true, fare: 9000 }, 'tr-taxi'),
       ],
     },
     {
@@ -182,11 +180,7 @@ export const seoulClassic: Course = {
           no('Go straight to the emergency room', 'An ER for mild indigestion costs a lot and takes beds from real emergencies.', { money: -120000, energy: -10 }, 'er'),
         ], 'me-conv'),
         say('In the morning you still feel bad. You look for help.'),
-        ask('medical', 'Which sign means PHARMACY?', [
-          ok('A big "약" sign', 'Correct – 약 (yak) means medicine.', { manner: 2 }, 'pharmacy'),
-          no('"병원"', 'That means hospital.', {}, 'hospital'),
-          no('"한의원"', 'That\'s a Korean medicine clinic.', {}, 'hanuiwon'),
-        ], 'me-pharmacy'),
+        simulate('pharmacy', 'medical', 'At the pharmacy', 'Find the pharmacy among the shop signs, explain your indigestion in Korean, pick the right medicine and read the dosage label.', { symptom: 'stomach' }, 'me-pharmacy'),
         talk('pharmacist', 'You ate too fast? Take this digestive and drink warm water. If you get a fever, go to a clinic.', P('소화제 주세요', 'So-hwa-je ju-se-yo', 'Digestive medicine, please')),
         ask('medical', 'By noon your stomach hurts more and you have a slight fever. Where do you go?', [
           ok('A nearby internal-medicine clinic (내과 의원) with my passport', 'Short wait, a doctor, a prescription. You pay around ₩20,000–40,000 without Korean insurance.', { energy: 20, money: -35000 }, 'hospital'),
@@ -335,10 +329,7 @@ export const seoulClassic: Course = {
           ok('Check the ride in Kakao T / my taxi receipt, call 1330 or 112, and look on lost112.go.kr', 'The driver drops it at a police box – you get it back the next morning.', { manner: 3 }, 'police'),
           no('Give up – it\'s gone forever', 'Lost items are very often returned in Korea. Never give up too soon!', { money: -300000 }),
         ], 'la-police', { chance: 0.45 }),
-        ask('transport', 'The pedestrian light is red but the road looks empty.', [
-          ok('Wait for the green walker and watch for delivery motorbikes', 'Good. Bikes and right-turning cars can appear suddenly.', { manner: 4 }, 'crosswalk'),
-          no('Jaywalk across', 'A scooter nearly hits you – and jaywalking can be fined.', { energy: -10, money: -20000 }),
-        ], 'tr-walk'),
+        simulate('crosswalk', 'transport', 'Crossing Seoul streets', 'Five crossings on the way back through Hongdae. Read the pedestrian light and countdown, and decide: cross or wait?', {}, 'tr-walk'),
         learn('la-traffic'),
       ],
     },
@@ -347,7 +338,8 @@ export const seoulClassic: Course = {
       title: { en: 'Back to Incheon & fly home', ko: '인천공항 & 귀국' },
       location: { en: 'Incheon Airport T1', ko: '인천공항 제1터미널' },
       steps: [
-        say('Day 7. Time to fly back to Australia. Your suitcase is heavier – cosmetics and snacks!'),
+        say('Day 7. Your flight is in the evening and your suitcase is heavier – cosmetics and snacks! You want one last walk without it.'),
+        simulate('locker', 'lodging', 'Station storage locker', 'Leave your big suitcase in a locker at Seoul Station: choose the right size, pay, keep the PIN – and collect it later.', { bag: 'large' }),
         ask('money', 'You bought ₩200,000 of cosmetics at a "Tax Free" store. What should you do?', [
           ok('Show my passport for instant refund, or use the refund kiosk at the airport before check-in', 'Money back!', { money: 15000 }, 'tax-refund'),
           no('Nothing, it\'s too complicated', 'You leave the VAT refund on the table.', {}),

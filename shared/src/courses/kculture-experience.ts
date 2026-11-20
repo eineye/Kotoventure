@@ -30,7 +30,7 @@ export const kcultureExperience: Course = {
   coverBg: 'stage',
   access: 'base',
   isPublished: true,
-  version: 3,
+  version: 4,
   sortOrder: 5,
   scenes: [
     {
@@ -54,7 +54,9 @@ export const kcultureExperience: Course = {
       title: { en: 'K-pop dance class in Hongdae', ko: '홍대 K-팝 댄스 클래스' },
       location: { en: 'Hongdae', ko: '홍대' },
       steps: [
-        say('You check into a guesthouse in Hongdae, then join a one-day K-pop dance class.'),
+        say('You arrive at your guesthouse in Hongdae – self check-in with a door code.'),
+        simulate('checkin', 'lodging', 'Guesthouse self check-in', 'Use the code from the host\'s message on the digital door lock, find your room and check the house rules.', { code: '1357', room: '302', checkout: '11:00' }),
+        say('Then off to a one-day K-pop dance class!'),
         learn('lo-motel'),
         talk('staff', 'Shoes off in the studio, indoor sneakers only! Five, six, seven, eight!'),
         ask('etiquette', 'Your instructor (older than you) gives you a water bottle. How do you take it?', [
@@ -188,10 +190,8 @@ export const kcultureExperience: Course = {
           ok('Find an ENT (이비인후과) or internal-medicine clinic open in the evening', 'Many clinics stay open until 19:00–21:00. A quick consult and a prescription.', { energy: 15, money: -15000 }, 'hospital'),
           no('Go to a university-hospital ER', 'For a cold? Long wait and high fees.', { money: -100000, energy: -10 }, 'er'),
         ], 'me-clinic'),
-        ask('medical', 'The doctor gives you a prescription. Where do you get the medicine?', [
-          ok('At a pharmacy (약국) – usually right next to the clinic', 'Yes. In Korea, clinics prescribe and pharmacies dispense.', { energy: 10, money: -5000 }, 'pharmacy'),
-          no('The doctor will hand it to me', 'In Korea clinics usually don\'t dispense pills themselves.', {}),
-        ], 'me-pharmacy'),
+        say('The doctor gives you a prescription – in Korea, clinics prescribe and pharmacies (약국) dispense, usually right next door.'),
+        simulate('pharmacy', 'medical', 'Pharmacy next to the clinic', 'Find the 약 sign, tell the pharmacist your symptoms and read the dosage label carefully.', { symptom: 'cold' }, 'me-pharmacy'),
         simulate('phrase', 'medical', 'Tell the doctor in Korean', 'Explain your symptoms – build the sentences from the word tiles and listen.', {
           phrases: [
             { ko: '목이 아파요', roman: 'Mo-gi a-pa-yo', en: 'My throat hurts', extra: ['배가'] },
@@ -211,7 +211,9 @@ export const kcultureExperience: Course = {
       title: { en: 'Departure from Gimpo', ko: '김포공항 출국' },
       location: { en: 'Gimpo International Airport', ko: '김포국제공항' },
       steps: [
-        say('Day 4. Feeling better, you head back to Gimpo by subway.'),
+        say('Day 4. Feeling better! Your flight is in the afternoon – you leave your suitcase at Hongik Univ. station for one last walk.'),
+        simulate('locker', 'lodging', 'Locker at Hongik Univ. station', 'Store your carry-on in a station locker, keep the PIN safe and pick it up before heading to Gimpo.', { bag: 'carryon' }),
+        say('You head back to Gimpo by subway.'),
         ask('etiquette', 'On the subway escalator, people stand in two lines. What do you do?', [
           ok('Stand still, hold the handrail, keep right on the stairs', 'Safety first.', { manner: 4 }, 'walk-right'),
           no('Run down the escalator with my suitcase', 'You nearly bump into someone. Stand still and hold the rail – it\'s safer for everyone, and you\'ll get there just as fast.', { manner: -8, energy: -5 }),
