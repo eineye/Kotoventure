@@ -32,7 +32,7 @@ interface State {
 }
 
 interface Api extends State {
-  signUp(p: Omit<Profile, 'id' | 'lang'>): Promise<void>;
+  signUp(p: Omit<Profile, 'id' | 'lang'> & { lang?: Profile['lang'] }): Promise<void>;
   updateProfile(patch: Partial<Profile>): void;
   saveProgress(p: CourseProgress): void;
   resetProgress(courseId?: string): void;
@@ -96,7 +96,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     })();
   }, []);
 
-  const signUp = useCallback(async (p: Omit<Profile, 'id' | 'lang'>) => {
+  const signUp = useCallback(async ({ lang = 'en', ...p }: Omit<Profile, 'id' | 'lang'> & { lang?: Profile['lang'] }) => {
     let id = localId();
     if (supabase) {
       // Simplest possible signup: anonymous account + nickname/country/party as metadata.
@@ -106,7 +106,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       if (!error && data.user) id = data.user.id;
       else console.warn('[auth] anonymous sign-in failed, continuing offline', error);
     }
-    const profile: Profile = { ...p, id, lang: 'en' };
+    const profile: Profile = { ...p, id, lang };
     await setJSON(K.profile, profile);
     setS((x) => ({ ...x, profile }));
   }, []);

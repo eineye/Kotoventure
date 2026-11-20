@@ -10,7 +10,7 @@ import { C, R } from './theme';
  * Pop-up for a knowledge card: the illustration bounces in, then the key points appear one by one
  * (a short "animated explainer"). ‹ › browse the other cards of the list.
  */
-export function CardPopup({ cards, index, lang, onClose, onIndex, noteFor }: { cards: KnowledgeCard[]; index: number | null; lang: string; onClose: () => void; onIndex: (i: number) => void; noteFor?: (c: KnowledgeCard) => string | undefined }) {
+export function CardPopup({ cards, index, lang, onClose, onIndex, locked }: { cards: KnowledgeCard[]; index: number | null; lang: string; onClose: () => void; onIndex: (i: number) => void; locked?: (c: KnowledgeCard) => string[] | null }) {
   const { width } = useWindowDimensions();
   const card = index !== null ? cards[index] : null;
   const ko = lang === 'ko';
@@ -20,8 +20,7 @@ export function CardPopup({ cards, index, lang, onClose, onIndex, noteFor }: { c
       <Pressable testID="card-popup-backdrop" onPress={onClose} style={{ flex: 1, backgroundColor: '#0F172ACC', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
         {card && (
           <Pressable onPress={() => {}} style={{ width: Math.min(width - 32, 420), maxHeight: '90%' }}>
-            <CardBody key={card.id} card={card} lang={lang} />
-            {noteFor?.(card) && <Text style={{ color: '#FDE68A', textAlign: 'center', fontWeight: '800', marginTop: 8 }}>{noteFor(card)}</Text>}
+            {locked?.(card) ? <LockedBody key={card.id} card={card} lang={lang} missions={locked(card)!} /> : <CardBody key={card.id} card={card} lang={lang} />}
             <View style={{ flexDirection: 'row', gap: 8, marginTop: 10, alignItems: 'center' }}>
               <Btn testID="card-prev" small kind="ghost" label="‹" disabled={index === 0} onPress={() => onIndex(Math.max(0, (index ?? 0) - 1))} style={{ backgroundColor: '#FFF', width: 56 }} />
               <Text style={{ flex: 1, textAlign: 'center', color: '#FFF', fontWeight: '800' }}>
@@ -99,6 +98,49 @@ function CardBody({ card, lang }: { card: KnowledgeCard; lang: string }) {
           </Pressable>
         )}
       </ScrollView>
+    </Animated.View>
+  );
+}
+
+/** A card the player has not collected yet: picture greyed out, contents hidden, hint where to find it. */
+function LockedBody({ card, lang, missions }: { card: KnowledgeCard; lang: string; missions: string[] }) {
+  const ko = lang === 'ko';
+  const topic = TOPICS.find((t) => t.id === card.topic)!;
+  const [pop] = useState(() => new Animated.Value(0));
+  useEffect(() => {
+    Animated.spring(pop, { toValue: 1, friction: 6, tension: 80, useNativeDriver: true }).start();
+  }, [pop]);
+  return (
+    <Animated.View testID="card-locked" style={{ backgroundColor: '#FFF', borderRadius: R.l, overflow: 'hidden', opacity: pop, transform: [{ scale: pop.interpolate({ inputRange: [0, 1], outputRange: [0.8, 1] }) }] }}>
+      <View style={{ backgroundColor: '#E5E7EB', alignItems: 'center', paddingVertical: 14 }}>
+        <Text style={{ color: topic.color, fontWeight: '900', fontSize: 12 }}>
+          {topic.icon} {tr(topic.name, lang)}
+        </Text>
+        <View style={{ marginTop: 6, opacity: 0.12 }}>
+          <Prop id={card.prop} size={140} />
+        </View>
+        <Text style={{ position: 'absolute', top: 70, fontSize: 54 }}>🔒</Text>
+      </View>
+      <View style={{ padding: 16, gap: 8 }}>
+        <H size={20}>{tr(card.title, lang)}</H>
+        <View style={{ gap: 6 }}>
+          {[0.95, 0.8, 0.6].map((w, i) => (
+            <View key={i} style={{ height: 12, width: `${w * 100}%`, backgroundColor: '#E5E7EB', borderRadius: 6 }} />
+          ))}
+        </View>
+        <P style={{ marginTop: 4 }}>{ko ? '아직 수집하지 않은 카드예요. 미션에서 찾으면 내용이 열려요.' : 'Not collected yet – find it in a mission to unlock the contents.'}</P>
+        {missions.length > 0 && (
+          <View style={{ backgroundColor: '#FFF4D6', borderRadius: R.m, padding: 10 }}>
+            <Text style={{ fontWeight: '900', color: C.ink, marginBottom: 2 }}>🗺️ {ko ? '찾을 수 있는 미션' : 'Where to find it'}</Text>
+            {missions.slice(0, 3).map((m) => (
+              <Text key={m} style={{ color: C.ink }}>
+                • {m}
+              </Text>
+            ))}
+            {missions.length > 3 && <Text style={{ color: C.inkSoft, fontSize: 12 }}>{ko ? `외 ${missions.length - 3}개` : `+${missions.length - 3} more`}</Text>}
+          </View>
+        )}
+      </View>
     </Animated.View>
   );
 }
