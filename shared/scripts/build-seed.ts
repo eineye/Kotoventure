@@ -31,8 +31,8 @@ sql += upsert('cards', ['id', 'topic', 'title', 'body', 'prop', 'phrase', 'tips'
 sql += upsert('products', ['id', 'type', 'title', 'price_usd', 'ios_product_id', 'android_product_id', 'course_ids', 'is_active'],
   b.products.map((p) => [p.id, p.type, p.title, p.priceUsd, p.iosProductId, p.androidProductId, p.courseIds, p.isActive]), ['id']);
 sql += upsert('courses',
-  ['id', 'category_id', 'title', 'subtitle', 'description', 'region', 'entry', 'exit', 'nights', 'days', 'difficulty', 'party_fit', 'party_tips', 'start_budget', 'cover_bg', 'access', 'product_id', 'is_published', 'version', 'sort_order'],
-  b.courses.map((c) => [c.id, c.categoryId, c.title, c.subtitle, c.description, c.region, c.entry, c.exit, c.nights, c.days, c.difficulty, c.partyFit, c.partyTips, c.startBudget, c.coverBg, c.access, c.productId ?? null, c.isPublished, c.version, c.sortOrder]),
+  ['id', 'category_id', 'area', 'title', 'subtitle', 'description', 'region', 'entry', 'exit', 'nights', 'days', 'difficulty', 'party_fit', 'party_tips', 'start_budget', 'cover_bg', 'access', 'product_id', 'is_published', 'version', 'sort_order'],
+  b.courses.map((c) => [c.id, c.categoryId, c.area ?? null, c.title, c.subtitle, c.description, c.region, c.entry, c.exit, c.nights, c.days, c.difficulty, c.partyFit, c.partyTips, c.startBudget, c.coverBg, c.access, c.productId ?? null, c.isPublished, c.version, c.sortOrder]),
   ['id']);
 sql += upsert('scenes', ['id', 'course_id', 'sort_order', 'day', 'title', 'location', 'bg', 'steps'],
   b.courses.flatMap((c) => c.scenes.map((s, i) => [s.id, c.id, i, s.day, s.title, s.location, s.bg, s.steps])), ['course_id', 'id']);

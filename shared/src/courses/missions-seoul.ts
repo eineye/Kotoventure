@@ -1,0 +1,200 @@
+import type { MissionDef } from './gen';
+
+/**
+ * Seoul – 15 missions. Places were chosen from the spots most recommended by foreign visitors and
+ * Koreans alike (palaces, markets, Han River, mountains, K-culture), regrouped into short trips.
+ * Categories were drawn at random (balanced: 3 of each). Prices/hours are examples.
+ */
+export const SEOUL_MISSIONS: MissionDef[] = [
+  {
+    id: 'se-gwangjang', area: 'seoul', cat: 'food', free: true,
+    title: ['Seoul Market Feast', '광장시장 & 을지로 먹방'], sub: ['Bindaetteok, yukhoe and Hipjiro bars – 1 night', '빈대떡·육회·힙지로 1박2일'],
+    desc: 'You land at Incheon hungry. Tonight: Seoul\'s oldest food market, the retro alleys of Euljiro and Dongdaemun after dark.',
+    hub: 'ICN', go: 'AREX train to Seoul Station, then Line 1 to Jongno 5-ga', days: 2, nights: 1, diff: 1, fit: [5, 4, 5, 3], budget: 300000, season: 'autumn', stay: 'guesthouse',
+    food: { place: ['광장시장 빈대떡집', 'Gwangjang Market stall'], text: 'Gwangjang Market (since 1905): sizzling mung-bean pancakes, raw beef yukhoe and "addictive" mayak gimbap.', dishes: [['빈대떡', 'Mung-bean pancake', 6000], ['육회', 'Beef tartare (yukhoe)', 18000], ['마약김밥', 'Mini "mayak" gimbap', 4000]], tip: 'Dip the bindaetteok in soy sauce with onions!' },
+    food2: { place: ['을지로 노가리 골목', 'Euljiro nogari alley'], text: 'In "Hipjiro" old printing shops became bars. Locals sit on plastic stools with dried pollack and cold beer.', dishes: [['노가리', 'Dried pollack snack', 5000], ['골뱅이무침', 'Spicy whelk salad', 18000, 0, 2], ['계란말이', 'Rolled omelette', 9000]] },
+    stops: [
+      { key: 'market', ko: '광장시장', en: 'Gwangjang Market', kind: 'market', text: 'Rows of ajumma cooks shout "Come and sit!" – you squeeze onto a bench at a busy counter.', phrase: ['여기 앉으세요!', 'Yeo-gi an-jeu-se-yo!', 'Sit here!'] },
+      { key: 'euljiro', ko: '을지로 골목', en: 'Euljiro alleys', kind: 'night', text: 'Neon signs, metal workshops and hidden bars with no signboards – the trendy "Hipjiro".' },
+      { key: 'ddp', ko: '동대문디자인플라자', en: 'Dongdaemun Design Plaza (DDP)', kind: 'street', text: 'Zaha Hadid\'s silver spaceship glows at night; fashion malls around it stay open until dawn.' },
+    ],
+    extra: 'cashpay', tips: { solo: 'Market counters are perfect for eating alone.', friends: 'Order several dishes and share – that\'s the market way.' },
+  },
+  {
+    id: 'se-palaces', area: 'seoul', cat: 'sightseeing',
+    title: ['Royal Seoul', '궁궐과 북촌'], sub: ['Gyeongbokgung, the Secret Garden & Bukchon – 2 nights', '경복궁·후원·북촌 2박3일'],
+    desc: 'Walk in the footsteps of Joseon kings: two UNESCO-worthy palaces, a hidden royal garden and 600-year-old hanok alleys.',
+    hub: 'ICN', go: 'AREX to Seoul Station, then subway Line 3 to Gyeongbokgung', days: 3, nights: 2, diff: 1, fit: [4, 5, 4, 5], budget: 450000, season: 'spring', stay: 'hanok',
+    food: { place: ['삼청동 수제비', 'Samcheong-dong sujebi house'], text: 'A famous little restaurant serves hand-torn noodle soup – there\'s always a queue.', dishes: [['수제비', 'Hand-torn noodle soup', 10000], ['감자전', 'Potato pancake', 12000], ['보리밥', 'Barley rice set', 11000]] },
+    stops: [
+      { key: 'gbg', ko: '경복궁', en: 'Gyeongbokgung Palace', kind: 'palace', text: 'Built in 1395, the main royal palace. The guard-changing ceremony at Gwanghwamun is at 10:00 and 14:00. Closed on Tuesdays.', ticket: { adult: 3000, open: '09:00', last: '17:00', hanbok: true, note: 'Free in hanbok. Closed Tuesdays.' } },
+      { key: 'huwon', ko: '창덕궁 후원', en: 'Changdeokgung Secret Garden', kind: 'palace', text: 'A UNESCO World Heritage palace with a royal garden you can only enter on a guided tour – book ahead!', ticket: { adult: 8000, open: '10:00', last: '16:00', note: 'Guided tours only – reserve online.' } },
+      { key: 'bukchon', ko: '북촌 한옥마을', en: 'Bukchon Hanok Village', kind: 'village', text: 'Hundreds of tiled-roof hanok where people still live. Tourist visits are limited to 10:00–17:00 in the red zone.' },
+    ],
+    tips: { couple: 'Rent matching hanbok – palace entry is free!', group: 'Book the Secret Garden tour for everyone in advance.' },
+  },
+  {
+    id: 'se-mangwon', area: 'seoul', cat: 'food',
+    title: ['Mapo Local Eats', '망원·연남 로컬 먹방'], sub: ['Market snacks, café alleys & Hongdae – 1 night', '망원시장·연남동·홍대 1박2일'],
+    desc: 'Eat like a young Seoulite: a neighbourhood market, café streets along an old railway and Hongdae\'s night food.',
+    hub: 'GMP', go: 'Subway from Gimpo (Line 5 → Line 6) to Mangwon', days: 2, nights: 1, diff: 1, fit: [5, 5, 5, 3], budget: 250000, season: 'summer', stay: 'guesthouse',
+    food: { place: ['망원시장 분식', 'Mangwon Market snack stall'], text: 'Mangwon Market is cheap and local: croquettes, tteokbokki and fried chicken by the cup.', dishes: [['떡볶이', 'Tteokbokki', 4000, 0, 2], ['컵닭강정', 'Sweet fried chicken cup', 4000, 0, 1], ['고로케', 'Croquette', 1500]] },
+    food2: { place: ['홍대 치킨집', 'Hongdae fried-chicken pub'], text: 'Night in Hongdae: chimaek (chicken + beer) is the classic.', dishes: [['후라이드치킨', 'Fried chicken', 20000], ['양념치킨', 'Sweet-spicy chicken', 21000, 0, 1], ['치즈볼', 'Cheese balls', 6000]] },
+    stops: [
+      { key: 'mangwon', ko: '망원시장', en: 'Mangwon Market', kind: 'market', text: 'A covered local market loved by young Seoulites – everything costs a few thousand won.' },
+      { key: 'yeonnam', ko: '연트럴파크', en: 'Gyeongui Line Forest Park (Yeonnam)', kind: 'park', text: 'An old railway turned into a long green park lined with cafés – nicknamed "Yeon-tral Park".' },
+      { key: 'hongdae', ko: '홍대 걷고싶은거리', en: 'Hongdae street', kind: 'night', text: 'Buskers, dance crews and street stalls fill the walking street every evening.' },
+    ],
+    extra: 'recycle',
+  },
+  {
+    id: 'se-kbeauty', area: 'seoul', cat: 'experience',
+    title: ['K-Beauty Day', 'K-뷰티 체험'], sub: ['Personal colour, skincare & Seongsu pop-ups – 1 night', '퍼스널컬러·스킨케어·성수 팝업 1박2일'],
+    desc: 'Find your personal colour, learn a 10-step routine and shop like a local in Myeongdong and Seongsu.',
+    hub: 'ICN', go: 'Airport limousine bus to Myeongdong', days: 2, nights: 1, diff: 1, fit: [5, 5, 4, 2], budget: 400000, season: 'spring', stay: 'hotel',
+    food: { place: ['명동 칼국수', 'Myeongdong kalguksu house'], text: 'A legendary noodle shop in Myeongdong: kalguksu with dumplings and very garlicky kimchi.', dishes: [['칼국수', 'Knife-cut noodle soup', 11000], ['만두', 'Dumplings', 11000], ['비빔국수', 'Spicy mixed noodles', 11000, 0, 2]] },
+    stops: [
+      { key: 'color', ko: '퍼스널컬러 진단', en: 'Personal-colour studio', kind: 'workshop', text: 'A consultant drapes coloured fabrics under your face to find your "season" – spring warm? winter cool?', phrase: ['예약했어요', 'Ye-ya-kae-sseo-yo', 'I have a reservation'] },
+      { key: 'myeongdong', ko: '명동', en: 'Myeongdong', kind: 'street', text: 'Dozens of cosmetics shops hand out free samples; many offer instant tax-free refunds.' },
+      { key: 'seongsu', ko: '성수동', en: 'Seongsu-dong', kind: 'street', text: 'Old factories turned into cafés and brand pop-up stores – Seoul\'s "Brooklyn".', bus: { no: '2016', color: 'green', stops: ['성수역 Seongsu Stn.', '뚝섬역 Ttukseom Stn.', '서울숲 Seoul Forest'] } },
+    ],
+    extra: 'kiosk',
+  },
+  {
+    id: 'se-bukhansan', area: 'seoul', cat: 'adventure',
+    title: ['Bukhansan Summit', '북한산 백운대 등반'], sub: ['A national park inside a megacity – 1 night', '도심 속 국립공원 1박2일'],
+    desc: 'Seoul is ringed by granite peaks. Climb Baegundae (836 m) with the locals and reward yourself with pajeon and makgeolli.',
+    hub: 'GMP', go: 'Subway to Bukhansan Ui station (Ui-Sinseol line), then walk to the trailhead', days: 2, nights: 1, diff: 3, fit: [5, 4, 5, 2], budget: 220000, season: 'autumn', stay: 'motel', health: 'sprain',
+    food: { place: ['북한산 입구 파전집', 'Trailhead pajeon house'], text: 'After the hike, hikers in neon jackets gather for seafood pancakes and makgeolli.', dishes: [['해물파전', 'Seafood pancake', 16000], ['도토리묵', 'Acorn jelly salad', 12000], ['잔치국수', 'Banquet noodles', 7000]] },
+    stops: [
+      { key: 'trail', ko: '백운대 탐방로', en: 'Baegundae trail', kind: 'mountain', text: 'Steep granite steps with steel cables near the top. Weekend trails are busy with friendly Korean hikers.' },
+      { key: 'summit', ko: '백운대 정상', en: 'Baegundae summit', kind: 'mountain', text: 'At 836 m the whole city spreads below you – on clear days you can see the Yellow Sea.' },
+      { key: 'temple', ko: '도선사', en: 'Doseonsa Temple', kind: 'temple', text: 'A mountain temple from the 9th century, with a giant stone Buddha carved by hand.' },
+    ],
+  },
+  {
+    id: 'se-hanriver', area: 'seoul', cat: 'sightseeing',
+    title: ['Han River Skyline', '한강과 롯데타워'], sub: ['Seoul Sky, Seokchon Lake & the rainbow fountain – 1 night', '서울스카이·석촌호수·반포 무지개분수 1박2일'],
+    desc: 'From the 5th-tallest building in the world to a picnic by the river at sunset.',
+    hub: 'GMP', go: 'Subway Line 9 express towards Sports Complex, then Line 2 to Jamsil', days: 2, nights: 1, diff: 1, fit: [4, 5, 5, 5], budget: 350000, season: 'summer', stay: 'hotel',
+    food: { place: ['잠실 한식당', 'Jamsil Korean restaurant'], text: 'A busy Korean restaurant near Lotte World Tower – families share big pots of stew.', dishes: [['부대찌개', 'Army stew', 11000, 2, 1], ['불고기', 'Bulgogi', 15000], ['비빔밥', 'Bibimbap', 10000]] },
+    stops: [
+      { key: 'sky', ko: '서울스카이', en: 'Seoul Sky (Lotte World Tower)', kind: 'night', text: 'A 555 m tower with a glass-floor observatory on the 118th floor.', ticket: { adult: 31000, youth: 28000, child: 28000, senior: 28000, open: '10:30', last: '21:00', note: 'Glass floor – not for the faint-hearted!' } },
+      { key: 'lake', ko: '석촌호수', en: 'Seokchon Lake', kind: 'park', text: 'A lake walk under the tower – famous for cherry blossoms in April.' },
+      { key: 'banpo', ko: '반포 한강공원', en: 'Banpo Hangang Park', kind: 'river', text: 'The Moonlight Rainbow Fountain sprays water from the bridge with music on spring–autumn evenings.' },
+    ],
+    extra: 'recycle',
+  },
+  {
+    id: 'se-museums', area: 'seoul', cat: 'culture',
+    title: ['Treasures of Korea', '박물관으로 보는 한국'], sub: ['National Museum, Hangeul & War Memorial – 1 night', '국립중앙박물관·한글박물관·전쟁기념관 1박2일'],
+    desc: 'Five thousand years in two days: golden crowns, the invention of Hangeul and the story of the Korean War.',
+    hub: 'ICN', go: 'AREX to Seoul Station, then Line 4 to Ichon', days: 2, nights: 1, diff: 1, fit: [5, 4, 3, 5], budget: 200000, season: 'winter', stay: 'hotel',
+    food: { place: ['용산 백반집', 'Yongsan home-style eatery'], text: 'A no-frills lunch place full of office workers – one set menu, a dozen side dishes.', dishes: [['백반', 'Home-style set meal', 9000], ['김치찌개', 'Kimchi stew', 9000, 0, 1], ['제육볶음', 'Spicy pork stir-fry', 10000, 0, 2]] },
+    stops: [
+      { key: 'nmk', ko: '국립중앙박물관', en: 'National Museum of Korea', kind: 'museum', text: 'One of the world\'s largest museums – Silla gold crowns, celadon and the 10-storey Gyeongcheonsa pagoda indoors. Free.' },
+      { key: 'hangeul', ko: '국립한글박물관', en: 'National Hangeul Museum', kind: 'museum', text: 'King Sejong created Hangeul in 1443 so everyone could read. Try writing your name in Korean!', phrase: ['제 이름은 ___예요', 'Je i-reu-meun ___-ye-yo', 'My name is ___'] },
+      { key: 'war', ko: '전쟁기념관', en: 'War Memorial of Korea', kind: 'memorial', text: 'Tanks and planes outside, and moving stories of the 1950–53 Korean War and the soldiers from 16 nations.' },
+    ],
+    extra: 'crosswalk',
+  },
+  {
+    id: 'se-hanbok', area: 'seoul', cat: 'experience',
+    title: ['Hanbok & Tea Day', '한복과 전통차'], sub: ['Hanbok rental, Insadong tea house & Ikseon-dong – 1 night', '한복 대여·인사동 찻집·익선동 1박2일'],
+    desc: 'Dress in hanbok, learn the tea ceremony and wander through 100-year-old hanok alleys turned into cafés.',
+    hub: 'GMP', go: 'Subway Line 5 to Gwanghwamun', days: 2, nights: 1, diff: 1, fit: [4, 5, 5, 4], budget: 300000, season: 'autumn', stay: 'hanok',
+    food: { place: ['인사동 한정식', 'Insadong hanjeongsik'], text: 'A royal-style course meal: dozens of small dishes arrive one after another.', dishes: [['한정식 코스', 'Korean table-d\'hôte course', 35000, 2], ['비빔밥', 'Bibimbap', 13000], ['떡갈비', 'Grilled short-rib patty', 18000]] },
+    stops: [
+      { key: 'hanbok', ko: '한복 대여점', en: 'Hanbok rental shop', kind: 'workshop', text: 'Choose a jeogori jacket and a full chima skirt; staff braid your hair and add a norigae ornament.' },
+      { key: 'insadong', ko: '인사동 찻집', en: 'Insadong tea house', kind: 'workshop', text: 'A master shows how to warm the cups, pour three times and hold the cup with two hands.', phrase: ['차 맛있어요', 'Cha ma-si-sseo-yo', 'The tea is delicious'] },
+      { key: 'ikseon', ko: '익선동', en: 'Ikseon-dong', kind: 'village', text: 'A maze of 1920s hanok now full of tiny cafés, bakeries and photo studios.' },
+    ],
+  },
+  {
+    id: 'se-kpop', area: 'seoul', cat: 'culture',
+    title: ['K-Pop Seoul', 'K-팝 성지순례'], sub: ['Gangnam K-Star Road, COEX & Hongdae busking – 1 night', '강남 K스타로드·코엑스·홍대 버스킹 1박2일'],
+    desc: 'Follow your idols: the agency streets of Gangnam, the giant wave screen at COEX and fan culture in Hongdae.',
+    hub: 'ICN', go: 'Airport limousine bus to COEX', days: 2, nights: 1, diff: 1, fit: [5, 4, 5, 3], budget: 350000, season: 'summer', stay: 'hotel',
+    food: { place: ['강남 분식집', 'Gangnam snack bar'], text: 'Trainees and fans fuel up on gimbap and ramyeon between practice sessions.', dishes: [['김밥', 'Gimbap', 4000], ['라볶이', 'Ramen tteokbokki', 7000, 0, 2], ['돈가스', 'Pork cutlet', 10000]] },
+    stops: [
+      { key: 'kstar', ko: 'K스타로드', en: 'K-Star Road (Apgujeong)', kind: 'street', text: 'Colourful bear statues ("GangnamDol") for each idol group line the street near the old agency buildings.' },
+      { key: 'coex', ko: '코엑스 별마당도서관', en: 'COEX & Starfield Library', kind: 'museum', text: 'A 13 m wall of books inside a mall, and the famous 3D "wave" screen outside.' },
+      { key: 'busking', ko: '홍대 버스킹', en: 'Hongdae busking', kind: 'night', text: 'Dance crews cover the latest choreography – crowds film and cheer.' },
+    ],
+    extra: 'locker',
+  },
+  {
+    id: 'se-bike', area: 'seoul', cat: 'adventure',
+    title: ['Han River by Bike', '한강 자전거 종주'], sub: ['Ttareungyi bikes, Yeouido & Nodeul Island – 1 night', '따릉이·여의도·노들섬 1박2일'],
+    desc: 'Rent a city bike and ride 20 km of riverside paths – picnic, bridges and sunset on an island.',
+    hub: 'GMP', go: 'Subway Line 9 to Yeouido', days: 2, nights: 1, diff: 2, fit: [5, 5, 5, 3], budget: 200000, season: 'spring', stay: 'guesthouse', health: 'heat',
+    food: { place: ['여의도 편의점 & 라면', 'Riverside convenience store'], text: 'The Han River classic: instant ramyeon cooked by a machine in the convenience store.', dishes: [['한강라면', 'Machine-cooked ramyeon', 4000, 0, 1], ['김밥', 'Gimbap', 3500], ['치킨', 'Fried chicken (delivery)', 20000]] },
+    stops: [
+      { key: 'ttareungyi', ko: '따릉이 대여소', en: 'Ttareungyi bike station', kind: 'park', text: 'Seoul\'s green public bikes: rent with an app for ₩1,000/hour.' },
+      { key: 'yeouido', ko: '여의도 한강공원', en: 'Yeouido Hangang Park', kind: 'river', text: 'A huge riverside park – in spring, cherry trees line the road behind the National Assembly.' },
+      { key: 'nodeul', ko: '노들섬', en: 'Nodeul Island', kind: 'river', text: 'A small island under Hangang Bridge with lawns, music halls and the best sunset view over the river.' },
+    ],
+  },
+  {
+    id: 'se-namsan', area: 'seoul', cat: 'sightseeing',
+    title: ['Namsan Night Walk', '남산 야경 산책'], sub: ['N Seoul Tower, hanok village & Myeongdong night market – 1 night', 'N서울타워·남산골·명동 야시장 1박2일'],
+    desc: 'Climb Seoul\'s central mountain at sunset, see the lights come on and finish with street food in Myeongdong.',
+    hub: 'ICN', go: 'Airport limousine bus to Myeongdong', days: 2, nights: 1, diff: 1, fit: [4, 5, 4, 4], budget: 280000, season: 'autumn', stay: 'hotel',
+    food: { place: ['명동 야시장', 'Myeongdong night stalls'], text: 'From 17:00 food carts fill Myeongdong: lobster tails, egg bread, tornado potatoes.', dishes: [['계란빵', 'Egg bread', 3000], ['회오리감자', 'Tornado potato', 5000], ['닭꼬치', 'Chicken skewer', 5000, 0, 1]] },
+    stops: [
+      { key: 'hanokvillage', ko: '남산골 한옥마을', en: 'Namsangol Hanok Village', kind: 'village', text: 'Five restored noble houses and a time capsule buried for Seoul\'s 600th anniversary. Free entry.' },
+      { key: 'tower', ko: 'N서울타워', en: 'N Seoul Tower', kind: 'night', text: 'The tower on Namsan (243 m) – love locks on the fence and the city glittering below.', bus: { no: '01A', color: 'yellow', stops: ['명동역 Myeongdong Stn.', '남산케이블카 Cable Car', '국립극장 National Theater', '남산서울타워 N Seoul Tower'] } },
+      { key: 'myeongdong', ko: '명동 야시장', en: 'Myeongdong night market', kind: 'market', text: 'Hundreds of stalls and shoppers – watch your bag and keep small notes ready.' },
+    ],
+  },
+  {
+    id: 'se-temple', area: 'seoul', cat: 'experience',
+    title: ['Temple Life in the City', '도심 속 템플스테이'], sub: ['Jogyesa, Bongeunsa temple stay & lotus lanterns – 1 night', '조계사·봉은사 템플스테이·연등 만들기 1박2일'],
+    desc: 'Find calm between skyscrapers: make a lotus lantern, sleep in a temple and join the dawn bell ceremony.',
+    hub: 'ICN', go: 'AREX to Seoul Station, then Line 1 to Jonggak', days: 2, nights: 1, diff: 2, fit: [5, 4, 3, 3], budget: 220000, season: 'spring', stay: 'temple',
+    food: { place: ['사찰음식 식당', 'Temple-food restaurant'], text: 'Temple food uses no meat and no pungent vegetables like garlic and onion – yet it\'s full of flavour.', dishes: [['사찰정식', 'Temple set meal', 18000], ['산채비빔밥', 'Mountain-herb bibimbap', 13000], ['연잎밥', 'Rice in lotus leaf', 15000]] },
+    stops: [
+      { key: 'jogyesa', ko: '조계사', en: 'Jogyesa Temple', kind: 'temple', text: 'The head temple of Korean Buddhism, under a 500-year-old tree. In spring thousands of lanterns hang overhead.' },
+      { key: 'lantern', ko: '연등 만들기', en: 'Lotus-lantern workshop', kind: 'workshop', text: 'Fold pink paper petals one by one onto a frame – it takes patience!' },
+      { key: 'bongeunsa', ko: '봉은사', en: 'Bongeunsa Temple', kind: 'temple', text: 'A 1,200-year-old temple facing the COEX towers – at 4 am the big drum and bell wake the monks.' },
+    ],
+  },
+  {
+    id: 'se-bbq', area: 'seoul', cat: 'food',
+    title: ['Seoul BBQ & Seafood Night', '고기·수산시장·포장마차'], sub: ['Mapo galbi alley, Noryangjin fish market & pojangmacha – 1 night', '마포 갈매기살·노량진·포차 1박2일'],
+    desc: 'The full Korean night out: grill pork at a smoky table, pick live seafood at Noryangjin and end at a tented street bar.',
+    hub: 'GMP', go: 'Subway Line 5 to Gongdeok', days: 2, nights: 1, diff: 1, fit: [3, 5, 5, 4], budget: 320000, season: 'winter', stay: 'motel', health: 'stomach',
+    food: { place: ['마포 고깃집', 'Mapo BBQ alley'], text: 'Gongdeok\'s alleys are famous for galmaegisal (pork skirt) grilled over charcoal.', dishes: [['갈매기살', 'Pork skirt', 15000, 2], ['삼겹살', 'Pork belly', 16000, 2], ['된장찌개', 'Soybean stew', 4000]] },
+    food2: { place: ['노량진 수산시장 식당', 'Noryangjin market restaurant'], text: 'Pick fish downstairs, eat it upstairs – the restaurant charges a table fee for sides and cooking.', dishes: [['광어회', 'Flatfish sashimi', 30000, 2], ['매운탕', 'Spicy fish stew', 15000, 0, 2], ['새우튀김', 'Fried prawns', 15000]] },
+    stops: [
+      { key: 'mapo', ko: '마포 갈매기살 골목', en: 'Mapo galbi alley', kind: 'street', text: 'Smoke, sizzling grills and office workers toasting after work.' },
+      { key: 'noryangjin', ko: '노량진 수산시장', en: 'Noryangjin Fish Market', kind: 'market', text: 'Tanks full of crabs, octopus and fish – ask the price per kg before choosing.' },
+      { key: 'pocha', ko: '종로 포장마차', en: 'Jongno pojangmacha', kind: 'night', text: 'Orange-tented street bars with plastic stools – udon, odeng and soju until late.' },
+    ],
+  },
+  {
+    id: 'se-citywall', area: 'seoul', cat: 'adventure',
+    title: ['Seoul City Wall Trek', '한양도성 성곽길'], sub: ['Inwangsan, Bugaksan & Ihwa mural village – 1 night', '인왕산·북악산·이화마을 1박2일'],
+    desc: 'Hike the 600-year-old wall that once enclosed the capital – rocky peaks, guard posts and mural-painted alleys.',
+    hub: 'ICN', go: 'AREX to Seoul Station, then Line 3 to Dongnimmun', days: 2, nights: 1, diff: 2, fit: [5, 4, 4, 2], budget: 200000, season: 'autumn', stay: 'guesthouse', health: 'sprain',
+    food: { place: ['서촌 토속촌', 'Seochon samgyetang house'], text: 'Whole young chicken stuffed with rice and ginseng, served bubbling – a hiker\'s favourite.', dishes: [['삼계탕', 'Ginseng chicken soup', 20000], ['전기구이 통닭', 'Rotisserie chicken', 18000], ['인삼주', 'Ginseng liquor shot', 3000]] },
+    stops: [
+      { key: 'inwangsan', ko: '인왕산', en: 'Inwangsan', kind: 'mountain', text: 'A granite peak with shamanic shrines and a sunset view over Gyeongbokgung.' },
+      { key: 'bugaksan', ko: '북악산 성곽길', en: 'Bugaksan wall trail', kind: 'mountain', text: 'Once closed for security, now open – steep stone steps along the wall behind the old Blue House.' },
+      { key: 'ihwa', ko: '이화 벽화마을', en: 'Ihwa Mural Village', kind: 'village', text: 'Hillside alleys with painted stairs and murals – residents ask visitors to keep quiet.' },
+    ],
+  },
+  {
+    id: 'se-jongmyo', area: 'seoul', cat: 'culture',
+    title: ['Royal Rituals', '종묘와 덕수궁'], sub: ['Jongmyo Shrine, Deoksugung & Jeongdong – 1 night', '종묘·덕수궁·정동길 1박2일'],
+    desc: 'The UNESCO-listed royal shrine, a palace where East meets West and the stone-walled road of Jeongdong.',
+    hub: 'GMP', go: 'Subway Line 5 to Jongno 3-ga', days: 2, nights: 1, diff: 1, fit: [4, 5, 3, 5], budget: 220000, season: 'winter', stay: 'hotel',
+    food: { place: ['종로 설렁탕', 'Jongno seolleongtang house'], text: 'A 100-year-old restaurant serving milky ox-bone soup – add salt and green onions yourself.', dishes: [['설렁탕', 'Ox-bone soup', 13000], ['수육', 'Boiled beef slices', 30000], ['도가니탕', 'Ox-knee soup', 16000]] },
+    stops: [
+      { key: 'jongmyo', ko: '종묘', en: 'Jongmyo Shrine', kind: 'palace', text: 'The 101 m main hall holds the spirit tablets of Joseon kings; the royal ancestral ritual is UNESCO intangible heritage. Closed Tuesdays.', ticket: { adult: 1000, open: '09:00', last: '17:00', note: 'Weekdays: guided tours. Closed Tuesdays.' } },
+      { key: 'deoksugung', ko: '덕수궁', en: 'Deoksugung Palace', kind: 'palace', text: 'Wooden halls next to a Western-style stone palace; the guard ceremony at Daehanmun is spectacular.', ticket: { adult: 1000, open: '09:00', last: '20:00', hanbok: true } },
+      { key: 'jeongdong', ko: '정동길', en: 'Jeongdong-gil', kind: 'street', text: 'A romantic stone-wall road with early modern churches and embassies.' },
+    ],
+    extra: 'taxi',
+  },
+];

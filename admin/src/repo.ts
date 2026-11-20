@@ -106,7 +106,7 @@ class SupabaseRepo implements Repo {
         id: p.id, type: p.type, title: p.title, priceUsd: Number(p.price_usd), iosProductId: p.ios_product_id ?? '', androidProductId: p.android_product_id ?? '', courseIds: p.course_ids ?? [], isActive: p.is_active,
       })),
       courses: this.ok<any[]>(courses).map((r) => ({
-        id: r.id, categoryId: r.category_id, title: r.title, subtitle: r.subtitle, description: r.description, region: r.region,
+        id: r.id, categoryId: r.category_id, area: r.area ?? undefined, title: r.title, subtitle: r.subtitle, description: r.description, region: r.region,
         entry: r.entry, exit: r.exit, nights: r.nights, days: r.days, difficulty: r.difficulty, partyFit: r.party_fit, partyTips: r.party_tips ?? {},
         startBudget: r.start_budget, coverBg: r.cover_bg, access: r.access, productId: r.product_id ?? undefined, isPublished: r.is_published,
         version: r.version, sortOrder: r.sort_order,
@@ -142,7 +142,7 @@ class SupabaseRepo implements Repo {
     if (previousId && previousId !== c.id) this.ok(await this.db.from('courses').update({ id: c.id }).eq('id', previousId));
     this.ok(
       await this.db.from('courses').upsert({
-        id: c.id, category_id: c.categoryId, title: c.title, subtitle: c.subtitle, description: c.description, region: c.region,
+        id: c.id, category_id: c.categoryId, area: c.area ?? null, title: c.title, subtitle: c.subtitle, description: c.description, region: c.region,
         entry: c.entry, exit: c.exit, nights: c.nights, days: c.days, difficulty: c.difficulty, party_fit: c.partyFit, party_tips: c.partyTips,
         start_budget: c.startBudget, cover_bg: c.coverBg, access: c.access, product_id: c.productId || null, is_published: c.isPublished,
         version: c.version, sort_order: c.sortOrder,

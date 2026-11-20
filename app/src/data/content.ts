@@ -8,6 +8,7 @@ const CACHE_KEY = 'kv.content.v1';
 const toCourse = (r: any, scenes: any[]): Course => ({
   id: r.id,
   categoryId: r.category_id,
+  area: r.area ?? undefined,
   title: r.title,
   subtitle: r.subtitle,
   description: r.description,
