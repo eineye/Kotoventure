@@ -224,9 +224,14 @@ export interface Gateway {
   name: L;
 }
 
+/** Province-level areas used to group missions. */
+export type Area = 'seoul' | 'gyeonggi' | 'incheon' | 'chungcheong' | 'gangwon' | 'jeolla' | 'gyeongsang' | 'jeju';
+
 export interface Course {
   id: string;
   categoryId: string;
+  /** province-level area for the mission list filter */
+  area?: Area;
   title: L;
   subtitle: L;
   description: L;

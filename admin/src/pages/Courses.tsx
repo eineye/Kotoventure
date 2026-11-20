@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
+  AREAS,
   BACKGROUND_IDS,
   PROP_IDS,
   PARTY_TYPES,
@@ -56,6 +57,7 @@ const newCourse = (categoryId: string, n: number): Course => ({
 export function Courses() {
   const { content, act } = useContent();
   const [editing, setEditing] = useState<{ course: Course; originalId?: string } | null>(null);
+  const [areaFilter, setAreaFilter] = useState('');
 
   if (editing)
     return (
@@ -73,12 +75,20 @@ export function Courses() {
         <h2>미션·코스</h2>
         <button onClick={() => setEditing({ course: newCourse(content.categories[0]?.id ?? 'sightseeing', content.courses.length + 1) })}>+ 새 코스</button>
       </div>
+      <div className="row wrap" style={{ margin: '8px 0' }}>
+        {[['', '전체'], ...AREAS.map((a) => [a.id, `${a.icon} ${a.name.ko}`])].map(([id, label]) => (
+          <button key={id} className={areaFilter === id ? '' : 'ghost'} onClick={() => setAreaFilter(id)}>
+            {label} ({content.courses.filter((c) => !id || c.area === id).length})
+          </button>
+        ))}
+      </div>
       <p className="dim">모든 코스는 공항/항구에서 출발해야 하며, 교통·숙박·음식·돈·생활예절·법규·날씨·의료 8개 주제를 모두 포함해야 공개 검증을 통과합니다.</p>
       <table>
         <thead>
           <tr>
             <th>#</th>
             <th>코스</th>
+            <th>지역</th>
             <th>분류</th>
             <th>출발 → 도착</th>
             <th>일정</th>
@@ -92,6 +102,7 @@ export function Courses() {
         </thead>
         <tbody>
           {[...content.courses]
+            .filter((c) => !areaFilter || c.area === areaFilter)
             .sort((a, b) => a.sortOrder - b.sortOrder)
             .map((c) => (
               <tr key={c.id}>
@@ -100,6 +111,7 @@ export function Courses() {
                   <b>{tr(c.title, 'ko')}</b>
                   <div className="dim small">{c.id}</div>
                 </td>
+                <td>{AREAS.find((a) => a.id === c.area)?.name.ko ?? '–'}</td>
                 <td>{tr(content.categories.find((x) => x.id === c.categoryId)?.name, 'ko')}</td>
                 <td>
                   {c.entry.kind === 'airport' ? '✈' : '⚓'}
@@ -264,6 +276,9 @@ function CourseEditor({ initial, originalId, onClose, onSaved }: { initial: Cour
           </Field>
           <Field label="도착">
             <GatewayEdit value={c.exit} onChange={(exit) => set({ exit })} />
+          </Field>
+          <Field label="지역 (미션 목록 필터)">
+            <Select value={c.area ?? ''} onChange={(area) => set({ area: (area || undefined) as Course['area'] })} options={[['', '미지정'], ...AREAS.map((a) => [a.id, `${a.icon} ${a.name.ko}`] as [string, string])]} />
           </Field>
           <Field label="일정">
             <div className="row">

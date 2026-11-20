@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
-import { PARTY_TYPES, recommend, tr, type Course } from '@kotoventure/shared';
+import { AREAS, PARTY_TYPES, recommend, tr, type Course } from '@kotoventure/shared';
 import { Background } from '../art/backgrounds';
 import { Traveller, avatarById } from '../art/Characters';
 import { LogoMark } from '../art/Logo';
@@ -46,11 +46,12 @@ function Missions({ openCourse }: { openCourse: (id: string) => void }) {
   const lang = profile?.lang ?? 'en';
   const L = t(lang);
   const [cat, setCat] = useState<string | null>(null);
+  const [area, setArea] = useState<string | null>(null);
   const party = profile?.party ?? 'solo';
   const published = content.courses.filter((c) => c.isPublished);
   const recs = useMemo(() => recommend(published, party).slice(0, 3), [published, party]);
   const cats = content.categories.filter((c) => c.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
-  const list = published.filter((c) => !cat || c.categoryId === cat).sort((a, b) => a.sortOrder - b.sortOrder);
+  const list = published.filter((c) => (!cat || c.categoryId === cat) && (!area || c.area === area)).sort((a, b) => a.sortOrder - b.sortOrder);
   const partyName = tr(PARTY_TYPES.find((p) => p.id === party)?.name, lang);
 
   return (
@@ -87,12 +88,20 @@ function Missions({ openCourse }: { openCourse: (id: string) => void }) {
         🗺️ {L.allMissions}
       </H>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 10, marginHorizontal: -16 }} contentContainerStyle={{ paddingHorizontal: 16, gap: 8 }}>
+        <Chip testID="area-all" label={`📍 ${lang === 'ko' ? '전 지역' : 'All regions'}`} active={!area} onPress={() => setArea(null)} color={C.navy} />
+        {AREAS.map((a) => {
+          const n = published.filter((c) => c.area === a.id).length;
+          return n ? <Chip key={a.id} testID={`area-${a.id}`} label={`${a.icon} ${tr(a.name, lang)} ${n}`} color={C.navy} active={area === a.id} onPress={() => setArea(a.id)} /> : null;
+        })}
+      </ScrollView>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8, marginHorizontal: -16 }} contentContainerStyle={{ paddingHorizontal: 16, gap: 8 }}>
         <Chip label={lang === 'ko' ? '전체' : 'All'} active={!cat} onPress={() => setCat(null)} />
         {cats.map((c) => (
           <Chip key={c.id} label={`${c.icon} ${tr(c.name, lang)}`} color={c.color} active={cat === c.id} onPress={() => setCat(c.id)} />
         ))}
       </ScrollView>
       <View style={{ gap: 12, marginTop: 12 }}>
+        {list.length === 0 && <P dim>{lang === 'ko' ? '이 조건의 미션이 없어요.' : 'No missions match these filters.'}</P>}
         {list.map((c) => (
           <RowCard key={c.id} c={c} lang={lang} onPress={() => openCourse(c.id)} />
         ))}

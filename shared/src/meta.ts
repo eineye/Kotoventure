@@ -26,6 +26,19 @@ export const CATEGORIES: Category[] = [
   { id: 'experience', name: { en: 'Experience', ko: '체험' }, icon: '🎤', color: '#6B46C1', sortOrder: 5, isActive: true },
 ];
 
+const AREA_LABEL = { seoul: ['Seoul', '서울'], gyeonggi: ['Gyeonggi', '경기'], incheon: ['Incheon', '인천'], chungcheong: ['Chungcheong', '충청'], gangwon: ['Gangwon', '강원'], jeolla: ['Jeolla', '전라'], gyeongsang: ['Gyeongsang', '경상'], jeju: ['Jeju', '제주'] } as const;
+
+export const AREAS: { id: import('./types').Area; name: L; icon: string }[] = [
+  { id: 'seoul', name: { en: 'Seoul', ko: '서울' }, icon: '🏙️' },
+  { id: 'gyeonggi', name: { en: 'Gyeonggi', ko: '경기' }, icon: '🏯' },
+  { id: 'incheon', name: { en: 'Incheon', ko: '인천' }, icon: '✈️' },
+  { id: 'chungcheong', name: { en: 'Chungcheong', ko: '충청' }, icon: '🏞️' },
+  { id: 'gangwon', name: { en: 'Gangwon', ko: '강원' }, icon: '⛰️' },
+  { id: 'jeolla', name: { en: 'Jeolla', ko: '전라' }, icon: '🍲' },
+  { id: 'gyeongsang', name: { en: 'Gyeongsang', ko: '경상' }, icon: '🌊' },
+  { id: 'jeju', name: { en: 'Jeju', ko: '제주' }, icon: '🍊' },
+];
+
 export const PRODUCTS: Product[] = [
   {
     id: 'app_base',
@@ -37,6 +50,18 @@ export const PRODUCTS: Product[] = [
     courseIds: ['seoul-classic', 'busan-food', 'gyeongju-heritage', 'jeju-adventure', 'kculture-experience'],
     isActive: true,
   },
+  ...(['seoul', 'gyeonggi', 'incheon', 'chungcheong', 'gangwon', 'jeolla', 'gyeongsang', 'jeju'] as const).map(
+    (area): Product => ({
+      id: `pack_${area}`,
+      type: 'course_pack',
+      title: { en: `Mission Pack: ${AREA_LABEL[area][0]}`, ko: `미션팩: ${AREA_LABEL[area][1]}` },
+      priceUsd: area === 'seoul' ? 2.99 : 1.99,
+      iosProductId: `com.kotoventure.pack.${area}`,
+      androidProductId: `pack_${area}`,
+      courseIds: [], // filled from the courses' productId in index.ts
+      isActive: true,
+    }),
+  ),
   {
     id: 'pack_dmz_east',
     type: 'course_pack',
