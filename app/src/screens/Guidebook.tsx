@@ -18,6 +18,12 @@ export function Guidebook() {
   const cards = content.cards.filter((c) => !topic || c.topic === topic);
   const total = content.cards.length;
   const got = content.cards.filter((c) => collectedCards.has(c.id)).length;
+  /** published missions that teach this card (choices, card steps or simulations) */
+  const missionsWith = (cardId: string) =>
+    content.courses
+      .filter((co) => co.isPublished && co.scenes.some((sc) => sc.steps.some((st) => 'cardId' in st && st.cardId === cardId)))
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map((co) => tr(co.title, lang));
 
   return (
     <View style={{ flex: 1 }}>
@@ -64,7 +70,7 @@ export function Guidebook() {
         lang={lang}
         onClose={() => setOpen(null)}
         onIndex={setOpen}
-        noteFor={(c) => (collectedCards.has(c.id) ? undefined : lang === 'ko' ? '🔒 미션에서 이 카드를 찾으면 수집됩니다.' : '🔒 Find this card in a mission to collect it.')}
+        locked={(c) => (collectedCards.has(c.id) ? null : missionsWith(c.id))}
       />
     </View>
   );
