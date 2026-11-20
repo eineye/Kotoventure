@@ -30,7 +30,7 @@ export const busanFood: Course = {
   coverBg: 'market',
   access: 'base',
   isPublished: true,
-  version: 2,
+  version: 3,
   sortOrder: 2,
   scenes: [
     {
@@ -147,7 +147,8 @@ export const busanFood: Course = {
       title: { en: 'Gamcheon Culture Village', ko: '감천문화마을' },
       location: { en: 'Gamcheon, Saha-gu', ko: '감천, 사하구' },
       steps: [
-        say('A hillside of pastel houses, murals and the "Little Prince" statue. A small green "maeul bus" (village bus) climbs the steep road.'),
+        say('A hillside of pastel houses, murals and the "Little Prince" statue. A small green "maeul bus" (village bus) climbs the steep road from Toseong station.'),
+        simulate('bus', 'transport', 'Village bus to Gamcheon', 'Take the green village bus up the hill: find it on the arrival board, tap in at the front, ring the bell and tap out at the back door.', { busNo: '사하1-1', busColor: 'green', stops: ['토성역 Toseong Stn.', '부산대병원 PNU Hospital', '감정초등학교 Gamjeong Elem.', '감천문화마을 Gamcheon Village'], getOff: '감천문화마을 Gamcheon Village' }, 'tr-bus'),
         ask('transport', 'On the packed village bus an elderly lady gets on with groceries.', [
           ok('Offer her my seat', 'She pats your arm: "Gomawoyo!" Respect for elders matters a lot.', { manner: 8, energy: -3 }, 'priority-seat'),
           no('Pretend to sleep', 'An easy one to miss! Giving your seat to elders is a kind gesture Koreans really appreciate – try it next time.', { manner: -6 }),

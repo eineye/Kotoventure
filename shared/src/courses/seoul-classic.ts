@@ -34,7 +34,7 @@ export const seoulClassic: Course = {
   coverBg: 'palace',
   access: 'base',
   isPublished: true,
-  version: 2,
+  version: 3,
   sortOrder: 1,
   scenes: [
     {
@@ -133,11 +133,7 @@ export const seoulClassic: Course = {
             { ko: '여기 계산해 주세요', roman: 'Yeo-gi gye-san-hae ju-se-yo', en: 'The bill here, please', extra: ['맛있어요'] },
           ],
         }),
-        ask('food', 'You want to order. How do you call the staff?', [
-          ok('Press the call bell (or raise a hand and say "Jeogiyo!")', 'Exactly. In Korea calling the staff like this is totally normal.', { manner: 3 }, 'call-bell'),
-          no('Wait silently until they come', 'You wait… and wait. Staff won\'t come unless you call.', { energy: -5 }),
-          no('Whistle', 'Whistling at staff feels rude in Korea. Just say "Jeogiyo!" or press the call bell – totally normal.', { manner: -10 }),
-        ], 'fo-bell'),
+        simulate('menu', 'food', 'Order from the Korean menu', 'The menu board is only in Korean. Order enough meat for your party (watch the "2인분 이상" rule), call the staff, get free refills and pay the Korean way.', { restaurant: 'bbq' }, 'fo-bell'),
         ask('food', 'The meat is grilling. How do you eat it the Korean way?', [
           ok('Wrap meat, garlic and ssamjang in a lettuce leaf and eat it in one bite', 'Delicious! That\'s "ssam".', { energy: 10 }, 'bbq'),
           no('Cut the lettuce with the scissors and use a fork', 'The scissors are for the meat. There is no fork.', { energy: 5 }),
@@ -244,11 +240,9 @@ export const seoulClassic: Course = {
       location: { en: 'Namsan', ko: '남산' },
       steps: [
         say('Late afternoon. You take the yellow Namsan circular bus to N Seoul Tower, on top of Namsan mountain.'),
-        ask('transport', 'Getting off the bus, what must you not forget?', [
-          ok('Tap my card again at the back door', 'Right – otherwise you lose the free transfer later.', { money: 1500 }, 'tmoney'),
-          no('Nothing, I already paid when I got on', 'You lose the transfer discount on your next ride.', { money: -1500 }),
-        ], 'tr-bus'),
+        simulate('bus', 'transport', 'Ride the Namsan circular bus', 'Find the right bus on the arrival board, board at the front and tap your T-money, ring the bell before your stop and tap again when you get off.', { busNo: '01A', busColor: 'yellow', stops: ['명동역 Myeongdong Stn.', '남산케이블카 Cable Car', '국립극장 National Theater', '남산서울타워 N Seoul Tower'], getOff: '남산서울타워 N Seoul Tower' }, 'tr-bus'),
         say('Couples attach "love locks" to the fence at the top. You write both names on a lock.', { parties: ['couple'] }),
+        simulate('ticket', 'money', 'Observatory tickets', 'The plaza is free, but the observatory needs a ticket. Read the price board and buy the right tickets for everyone in your party.', { site: 'tower' }),
         event('weather', 'Sudden downpour!', 'Out of nowhere, a violent rain shower hits – but you have your compact umbrella. Smart purchase!', { energy: -2 }, 'umbrella', { ifFlags: ['umbrella'] }),
         event('weather', 'Sudden downpour!', 'Out of nowhere, a violent rain shower hits and you have no umbrella. Soaked! (The tower shop sells them for ₩15,000…)', { energy: -10, money: -15000 }, 'typhoon', { unlessFlags: ['umbrella'] }),
         ask('weather', 'Water is gushing down the steps. What do you do?', [
@@ -279,10 +273,8 @@ export const seoulClassic: Course = {
       steps: [
         simulate('transfer', 'transport', 'Subway to the palace', 'Find the fastest subway route from Myeongdong to Gyeongbokgung station before the train leaves. Tip: bold circles are transfer stations.', { fromStation: 'myeongdong', toStation: 'gyeongbokgung', timeLimit: 60 }, 'tr-transfer'),
         say('Day 5: Gyeongbokgung, the main royal palace of the Joseon dynasty (built 1395). In front of you stands Gwanghwamun Gate.'),
-        ask('money', 'You rented a hanbok nearby. What\'s the advantage at the palace?', [
-          ok('Free admission for visitors wearing hanbok', 'Yes! Adults normally pay about ₩3,000.', { money: 3000 }, 'hanbok'),
-          no('You can enter closed areas', 'No – closed areas stay closed for everyone.', {}),
-        ]),
+        say('You rented hanbok at a shop near the palace. Time to get tickets!'),
+        simulate('ticket', 'money', 'Palace ticket office', 'Read the ticket board at Gwanghwamun. Your whole party is wearing hanbok today – what does that mean at the ticket office?', { site: 'palace', hanbok: true }),
         say('You and your partner rented matching hanbok – the photo spots around Gyeonghoeru Pavilion are perfect.', { parties: ['couple'] }),
         event('surprise', 'Changing of the Royal Guard', 'At 10:00 the royal guards in colourful uniforms perform the changing ceremony with drums at Gwanghwamun.'),
         learn('we-alert'),

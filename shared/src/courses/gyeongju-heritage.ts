@@ -30,7 +30,7 @@ export const gyeongjuHeritage: Course = {
   coverBg: 'temple',
   access: 'base',
   isPublished: true,
-  version: 2,
+  version: 3,
   sortOrder: 3,
   scenes: [
     {
@@ -126,10 +126,7 @@ export const gyeongjuHeritage: Course = {
           ok('Enter by a side door, keep quiet, no photos of worshippers', 'Respectful. The central door is traditionally for senior monks.', { manner: 8 }, 'temple'),
           no('Walk through the central door and take flash photos of the Buddha', 'A monk gently asks you to stop.', { manner: -10 }),
         ], 'et-quiet'),
-        ask('transport', 'To get to Seokguram Grotto higher up the mountain:', [
-          ok('Take the local bus (or shuttle) from Bulguksa', 'Easy. Tap your T-money card – it works in Gyeongju buses too.', { money: -1500 }, 'bus'),
-          no('Hitchhike with strangers', 'Not a common practice in Korea; use the bus.', { energy: -10 }),
-        ], 'tr-bus'),
+        simulate('bus', 'transport', 'Bus up to Seokguram', 'Seokguram Grotto is high up on Tohamsan. Take the city bus from Bulguksa – T-money works in Gyeongju too. Don\'t miss your stop!', { busNo: '12', busColor: 'green', stops: ['불국사 Bulguksa', '불국사 주차장 Bulguksa Parking', '토함산 고개 Tohamsan Pass', '석굴암 Seokguram'], getOff: '석굴암 Seokguram' }, 'tr-bus'),
       ],
     },
     {
@@ -173,9 +170,10 @@ export const gyeongjuHeritage: Course = {
       location: { en: 'Gyochon Traditional Village', ko: '교촌마을' },
       steps: [
         say('Day 3. Gyochon Village is home to Gyeongju Gyodong Beopju, a traditional rice liquor, and the restaurant street serves ssambap (wraps with 20 kinds of leaves).'),
+        simulate('menu', 'food', 'Order ssambap', 'The menu is handwritten in Korean. Order for your whole party – sets are "2인분 이상" – then enjoy the meal and pay.', { restaurant: 'ssambap' }),
         ask('food', 'The ssambap table has dozens of leaves, rice and pastes. How do you eat?', [
-          ok('Put rice and a bit of paste on a leaf, wrap and eat in one bite', 'Perfect, like Korean BBQ ssam!', { energy: 12, money: -15000 }, 'baekban'),
-          no('Eat the leaves one by one as a salad', 'You can – but the wrap is the point!', { energy: 6, money: -15000 }),
+          ok('Put rice and a bit of paste on a leaf, wrap and eat in one bite', 'Perfect, like Korean BBQ ssam!', { energy: 6 }, 'baekban'),
+          no('Eat the leaves one by one as a salad', 'You can – but the wrap is the point!', { energy: 2 }),
         ], 'fo-baekban'),
         say('Dessert: Hwangnam-ppang, a small round bread filled with red bean paste, a Gyeongju speciality.'),
         simulate('cashpay', 'money', 'Buy Hwangnam-ppang', 'The old bakery takes cards, but the owner smiles at cash. Pay for a box with your notes and coins.', { shop: '황남빵 Hwangnam-ppang bakery', items: [{ name: '황남빵 10개입 Box of 10', price: 13000 }], cashOnly: false }),

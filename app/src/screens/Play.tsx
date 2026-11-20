@@ -28,7 +28,8 @@ import { t } from '../i18n';
 import { Bar, Btn, CardView, H, P, PhraseBox, TopicChip, won } from '../ui/kit';
 import { C, R, shadow } from '../ui/theme';
 import { SIM_ICON, SimRunner } from '../sim/SimRunner';
-import { PARTY_SIZE, type SimResult } from '../sim/kit';
+import { PARTY_SIZE, type SimCtx, type SimResult } from '../sim/kit';
+import { canSkip, skipOutcome } from '../sim/skip';
 
 type Phase = 'intro' | 'step' | 'feedback' | 'card' | 'sim' | 'summary';
 interface DayLogItem {
@@ -223,14 +224,20 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     advance(st, cs, ps);
   };
 
-  if (phase === 'sim' && step?.type === 'sim')
-    return (
-      <SimRunner
-        step={step}
-        ctx={{ lang, party, partySize: PARTY_SIZE[party], country: profile?.country ?? 'US', fxRates: content.config.fxRates, cash: stats.cash ?? { ...DEFAULT_CASH }, energy: stats.energy, flags }}
-        onDone={onSimDone}
-      />
-    );
+  const simCtx: SimCtx = { lang, party, partySize: PARTY_SIZE[party], country: profile?.country ?? 'US', fxRates: content.config.fxRates, cash: stats.cash ?? { ...DEFAULT_CASH }, energy: stats.energy, flags };
+
+  /** "I already know this": do the routine in the background (money/cash), no score recorded. */
+  const onSimSkip = () => {
+    const sim = step as SimStep;
+    const r = skipOutcome(sim, simCtx);
+    const base = effects(r.effects).st;
+    const st = { ...base, ...(r.cash ? { cash: r.cash } : {}) };
+    setStats(st);
+    const { cs, ps } = collect(sim.cardId);
+    advance(st, cs, ps);
+  };
+
+  if (phase === 'sim' && step?.type === 'sim') return <SimRunner step={step} ctx={simCtx} onDone={onSimDone} />;
 
   if (phase === 'summary' && summary) {
     const restOnly = summary.resumeStep !== undefined;
@@ -433,6 +440,21 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
                   <P style={{ marginTop: 6 }}>{tr(step.intro, lang)}</P>
                 </View>
                 <Btn testID="sim-start" label={lang === 'ko' ? '시뮬레이션 시작' : 'Start simulation'} style={{ marginTop: 14 }} onPress={() => setPhase('sim')} />
+                {canSkip(step) && (
+                  <Btn
+                    testID="sim-skip"
+                    kind="ghost"
+                    small
+                    label={lang === 'ko' ? '⏭ 이미 잘 알아요 – 건너뛰기' : '⏭ I already know how – skip'}
+                    style={{ marginTop: 8 }}
+                    onPress={onSimSkip}
+                  />
+                )}
+                {canSkip(step) && (
+                  <Text style={{ color: C.inkSoft, fontSize: 11, textAlign: 'center', marginTop: 4 }}>
+                    {lang === 'ko' ? '건너뛰면 비용·현금은 그대로 처리되고 점수는 기록되지 않아요.' : 'Skipping still handles costs and cash – it just records no score.'}
+                  </Text>
+                )}
               </View>
             )}
 

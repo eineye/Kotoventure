@@ -30,7 +30,7 @@ export const kcultureExperience: Course = {
   coverBg: 'stage',
   access: 'base',
   isPublished: true,
-  version: 2,
+  version: 3,
   sortOrder: 5,
   scenes: [
     {
@@ -98,8 +98,9 @@ export const kcultureExperience: Course = {
           ok('"I will eat well" – a thank-you before eating', 'Say it before every meal with Koreans!', { manner: 5 }, 'chopsticks'),
           no('"Hurry up and eat"', 'No – it\'s a polite thank-you.', {}),
         ], 'fo-manners'),
-        ask('food', 'Lunch break! Next door they serve kimchi-jjigae in one big bubbling pot for the table.', [
-          ok('Use the ladle or my own spoon to take some, blow, then sip', 'Hot, sour and comforting.', { energy: 12, money: -9000 }, 'jjigae'),
+        simulate('menu', 'food', 'Lunch at a home-style eatery', 'Lunch break! The eatery next door has a Korean-only menu on the wall. Order one dish per person – and something mild if anyone can\'t eat spicy food.', { restaurant: 'jjigae' }),
+        ask('food', 'Your stew arrives in one big bubbling pot for the table.', [
+          ok('Use the ladle or my own spoon to take some, blow, then sip', 'Hot, sour and comforting.', { energy: 4 }, 'jjigae'),
           no('Drink straight from the pot', 'Please don\'t! Use the ladle or your own spoon – sharing one stew is a lovely Korean custom.', { manner: -8 }),
         ], 'fo-jjigae'),
       ],
@@ -132,10 +133,7 @@ export const kcultureExperience: Course = {
           no('Expect it to be free', 'It costs a little – no big deal.', {}),
         ]),
         simulate('cashpay', 'money', 'Convenience-store checkout', 'Pay for your Han River ramyeon, a banana milk and a plastic bag – try to use your coins!', { shop: '편의점 Convenience store (한강공원)', items: [{ name: '컵라면 Cup ramyeon', price: 1800 }, { name: '바나나우유 Banana milk', price: 1700 }, { name: '봉투 Plastic bag', price: 100 }], cashOnly: false }),
-        ask('etiquette', 'Done eating. The park has bins with labels: 일반 / 재활용 / 음식물.', [
-          ok('Drain soup in the food-waste bin, recycle the cup & cans, rest in general waste', 'Separation hero!', { manner: 8 }, 'trash-bins'),
-          no('Leave the bowl with soup on the grass', 'Park staff have to clean it up, and littering can be fined. The sorting bins are right there – easy!', { manner: -12, money: -50000 }),
-        ], 'et-trash'),
+        simulate('recycle', 'etiquette', 'Han River recycling station', 'Done eating! The park has a recycling station with separate bins. Sort everything from your picnic.', { trash: ['cup', 'can', 'chicken-meat', 'bones', 'tissue', 'bag', 'pet', 'box'] }, 'et-trash'),
         ask('law', 'A friend wants to light some fireworks in the park.', [
           ok('No – fireworks and open flames are banned in most river parks', 'Correct. Fines apply.', { manner: 5 }),
           no('Light them up, it\'s a party!', 'Park patrol fines you.', { money: -50000, manner: -10 }),

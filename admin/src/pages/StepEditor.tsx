@@ -1,4 +1,4 @@
-import { PLACES, PROP_IDS, STATIONS, SUBWAY_STATIONS, TOPICS, tr, type ChoiceOption, type SimConfig, type Effects, type KnowledgeCard, type PartyType, type Speaker, type Step } from '@kotoventure/shared';
+import { BUS_COLORS, PLACES, PROP_IDS, RESTAURANTS, TICKET_SITES, TRASH, STATIONS, SUBWAY_STATIONS, TOPICS, tr, type ChoiceOption, type SimConfig, type Effects, type KnowledgeCard, type PartyType, type Speaker, type Step } from '@kotoventure/shared';
 import { Check, Field, JsonEdit, LText, Num, Select } from '../ui';
 
 const SPEAKERS: Speaker[] = ['guide', 'player', 'local', 'staff', 'driver', 'police', 'doctor', 'pharmacist', 'elder', 'monk', 'haenyeo'];
@@ -27,6 +27,10 @@ const SIMS: [string, string][] = [
   ['transfer', '🚇 지하철 환승 퍼즐 (제한시간 안에 최단 경로)'],
   ['kiosk', '🖥️ 키오스크 주문 (한국어 전용·옵션·대기열 압박)'],
   ['phrase', '🗣️ 한국어 문장 만들기 (단어 조각·발음 듣기)'],
+  ['bus', '🚌 시내버스 (노선 찾기·앞문 승차 태그·하차벨·하차 태그)'],
+  ['ticket', '🎫 관광지 매표소 (요금표·일행별 표·한복 무료·입장 게이트)'],
+  ['menu', '📜 식당 메뉴 주문 (한글 메뉴판·2인분 이상·호출벨·반찬 리필·카운터 계산)'],
+  ['recycle', '♻️ 분리배출 (일반·음식물·플라스틱·캔·유리·종이·비닐)'],
 ];
 
 export const blankStep = (type: Step['type']): Step => {
@@ -411,6 +415,44 @@ function SimConfigEdit({ sim, value, onChange }: { sim: string; value: SimConfig
             <span className="hint">카페 id: americano, latte, vanilla, lemonade, greentea, croffle, cheesecake · 분식 id: gimbap, tuna, tteokbokki, ramyeon, sundae, cola</span>
           </Field>
         </>
+      )}
+      {sim === 'bus' && (
+        <>
+          <Field label="버스 번호 · 색(노선 종류)">
+            <div className="row">
+              <input style={{ width: 90 }} value={value.busNo ?? ''} onChange={(e) => set({ busNo: e.target.value })} />
+              <Select value={value.busColor ?? 'blue'} onChange={(busColor) => set({ busColor: busColor as SimConfig['busColor'] })} options={Object.entries(BUS_COLORS).map(([k, v]) => [k, `${v.ko} (${k})`] as [string, string])} />
+            </div>
+          </Field>
+          <Field label="정류장 순서 (쉼표로 구분, 첫 번째 = 타는 곳)" wide>
+            <input value={(value.stops ?? []).join(', ')} onChange={(e) => set({ stops: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) })} />
+          </Field>
+          <Field label="내릴 정류장">
+            <Select value={value.getOff ?? ''} onChange={(getOff) => set({ getOff })} options={[['', '선택'], ...(value.stops ?? []).slice(1).map((x) => [x, x] as [string, string])]} />
+          </Field>
+        </>
+      )}
+      {sim === 'ticket' && (
+        <>
+          <Field label="관광지 (요금표는 shared/src/practice.ts)">
+            <Select value={value.site ?? 'palace'} onChange={(site) => set({ site })} options={Object.values(TICKET_SITES).map((x) => [x.id, x.ko] as [string, string])} />
+          </Field>
+          <Check checked={!!value.hanbok} onChange={(hanbok) => set({ hanbok })} label="일행이 한복을 입고 있음 (한복 무료 장소면 무료 입장이 정답)" />
+        </>
+      )}
+      {sim === 'menu' && (
+        <Field label="식당 (메뉴·가격은 shared/src/practice.ts)">
+          <Select value={value.restaurant ?? 'bbq'} onChange={(restaurant) => set({ restaurant })} options={Object.values(RESTAURANTS).map((x) => [x.id, x.ko] as [string, string])} />
+        </Field>
+      )}
+      {sim === 'recycle' && (
+        <Field label="버릴 물건 (비우면 기본 8개)" wide>
+          <div className="row wrap">
+            {TRASH.map((t) => (
+              <Check key={t.id} checked={(value.trash ?? []).includes(t.id)} onChange={(b) => set({ trash: b ? [...(value.trash ?? []), t.id] : (value.trash ?? []).filter((x) => x !== t.id) })} label={`${t.icon} ${t.ko}`} />
+            ))}
+          </div>
+        </Field>
       )}
       {sim === 'phrase' && (
         <Field label="문장 (JSON: ko, roman, en, extra=헷갈리게 할 단어)" wide>

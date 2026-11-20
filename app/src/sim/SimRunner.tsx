@@ -8,6 +8,10 @@ import { DayPlanSim } from './DayPlanSim';
 import { TransferSim } from './TransferSim';
 import { KioskSim } from './KioskSim';
 import { PhraseSim } from './PhraseSim';
+import { BusSim } from './BusSim';
+import { TicketSim } from './TicketSim';
+import { MenuSim } from './MenuSim';
+import { RecycleSim } from './RecycleSim';
 
 /** Picks the simulation component for a sim step. */
 export function SimRunner(props: SimProps) {
@@ -30,9 +34,17 @@ export function SimRunner(props: SimProps) {
       return <KioskSim {...props} />;
     case 'phrase':
       return <PhraseSim {...props} />;
+    case 'bus':
+      return <BusSim {...props} />;
+    case 'ticket':
+      return <TicketSim {...props} />;
+    case 'menu':
+      return <MenuSim {...props} />;
+    case 'recycle':
+      return <RecycleSim {...props} />;
     default:
       return null;
   }
 }
 
-export const SIM_ICON: Record<string, string> = { exchange: '💱', atm: '🏧', tmoney: '🟧', train: '🚄', cashpay: '💵', dayplan: '🗓️', transfer: '🚇', kiosk: '🖥️', phrase: '🗣️' };
+export const SIM_ICON: Record<string, string> = { exchange: '💱', atm: '🏧', tmoney: '🟧', train: '🚄', cashpay: '💵', dayplan: '🗓️', transfer: '🚇', kiosk: '🖥️', phrase: '🗣️', bus: '🚌', ticket: '🎫', menu: '📜', recycle: '♻️' };

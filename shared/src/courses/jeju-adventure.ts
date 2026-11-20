@@ -30,7 +30,7 @@ export const jejuAdventure: Course = {
   coverBg: 'mountain',
   access: 'base',
   isPublished: true,
-  version: 2,
+  version: 3,
   sortOrder: 4,
   scenes: [
     {
@@ -72,10 +72,7 @@ export const jejuAdventure: Course = {
           ok('A guesthouse with a shared kitchen and evening gatherings', 'You meet hikers for tomorrow.', { money: -35000, energy: 10 }, 'house'),
           no('Sleep in the car', 'Cramped and cold.', { energy: -20 }),
         ], 'lo-motel', { parties: ['solo', 'couple'] }),
-        ask('etiquette', 'Jeju has strict trash rules. Your BBQ left cans, plastic and food scraps.', [
-          ok('Separate them and use the village "clean house" bins on the right days', 'Great. Jeju works hard to stay clean.', { manner: 8 }, 'trash-bins'),
-          no('Put everything in one bag by the road', 'Neighbours report it and a fine follows. The "clean house" bins have clear pictures – you\'ll get the hang of it quickly.', { manner: -10, money: -50000 }),
-        ], 'et-trash'),
+        simulate('recycle', 'etiquette', 'Sort your BBQ trash', 'Jeju is strict about sorting. Take your BBQ leftovers to the village "clean house" and put each item in the right bin – watch out for the trick items!', { trash: ['can', 'pet', 'chicken-meat', 'bones', 'peel', 'eggshell', 'soju', 'bag'] }, 'et-trash'),
         ask('law', 'Tomorrow is Hallasan. Your host asks: "Did you reserve the summit trail?"', [
           flag(ok('Yes – I booked Seongpanak online (free, QR code) and will start before 08:00', 'Perfect. Summit trails need a reservation and close the summit section around noon.', { manner: 5 }, 'passport'), 'hallaBooked'),
           no('Reserve? I\'ll just turn up', 'Hmm… we\'ll see.', {}),
@@ -108,7 +105,9 @@ export const jejuAdventure: Course = {
       title: { en: 'Seongsan Ilchulbong sunrise & haenyeo', ko: '성산일출봉 & 해녀' },
       location: { en: 'Seongsan', ko: '성산' },
       steps: [
-        say('Day 3, 5 am. You climb Seongsan Ilchulbong ("Sunrise Peak"), a 5,000-year-old tuff cone rising from the sea.'),
+        say('Day 3, before sunrise. Seongsan Ilchulbong ("Sunrise Peak") is a 5,000-year-old tuff cone rising from the sea.'),
+        simulate('ticket', 'money', 'Sunrise Peak ticket office', 'Buy tickets for your party at the Seongsan Ilchulbong ticket office, then scan in at the gate.', { site: 'seongsan' }),
+        say('You climb the steep stairs and watch the sun rise out of the sea.'),
         say('Below, Jeju\'s haenyeo – women free-divers, some over 70 – go into the sea without oxygen tanks. Their culture is UNESCO intangible heritage.'),
         talk('haenyeo', 'Hoi~! We dive for conch, abalone and sea urchin. The sea is our field.', P('해녀', 'Hae-nyeo', 'Woman diver')),
         ask('law', 'You see conch shells in the shallow water near the village. Can you take some?', [
@@ -201,10 +200,11 @@ export const jejuAdventure: Course = {
       location: { en: 'Jeju City black-pork street', ko: '제주 흑돼지거리' },
       steps: [
         say('The wind howls outside, but the black-pork restaurant near your stay is warm. Time for Jeju\'s famous black pork (heuk-dwaeji), grilled thick over charcoal.'),
+        simulate('menu', 'food', 'Order black pork', 'The menu is in Korean only. Order black pork for everyone (2 portions minimum), call the staff and pay at the end.', { restaurant: 'blackpork' }),
         talk('staff', 'Dip it in the anchovy sauce (myeolchi-jeot)! I\'ll grill it for you.'),
         ask('food', 'The staff starts grilling your meat for you. What do you do?', [
-          ok('Let them – they know exactly when to cut and flip it', 'Juicy perfection.', { energy: 15, money: -60000 }, 'bbq'),
-          no('Take the tongs away from them', 'Awkward… and the meat burns.', { manner: -4, energy: 5, money: -60000 }),
+          ok('Let them – they know exactly when to cut and flip it', 'Juicy perfection.', { energy: 5 }, 'bbq'),
+          no('Take the tongs away from them', 'Awkward… and the meat burns.', { manner: -4 }),
         ], 'fo-bbq'),
         ask('food', 'Your friends want to toast with the eldest in the group (an uncle).', [
           ok('Clink my glass slightly lower than his and turn my head when drinking', 'Respect earned!', { manner: 8 }, 'soju'),
