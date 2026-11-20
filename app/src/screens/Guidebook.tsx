@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
-import { TOPICS, tr, type KnowledgeCard, type TopicId } from '@kotoventure/shared';
+import { Pressable, ScrollView, Text, View } from 'react-native';
+import { TOPICS, tr, type TopicId } from '@kotoventure/shared';
 import { Prop } from '../art/props';
 import { useStore } from '../data/store';
 import { t } from '../i18n';
-import { Btn, CardView, Chip, H, P } from '../ui/kit';
+import { Chip, H, P } from '../ui/kit';
+import { CardPopup } from '../ui/CardPopup';
 import { C, R, shadow } from '../ui/theme';
 
 /** Collection of all knowledge cards; locked until found in a mission. */
@@ -13,7 +14,7 @@ export function Guidebook() {
   const lang = profile?.lang ?? 'en';
   const L = t(lang);
   const [topic, setTopic] = useState<TopicId | null>(null);
-  const [open, setOpen] = useState<KnowledgeCard | null>(null);
+  const [open, setOpen] = useState<number | null>(null);
   const cards = content.cards.filter((c) => !topic || c.topic === topic);
   const total = content.cards.length;
   const got = content.cards.filter((c) => collectedCards.has(c.id)).length;
@@ -35,13 +36,14 @@ export function Guidebook() {
           ))}
         </ScrollView>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 14 }}>
-          {cards.map((c) => {
+          {cards.map((c, i) => {
             const has = collectedCards.has(c.id);
             const m = TOPICS.find((x) => x.id === c.topic)!;
             return (
               <Pressable
                 key={c.id}
-                onPress={() => setOpen(c)}
+                testID={`guide-${c.id}`}
+                onPress={() => setOpen(i)}
                 accessibilityRole="button"
                 style={{ width: '31%', flexGrow: 1, maxWidth: 160, backgroundColor: '#FFF', borderRadius: R.m, padding: 8, alignItems: 'center', borderTopWidth: 4, borderTopColor: m.color, ...shadow }}
               >
@@ -56,19 +58,14 @@ export function Guidebook() {
           })}
         </View>
       </ScrollView>
-      <Modal visible={!!open} transparent animationType="fade" onRequestClose={() => setOpen(null)}>
-        <View style={{ flex: 1, backgroundColor: '#0009', justifyContent: 'center', padding: 16 }}>
-          <View style={{ maxWidth: 480, width: '100%', alignSelf: 'center' }}>
-            {open && <CardView card={open} lang={lang} />}
-            {open && !collectedCards.has(open.id) && (
-              <P style={{ color: '#FFF', textAlign: 'center', marginTop: 8 }}>
-                {lang === 'ko' ? '미션에서 이 카드를 찾으면 수집됩니다.' : 'Find this card in a mission to collect it.'}
-              </P>
-            )}
-            <Btn label="OK" style={{ marginTop: 12 }} onPress={() => setOpen(null)} />
-          </View>
-        </View>
-      </Modal>
+      <CardPopup
+        cards={cards}
+        index={open}
+        lang={lang}
+        onClose={() => setOpen(null)}
+        onIndex={setOpen}
+        noteFor={(c) => (collectedCards.has(c.id) ? undefined : lang === 'ko' ? '🔒 미션에서 이 카드를 찾으면 수집됩니다.' : '🔒 Find this card in a mission to collect it.')}
+      />
     </View>
   );
 }
