@@ -460,8 +460,8 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
     partyTips: Object.fromEntries(Object.entries(def.tips ?? {}).map(([k, v]) => [k, { en: v }])),
     startBudget: def.budget,
     coverBg: def.stops[0].bg ?? KIND_BG[def.stops[0].kind],
-    access: def.free ? 'base' : 'iap',
-    ...(def.free ? {} : { productId: `pack_${def.area}` }),
+    // all missions are currently free (included with the app); set access 'iap' + productId `pack_<area>` to sell them
+    access: 'base',
     isPublished: true,
     version: 1,
     sortOrder,

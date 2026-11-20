@@ -59,7 +59,7 @@ export const PRODUCTS: Product[] = [
       iosProductId: `com.kotoventure.pack.${area}`,
       androidProductId: `pack_${area}`,
       courseIds: [], // filled from the courses' productId in index.ts
-      isActive: true,
+      isActive: false, // all missions are free for now – activate to sell region packs
     }),
   ),
   {
