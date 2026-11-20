@@ -102,7 +102,10 @@ export function Me() {
 
       <Btn kind="ghost" label={L.resetAll} onPress={() => resetProgress()} />
       <Btn kind="danger" label={L.signOut} onPress={() => signOut()} />
-      <P dim style={{ textAlign: 'center', fontSize: 12 }}>Kotoventure – Korea Touring Game Adventure v1.0.0</P>
+      <P dim style={{ textAlign: 'center', fontSize: 12 }}>
+        Kotoventure – Korea Touring Game Adventure v1.0.0{'\n'}
+        {lang === 'ko' ? '빌드' : 'Build'} {process.env.EXPO_PUBLIC_BUILD_ID || 'dev'}
+      </P>
     </ScrollView>
   );
 }

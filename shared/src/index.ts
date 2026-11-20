@@ -29,3 +29,4 @@ export * from './art-ids';
 export * from './places';
 export * from './subway';
 export * from './dayplan';
+export * from './practice';

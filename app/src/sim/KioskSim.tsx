@@ -6,7 +6,7 @@ import { C, R } from '../ui/theme';
 import { Box, DoneCard, Glass, Metal, OptBtn, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
 
 type Opt = 'temp' | 'size';
-interface Item {
+export interface Item {
   id: string;
   ko: string;
   en: string;
@@ -15,7 +15,7 @@ interface Item {
   icon: string;
   opts?: Opt[];
 }
-const MENUS: Record<string, { cats: [string, string][]; items: Item[] }> = {
+export const MENUS: Record<string, { cats: [string, string][]; items: Item[] }> = {
   cafe: {
     cats: [
       ['커피', 'Coffee'],
@@ -80,13 +80,13 @@ const MENUS: Record<string, { cats: [string, string][]; items: Item[] }> = {
   },
 };
 
-interface Line {
+export interface Line {
   id: string;
   qty: number;
   temp?: 'ice' | 'hot';
   size?: 'R' | 'L';
 }
-const linePrice = (it: Item, l: Line) => (it.price + (l.size === 'L' ? 500 : 0)) * l.qty;
+export const linePrice = (it: Item, l: Line) => (it.price + (l.size === 'L' ? 500 : 0)) * l.qty;
 const describeLine = (it: Item | undefined, l: Line) =>
   `${l.temp === 'ice' ? 'Iced ' : l.temp === 'hot' ? 'Hot ' : ''}${it?.en ?? l.id}${l.size ? ` (${l.size === 'L' ? 'Large' : 'Regular'})` : ''} ×${l.qty}`;
 

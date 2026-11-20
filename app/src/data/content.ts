@@ -65,12 +65,28 @@ async function fetchRemote(): Promise<ContentBundle> {
 }
 
 /**
+ * The app ships with the latest missions (SEED_BUNDLE). A cached or server copy may be older
+ * (e.g. the test DB was seeded before an app update) – then the bundled course wins, so a
+ * new APK always shows its new missions. Courses/cards that only exist remotely are kept.
+ */
+export function mergeWithBundled(remote: ContentBundle): ContentBundle {
+  const courses = remote.courses.map((c) => {
+    const local = SEED_BUNDLE.courses.find((x) => x.id === c.id);
+    return local && local.version > c.version ? local : c;
+  });
+  for (const local of SEED_BUNDLE.courses) if (!courses.some((c) => c.id === local.id)) courses.push(local);
+  const cards = [...remote.cards];
+  for (const card of SEED_BUNDLE.cards) if (!cards.some((c) => c.id === card.id)) cards.push(card);
+  return { ...remote, courses: courses.sort((a, b) => a.sortOrder - b.sortOrder), cards };
+}
+
+/**
  * Returns content immediately from cache/seed, then (if Supabase is configured and online)
  * compares the server stamp and refreshes. `onUpdate` is called when newer content arrives.
  */
 export async function loadContent(onUpdate: (b: ContentBundle) => void): Promise<ContentBundle> {
   const cached = await getJSON<{ stamp: string; bundle: ContentBundle }>(CACHE_KEY);
-  const initial = cached?.bundle ?? SEED_BUNDLE;
+  const initial = cached?.bundle ? mergeWithBundled(cached.bundle) : SEED_BUNDLE;
 
   if (supabase) {
     (async () => {
@@ -80,7 +96,7 @@ export async function loadContent(onUpdate: (b: ContentBundle) => void): Promise
         const fresh = await fetchRemote();
         if (fresh.courses.length === 0) return; // empty DB → keep seed
         await setJSON(CACHE_KEY, { stamp, bundle: fresh });
-        onUpdate(fresh);
+        onUpdate(mergeWithBundled(fresh));
       } catch (e) {
         console.warn('[content] offline, using cached/seed content', e);
       }

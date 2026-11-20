@@ -30,7 +30,7 @@ export const busanFood: Course = {
   coverBg: 'market',
   access: 'base',
   isPublished: true,
-  version: 2,
+  version: 4,
   sortOrder: 2,
   scenes: [
     {
@@ -147,7 +147,8 @@ export const busanFood: Course = {
       title: { en: 'Gamcheon Culture Village', ko: '감천문화마을' },
       location: { en: 'Gamcheon, Saha-gu', ko: '감천, 사하구' },
       steps: [
-        say('A hillside of pastel houses, murals and the "Little Prince" statue. A small green "maeul bus" (village bus) climbs the steep road.'),
+        say('A hillside of pastel houses, murals and the "Little Prince" statue. A small green "maeul bus" (village bus) climbs the steep road from Toseong station.'),
+        simulate('bus', 'transport', 'Village bus to Gamcheon', 'Take the green village bus up the hill: find it on the arrival board, tap in at the front, ring the bell and tap out at the back door.', { busNo: '사하1-1', busColor: 'green', stops: ['토성역 Toseong Stn.', '부산대병원 PNU Hospital', '감정초등학교 Gamjeong Elem.', '감천문화마을 Gamcheon Village'], getOff: '감천문화마을 Gamcheon Village' }, 'tr-bus'),
         ask('transport', 'On the packed village bus an elderly lady gets on with groceries.', [
           ok('Offer her my seat', 'She pats your arm: "Gomawoyo!" Respect for elders matters a lot.', { manner: 8, energy: -3 }, 'priority-seat'),
           no('Pretend to sleep', 'An easy one to miss! Giving your seat to elders is a kind gesture Koreans really appreciate – try it next time.', { manner: -6 }),
@@ -203,6 +204,7 @@ export const busanFood: Course = {
           ok('Take a taxi – drink-riding is illegal on scooters too', 'Right. Korea\'s limit is 0.03% and police check scooters too.', { money: -9000, manner: 5 }, 'taxi'),
           no('Ride the scooter back, it\'s only 2 km', 'Police check for drink-riding at night, and the fine is heavy. Taxis are cheap and safe in Korea – the easy choice!', { money: -100000, manner: -15 }),
         ], 'la-traffic'),
+        simulate('taxi', 'transport', 'Taxi back to Nampo', 'Call a taxi in the app to your hotel in Nampo-dong. Search carefully – several places have similar names!', { dest: '남포동 호텔 Nampo Hotel', addr: '부산 중구 광복로 55', night: true, fare: 15000 }, 'tr-taxi'),
         event('surprise', 'Taxi home', 'The driver can\'t read English – you show him the Korean address screenshot you saved on day 1. "Ah, 남포동! OK!" Straight there.', { energy: 3 }, 'taxi', { ifFlags: ['hangulAddr'] }),
         event('surprise', 'Taxi home – lost in translation', 'The driver doesn\'t recognise the English hotel name. After phone calls and a detour you arrive 25 minutes later (+₩8,000). Next time save the address in Hangul!', { energy: -6, money: -8000 }, 'taxi', { unlessFlags: ['hangulAddr'] }),
       ],

@@ -8,6 +8,15 @@ import { DayPlanSim } from './DayPlanSim';
 import { TransferSim } from './TransferSim';
 import { KioskSim } from './KioskSim';
 import { PhraseSim } from './PhraseSim';
+import { BusSim } from './BusSim';
+import { TicketSim } from './TicketSim';
+import { MenuSim } from './MenuSim';
+import { RecycleSim } from './RecycleSim';
+import { PharmacySim } from './PharmacySim';
+import { TaxiSim } from './TaxiSim';
+import { CheckinSim } from './CheckinSim';
+import { LockerSim } from './LockerSim';
+import { CrosswalkSim } from './CrosswalkSim';
 
 /** Picks the simulation component for a sim step. */
 export function SimRunner(props: SimProps) {
@@ -30,9 +39,27 @@ export function SimRunner(props: SimProps) {
       return <KioskSim {...props} />;
     case 'phrase':
       return <PhraseSim {...props} />;
+    case 'bus':
+      return <BusSim {...props} />;
+    case 'ticket':
+      return <TicketSim {...props} />;
+    case 'menu':
+      return <MenuSim {...props} />;
+    case 'recycle':
+      return <RecycleSim {...props} />;
+    case 'pharmacy':
+      return <PharmacySim {...props} />;
+    case 'taxi':
+      return <TaxiSim {...props} />;
+    case 'checkin':
+      return <CheckinSim {...props} />;
+    case 'locker':
+      return <LockerSim {...props} />;
+    case 'crosswalk':
+      return <CrosswalkSim {...props} />;
     default:
       return null;
   }
 }
 
-export const SIM_ICON: Record<string, string> = { exchange: '💱', atm: '🏧', tmoney: '🟧', train: '🚄', cashpay: '💵', dayplan: '🗓️', transfer: '🚇', kiosk: '🖥️', phrase: '🗣️' };
+export const SIM_ICON: Record<string, string> = { exchange: '💱', atm: '🏧', tmoney: '🟧', train: '🚄', cashpay: '💵', dayplan: '🗓️', transfer: '🚇', kiosk: '🖥️', phrase: '🗣️', bus: '🚌', ticket: '🎫', menu: '📜', recycle: '♻️', pharmacy: '💊', taxi: '🚕', checkin: '🔑', locker: '🧳', crosswalk: '🚦' };
