@@ -6,12 +6,14 @@ import { Prop } from '../art/props';
 import { useStore } from '../data/store';
 import { t } from '../i18n';
 import { Btn, CardView, H, P, Panel, TopicChip, won } from '../ui/kit';
+import { CardPopup } from '../ui/CardPopup';
 import { C, R } from '../ui/theme';
 
 /** Shown when a course is finished: score, grade, what was learned per topic, phrases, checklist. */
 export function Result({ id, onHome, onReplay }: { id: string; onHome: () => void; onReplay: () => void }) {
   const { content, profile, progress } = useStore();
   const [openMiss, setOpenMiss] = useState<string | null>(null);
+  const [openCard, setOpenCard] = useState<number | null>(null);
   const lang = profile?.lang ?? 'en';
   const L = t(lang);
   const course = content.courses.find((c) => c.id === id)!;
@@ -181,9 +183,12 @@ export function Result({ id, onHome, onReplay }: { id: string; onHome: () => voi
             <TopicChip key={tp.id} topic={tp.id} lang={lang} count={cards.filter((c) => c.topic === tp.id).length} />
           ))}
         </View>
-        <View style={{ marginTop: 10, gap: 8 }}>
-          {cards.map((c) => (
-            <View key={c.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#FAFAF7', borderRadius: R.s, padding: 6 }}>
+        <P dim style={{ fontSize: 12, marginTop: 8 }}>
+          👆 {lang === 'ko' ? '항목을 누르면 그림과 함께 자세히 볼 수 있어요.' : 'Tap an item to see it explained with a picture.'}
+        </P>
+        <View style={{ marginTop: 6, gap: 8 }}>
+          {cards.map((c, i) => (
+            <Pressable key={c.id} testID={`learned-${c.id}`} onPress={() => setOpenCard(i)} accessibilityRole="button" style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: pressed ? '#F1EFE6' : '#FAFAF7', borderRadius: R.s, padding: 6 })}>
               <Prop id={c.prop} size={40} />
               <View style={{ flex: 1 }}>
                 <Text style={{ fontWeight: '800', color: C.ink }}>{tr(c.title, lang)}</Text>
@@ -191,9 +196,11 @@ export function Result({ id, onHome, onReplay }: { id: string; onHome: () => voi
                   {tr(c.body, lang)}
                 </Text>
               </View>
-            </View>
+              <Text style={{ color: C.inkSoft, fontSize: 18, fontWeight: '900' }}>›</Text>
+            </Pressable>
           ))}
         </View>
+        <CardPopup cards={cards} index={openCard} lang={lang} onClose={() => setOpenCard(null)} onIndex={setOpenCard} />
       </Panel>
 
       {phrases.length > 0 && (
