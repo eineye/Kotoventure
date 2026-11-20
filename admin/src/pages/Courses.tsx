@@ -386,6 +386,9 @@ function CourseEditor({ initial, originalId, onClose, onSaved }: { initial: Cour
                     }}
                   />
                 </Field>
+                <Field label="예상 시간·비용 (JSON)" hint='예: {"start":"18:00","items":[{"min":20,"cat":"move","label":{"en":"Subway","ko":"지하철"},"cost":1550}]} · cat = move/walk/meal/visit/task/stay · cost는 1인 기준(stay는 객실) · recap:true = 일정 짜기에 포함된 장면' wide>
+                  <JsonEdit value={scene.est ?? { items: [] }} onChange={(est) => setScene({ est: est as typeof scene.est })} rows={6} />
+                </Field>
               </div>
 
               <h4>스텝 ({scene.steps.length}) – 위에서부터 순서대로 진행</h4>

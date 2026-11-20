@@ -1,5 +1,5 @@
 import { Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
-import { PARTY_TYPES, TOPICS, courseTopics, tr } from '@kotoventure/shared';
+import { PARTY_TYPES, TOPICS, courseEstimate, courseTopics, dur, tr } from '@kotoventure/shared';
 import { Background } from '../art/backgrounds';
 import { useStore } from '../data/store';
 import { t } from '../i18n';
@@ -39,8 +39,15 @@ export function CourseDetail({ id, onBack, onPlay }: { id: string; onBack: () =>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 14, marginTop: 12 }}>
               <Info k={L.startsAt} v={`${c.entry.kind === 'airport' ? '✈' : '⚓'} ${tr(c.entry.name, lang)}`} />
               <Info k={L.endsAt} v={`${c.exit.kind === 'airport' ? '✈' : '⚓'} ${tr(c.exit.name, lang)}`} />
-              <Info k={L.difficulty} v={'●'.repeat(c.difficulty) + '○'.repeat(3 - c.difficulty)} />
-              <Info k={L.wallet} v={won(c.startBudget)} />
+              {(() => {
+                const e = courseEstimate(c.scenes, profile?.party ?? 'solo');
+                return (
+                  <>
+                    <Info k={lang === 'ko' ? '예상 활동 시간' : 'Est. active time'} v={`⏱ ${dur(e.active, lang)}`} />
+                    <Info k={lang === 'ko' ? '예상 비용 (일행)' : 'Est. cost (party)'} v={`💰 ${won(e.cost)}`} />
+                  </>
+                );
+              })()}
             </View>
           </Panel>
 

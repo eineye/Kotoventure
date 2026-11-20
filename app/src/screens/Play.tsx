@@ -2,6 +2,14 @@ import { useEffect, useState } from 'react';
 import { Animated, Easing, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import {
   applyEffects,
+  TIME_CAT,
+  dur,
+  hm,
+  itemCost,
+  sceneItems,
+  type Course,
+  type PartyType,
+  type TrailEntry,
   applySim,
   roll,
   tally,
@@ -25,7 +33,7 @@ import { PartyArt, SpeakerPortrait, avatarById, speakerLabel } from '../art/Char
 import { Prop, hasProp } from '../art/props';
 import { useStore } from '../data/store';
 import { t } from '../i18n';
-import { Bar, Btn, CardView, H, P, PhraseBox, TopicChip, won } from '../ui/kit';
+import { Btn, CardView, H, P, PhraseBox, TopicChip, won } from '../ui/kit';
 import { C, R, shadow } from '../ui/theme';
 import { SIM_ICON, SimRunner } from '../sim/SimRunner';
 import { PARTY_SIZE, type SimCtx, type SimResult } from '../sim/kit';
@@ -40,6 +48,31 @@ interface DayLogItem {
 }
 
 const phraseKey = (p: Phrase) => `${p.hangul}|${p.roman}|${p.meaning}`;
+const toMin = (s: string) => {
+  const [h, m] = s.split(':').map(Number);
+  return h * 60 + (m || 0);
+};
+
+/**
+ * Enter a scene on the trip clock: a new day starts at the scene's start time (default 09:00),
+ * the scene's estimated items are laid out from the current time, and scene-level costs are paid.
+ * Recap scenes (already covered by the day planner) add no time.
+ */
+function enterScene(st: RunStats, course: Course, idx: number, party: PartyType, seed: string): RunStats {
+  const scene = course.scenes[idx];
+  if (!scene || scene.est?.recap) return st;
+  const sims = visibleSteps(scene, party, st.flags ?? [], seed).filter((x): x is SimStep => x.type === 'sim');
+  const items = sceneItems(scene, sims, party);
+  const clock = st.clock ?? { day: scene.day, min: toMin(scene.est?.start ?? '09:00') };
+  let start = clock.min;
+  if (scene.day > clock.day) start = toMin(scene.est?.start ?? '09:00');
+  else if (scene.est?.start) start = Math.max(start, toMin(scene.est.start));
+  const end = start + items.reduce((a, it) => a + (it.cat === 'stay' ? 0 : it.min), 0);
+  // scene-level costs (simulations charge their own costs when played or skipped)
+  const sceneCost = (scene.est?.items ?? []).reduce((a, it) => a + itemCost(it, party), 0);
+  const entry: TrailEntry = { day: scene.day, sceneId: scene.id, title: scene.title, start, end, items: items.map((it) => ({ cat: it.cat, min: it.min, label: it.label, cost: itemCost(it, party) || undefined })) };
+  return { ...st, money: st.money - sceneCost, clock: { day: scene.day, min: end }, trail: [...(st.trail ?? []).filter((x) => x.sceneId !== scene.id), entry] };
+}
 
 export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: boolean; onQuit: () => void; onFinish: () => void }) {
   const { content, profile, progress, saveProgress } = useStore();
@@ -55,7 +88,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
   const resume = !restart && prev && !prev.completedAt && prev.courseVersion === course.version;
   const [sceneIdx, setSceneIdx] = useState(resume ? prev!.sceneIndex : 0);
   const [stepIdx, setStepIdx] = useState(resume ? prev!.stepIndex : 0);
-  const [stats, setStats] = useState<RunStats>(resume ? prev!.stats : initialStats(course));
+  const [stats, setStats] = useState<RunStats>(() => (resume ? prev!.stats : enterScene(initialStats(course), course, 0, profile?.party ?? 'solo', String((prev?.plays ?? 0) + 1))));
   const [cards, setCards] = useState<string[]>(resume ? prev!.cards : prev?.cards ?? []);
   const [phrases, setPhrases] = useState<string[]>(resume ? prev!.phrases : prev?.phrases ?? []);
   const [phase, setPhase] = useState<Phase>(resume && prev!.stepIndex > 0 ? 'step' : 'intro');
@@ -64,7 +97,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
   const [pendingCard, setPendingCard] = useState<string | null>(null);
   // fixed for the whole run (progress is saved mid-run, which would otherwise change prev/resume and re-roll chance steps)
   const [plays] = useState(() => (prev?.plays ?? 0) + (resume ? 0 : 1));
-  const real = profile?.mode === 'real';
+  const real = false; // the trip simulation has no hidden-answer mode
   const [dayLog, setDayLog] = useState<DayLogItem[]>([]);
   const [summary, setSummary] = useState<{ day: number; next: number; collapsed: boolean; resumeStep?: number } | null>(null);
   const [exhausted, setExhausted] = useState(false);
@@ -110,19 +143,16 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
   };
 
   const effects = (e?: Effects) => {
-    let st = applyEffects(stats, e);
-    let d: Effects | null = e ?? null;
-    if (st.energy <= 0) {
-      // exhausted → a short rest break (snack, water, nap), then the trip continues – no content is skipped
-      st = { ...st, energy: 50, money: st.money - 10000 };
-      d = { ...(e ?? {}), energy: (e?.energy ?? 0) + 50, money: (e?.money ?? 0) - 10000 };
-      setExhausted(true);
-    }
+    // trip simulation: only money matters (no energy/manner game stats)
+    const st = applyEffects(stats, e ? { money: e.money } : undefined);
+    const d: Effects | null = e?.money ? { money: e.money } : null;
     setStats(st);
     return { st, d };
   };
 
-  const goScene = (idx: number, st: RunStats, cs: string[], ps: string[]) => {
+  const goScene = (idx: number, st0: RunStats, cs: string[], ps: string[]) => {
+    const st = enterScene(st0, course, idx, party, String(plays));
+    setStats(st);
     setSceneIdx(idx);
     setStepIdx(0);
     setPhase('intro');
@@ -215,11 +245,19 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
   const onSimDone = (r: SimResult) => {
     const sim = step as SimStep;
     const base = effects(r.effects).st;
-    const st = {
+    let st: RunStats = {
       ...tally(applySim(base, r.score), sim.topic, r.score / 100, `${scene.id}:${scene.steps.indexOf(sim)}:-1`),
       ...(r.cash ? { cash: r.cash } : {}),
       flags: r.flags?.length ? Array.from(new Set([...(base.flags ?? []), ...r.flags])) : base.flags,
     };
+    if (r.endMin !== undefined) {
+      // the planned day replaces the scene's estimate on the clock
+      const start = r.startMin ?? st.clock?.min ?? 540;
+      const trail = (st.trail ?? []).map((x) =>
+        x.sceneId === scene.id ? { ...x, start, end: r.endMin!, items: [...x.items, { cat: 'visit' as const, min: r.endMin! - start, label: { en: 'Your planned day (places, travel, meals)', ko: '내가 짠 하루 일정 (장소·이동·식사)' }, cost: -(r.effects?.money ?? 0) || undefined }] } : x,
+      );
+      st = { ...st, clock: { day: scene.day, min: r.endMin }, trail };
+    }
     setStats(st);
     const { cs, ps } = collect(sim.cardId);
     advance(st, cs, ps);
@@ -311,6 +349,8 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
   const sceneH = Math.min(height * 0.36, 300);
   const speaker = step?.type === 'dialog' ? step.speaker : null;
   const overlayProp = step?.type === 'event' ? step.prop : phase === 'card' ? undefined : undefined;
+  const here = (stats.trail ?? []).find((x) => x.sceneId === scene.id);
+  const todayMin = (stats.trail ?? []).filter((x) => x.day === scene.day).reduce((a, x) => a + x.items.reduce((b, it) => b + (it.cat === 'stay' ? 0 : it.min), 0), 0);
 
   return (
     <View style={{ flex: 1, backgroundColor: C.navy }}>
@@ -324,13 +364,17 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
             {L.day} {scene.day} · {Math.min(sceneIdx + 1, course.scenes.length)}/{course.scenes.length}
           </Text>
           <View style={{ alignItems: 'flex-end' }}>
-            <Text style={{ color: stats.money < 0 ? '#FCA5A5' : C.yellow, fontWeight: '900' }}>👛 {won(stats.money)}</Text>
+            <Text style={{ color: C.yellow, fontWeight: '900' }}>💰 {won(Math.max(0, course.startBudget - stats.money))}</Text>
             <Text style={{ color: '#CBD5E1', fontWeight: '800', fontSize: 10 }}>💵 {lang === 'ko' ? '현금' : 'cash'} {won(cashTotal(stats.cash ?? DEFAULT_CASH))}</Text>
           </View>
         </View>
-        <View style={{ flexDirection: 'row', gap: 12, marginTop: 6 }}>
-          <Bar label={`⚡ ${L.energy}`} value={stats.energy} color={stats.energy < 30 ? '#F87171' : '#4ADE80'} />
-          <Bar label={`🙇 ${L.manner}`} value={stats.manner} color="#60A5FA" />
+        <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 16, marginTop: 6 }}>
+          <Text testID="hud-clock" style={{ color: '#FFF', fontWeight: '900', fontSize: 15 }}>
+            🕘 {here ? `${hm(here.start)} – ${hm(here.end)}` : hm(stats.clock?.min ?? 540)}
+          </Text>
+          <Text style={{ color: '#CBD5E1', fontWeight: '800', fontSize: 13 }}>
+            {lang === 'ko' ? '오늘 활동' : 'Today'} {dur(todayMin, lang)}
+          </Text>
         </View>
       </View>
 
@@ -365,6 +409,30 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
             <H size={26}>{tr(scene.title, lang)}</H>
             <P dim style={{ marginTop: 4 }}>📍 {tr(scene.location, lang)}</P>
             <RouteDots total={course.scenes.length} at={sceneIdx} />
+            {scene.est?.recap ? (
+              <P dim style={{ marginTop: 12 }}>📸 {lang === 'ko' ? '오늘 짠 일정 중 한 장면이에요 (시간은 일정에 포함).' : 'A highlight of the day you planned (time already in your plan).'}</P>
+            ) : here && here.items.length > 0 ? (
+              <View testID="scene-schedule" style={{ marginTop: 12, backgroundColor: '#FFF', borderRadius: R.m, padding: 10, gap: 4, ...shadow }}>
+                {(() => {
+                  let t0 = here.start;
+                  return here.items.map((it, k) => {
+                    const from = t0;
+                    if (it.cat !== 'stay') t0 += it.min;
+                    return (
+                      <View key={k} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <Text style={{ width: 44, color: C.inkSoft, fontWeight: '800', fontSize: 12 }}>{it.cat === 'stay' ? '🌙' : hm(from)}</Text>
+                        <Text style={{ flex: 1, color: C.ink, fontSize: 13 }}>
+                          {TIME_CAT[it.cat].icon} {tr(it.label, lang)}
+                        </Text>
+                        <Text style={{ color: TIME_CAT[it.cat].color, fontWeight: '900', fontSize: 12 }}>{it.cat === 'stay' ? (lang === 'ko' ? '1박' : '1 night') : `~${dur(it.min, lang)}`}</Text>
+                        {it.cost ? <Text style={{ color: C.inkSoft, fontSize: 11, width: 64, textAlign: 'right' }}>{won(it.cost)}</Text> : <View style={{ width: 64 }} />}
+                      </View>
+                    );
+                  });
+                })()}
+                <Text style={{ color: C.inkSoft, fontSize: 11, marginTop: 2 }}>{lang === 'ko' ? '* 예상 시간·비용 (일행 기준, 실제와 다를 수 있어요)' : '* Estimated time & cost for your party – real trips vary'}</Text>
+              </View>
+            ) : null}
             {sceneIdx === 0 && (
               <View style={{ marginTop: 14, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <Text style={{ fontSize: 22 }}>{course.entry.kind === 'airport' ? '✈️' : '⛴️'}</Text>
@@ -434,7 +502,13 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
               <View>
                 <TopicChip topic={step.topic} lang={lang} />
                 <View style={{ backgroundColor: '#FFF', borderRadius: R.l, padding: 16, marginTop: 10, borderLeftWidth: 6, borderLeftColor: C.yellow, ...shadow }}>
-                  <Text style={{ fontWeight: '900', color: C.orange, fontSize: 12 }}>🎮 HANDS-ON SIMULATION · up to 100 pts</Text>
+                  <Text style={{ fontWeight: '900', color: C.orange, fontSize: 12 }}>
+                    🎮 {lang === 'ko' ? '따라 해 보기' : 'TRY IT YOURSELF'}
+                    {(() => {
+                      const it = here?.items.find((x) => tr(x.label, 'en') === tr(step.title, 'en'));
+                      return it ? ` · ${lang === 'ko' ? '실제 약' : 'real life ~'} ${dur(it.min, lang)}${it.cost ? ` · ${won(it.cost)}` : ''}` : '';
+                    })()}
+                  </Text>
                   <H size={20} style={{ marginTop: 4 }}>
                     {SIM_ICON[step.sim]} {tr(step.title, lang)}
                   </H>
@@ -453,7 +527,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
                 )}
                 {canSkip(step) && (
                   <Text style={{ color: C.inkSoft, fontSize: 11, textAlign: 'center', marginTop: 4 }}>
-                    {lang === 'ko' ? '건너뛰면 비용·현금은 그대로 처리되고 점수는 기록되지 않아요.' : 'Skipping still handles costs and cash – it just records no score.'}
+                    {lang === 'ko' ? '건너뛰어도 시간·비용·현금은 그대로 반영돼요.' : 'Skipping still counts the time, cost and cash.'}
                   </Text>
                 )}
               </View>
@@ -499,9 +573,7 @@ function RouteDots({ total, at }: { total: number; at: number }) {
 function Deltas({ e }: { e?: Effects | null }) {
   if (!e) return null;
   const items: [string, string][] = [];
-  if (e.energy) items.push([`⚡ ${e.energy > 0 ? '+' : ''}${e.energy}`, e.energy > 0 ? C.green : C.red]);
-  if (e.manner) items.push([`🙇 ${e.manner > 0 ? '+' : ''}${e.manner}`, e.manner > 0 ? C.green : C.red]);
-  if (e.money) items.push([`👛 ${e.money > 0 ? '+' : '−'}${won(Math.abs(e.money))}`, e.money > 0 ? C.green : C.red]);
+  if (e.money) items.push([`💰 ${e.money > 0 ? '+' : '−'}${won(Math.abs(e.money))}`, C.inkSoft]);
   if (!items.length) return null;
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
@@ -548,7 +620,7 @@ function ChoiceView({
           .map((o, i) => ({ o, i, r: roll(`${seed}|${i}`) }))
           .sort((a, b) => a.r - b.r)
           .map(({ o, i }, di) => {
-          const state = picked === null ? 'idle' : real ? (picked === i ? 'picked' : 'dim') : o.correct ? 'right' : picked === i ? 'wrong' : 'dim';
+          const state = picked === null ? 'idle' : picked === i ? 'picked' : 'dim';
           const border = { idle: C.line, right: C.green, wrong: C.red, dim: C.line, picked: C.blue }[state];
           const bg = { idle: '#FFF', right: '#E8F8F0', wrong: '#FDECEC', dim: '#FAFAFA', picked: '#EEF4FF' }[state];
           return (
@@ -573,7 +645,6 @@ function ChoiceView({
             >
               {o.prop && hasProp(o.prop) && <Prop id={o.prop} size={visual ? 96 : 48} />}
               <Text style={{ flex: visual ? undefined : 1, fontSize: 15, fontWeight: '700', color: C.ink, textAlign: visual ? 'center' : 'left', marginTop: visual ? 6 : 0 }}>
-                {state === 'right' ? '✅ ' : state === 'wrong' ? '❌ ' : ''}
                 {tr(o.text, lang)}
               </Text>
             </Pressable>
@@ -589,14 +660,12 @@ function ChoiceView({
         </View>
       )}
       {chosen && !real && (
-        <View style={{ marginTop: 14, backgroundColor: chosen.correct ? '#E8F8F0' : '#FDECEC', borderRadius: R.m, padding: 14 }}>
-          <H size={18} style={{ color: chosen.correct ? C.green : C.red }}>
-            {chosen.correct ? `🎉 ${L.correct}` : `🤔 ${L.wrong}`}
-          </H>
+        <View testID="choice-outcome" style={{ marginTop: 14, backgroundColor: '#EEF4FF', borderRadius: R.m, padding: 14 }}>
+          <H size={16} style={{ color: C.blue }}>📍 {lang === 'ko' ? '실제로는…' : 'What happens'}</H>
           <P style={{ marginTop: 4 }}>{tr(chosen.feedback, lang)}</P>
           {!chosen.correct && (
             <P dim style={{ marginTop: 6 }}>
-              ✅ {step.options.filter((o) => o.correct).map((o) => tr(o.text, lang)).join(' / ')}
+              💡 {lang === 'ko' ? '현지에서 권하는 방법' : 'What locals recommend'}: {step.options.filter((o) => o.correct).map((o) => tr(o.text, lang)).join(' / ')}
             </P>
           )}
           <Deltas e={delta} />

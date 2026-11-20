@@ -152,7 +152,7 @@ export function simulatePlan(cfg: SimConfig, stops: PlanStop[], returnMode: Tran
     energy += e;
     fun += Math.max(0, f);
     visited.push(p.id);
-    ev.push({ time: hhmm(start), kind: 'visit', text: `${p.name.en}: ${p.food ? 'delicious! ' : ''}+${Math.round(Math.max(0, f))} fun${p.cost ? ` (₩${p.cost.toLocaleString('en-US')})` : ''}`, good: true });
+    ev.push({ time: hhmm(start), kind: 'visit', text: `${p.name.en}: ${p.food ? 'meal, ' : ''}${end - start} min${p.cost ? ` (₩${p.cost.toLocaleString('en-US')})` : ''}`, good: true });
     ev.push(...notes);
   }
   if (!ate && t >= 14 * 60 + 30) {

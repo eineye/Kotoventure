@@ -176,7 +176,6 @@ function RowCard({ c, lang, onPress }: { c: Course; lang: string; onPress: () =>
           {tr(c.region, lang)} · {c.nights}
           {L.nights} {c.days}
           {L.days}
-          {p?.bestScore ? ` · ${L.best} ${p.bestScore}` : ''}
         </Text>
         <View style={{ height: 6, backgroundColor: C.line, borderRadius: 3, marginTop: 8 }}>
           <View style={{ height: 6, width: `${pct * 100}%`, backgroundColor: pct >= 1 ? C.green : C.orange, borderRadius: 3 }} />
