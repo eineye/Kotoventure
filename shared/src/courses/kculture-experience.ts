@@ -30,7 +30,7 @@ export const kcultureExperience: Course = {
   coverBg: 'stage',
   access: 'base',
   isPublished: true,
-  version: 4,
+  version: 5,
   sortOrder: 5,
   scenes: [
     {
@@ -128,6 +128,8 @@ export const kcultureExperience: Course = {
       title: { en: 'Han River ramyeon', ko: '한강 라면' },
       location: { en: 'Mangwon Hangang Park', ko: '망원 한강공원' },
       steps: [
+        learn('cv-food'),
+        learn('cv-howto'),
         say('Sunset by the Han River. The convenience store here has an automatic ramyeon cooker: buy a pack, put it in a special paper bowl and press the button.'),
         say('With friends you spread a mat, order chicken and cook ramyeon for everyone.', { parties: ['friends', 'group'] }),
         ask('money', 'At the convenience store till, the clerk says "봉투 필요하세요?" (Do you need a bag?)', [
@@ -147,6 +149,7 @@ export const kcultureExperience: Course = {
       title: { en: 'K-beauty shopping & PC bang', ko: 'K-뷰티 쇼핑 & PC방' },
       location: { en: 'Myeongdong & Sinchon', ko: '명동 & 신촌' },
       steps: [
+        learn('cv-unmanned'),
         say('Day 3 morning. K-beauty shops are packed with testers, sheet masks and sunscreen.'),
         ask('money', 'Your basket comes to ₩85,000. At the till they ask for your passport. Why?', [
           ok('For the instant tax-free refund – the VAT is taken off right away', 'You save several thousand won.', { money: 6000 }, 'tax-refund'),

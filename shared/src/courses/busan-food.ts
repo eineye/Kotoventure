@@ -30,7 +30,7 @@ export const busanFood: Course = {
   coverBg: 'market',
   access: 'base',
   isPublished: true,
-  version: 4,
+  version: 5,
   sortOrder: 2,
   scenes: [
     {
@@ -38,6 +38,7 @@ export const busanFood: Course = {
       title: { en: 'Arrive at Busan Port', ko: '부산항 도착' },
       location: { en: 'Busan Port International Passenger Terminal', ko: '부산항 국제여객터미널' },
       steps: [
+        learn('tr-subway'),
         say('Your ferry from Fukuoka glides into Busan Port. Seagulls, container cranes and the mountains of Korea\'s second city greet you.'),
         talk('guide', 'Welcome to Busan! Locals say "Annyeong-haseyo" with a strong, friendly accent here.'),
         ask('law', 'At the port arrival hall, what do you need?', [
