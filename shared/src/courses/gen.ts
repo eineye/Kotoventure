@@ -9,7 +9,7 @@
  * Prices, hours and routes are realistic examples – players are told to check before travelling.
  */
 import { TICKET_SITES, RESTAURANTS, type BusColor, type MenuItem } from '../practice';
-import type { Area, ChoiceOption, Course, PartyType, Scene, Step, TopicId } from '../types';
+import type { Area, ChoiceOption, Course, EstItem, PartyType, Scene, Step, TimeCat, TopicId } from '../types';
 import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
 export type Kind =
@@ -39,6 +39,10 @@ export interface Stop {
   move?: { dest: string; addr: string; fare: number; text?: string };
   /** order at a Korean café kiosk here */
   kiosk?: boolean;
+  /** time estimates: minutes spent here, minutes walking here (instead of a ride), minutes riding here */
+  min?: number;
+  walk?: number;
+  ride?: number;
 }
 
 export interface Meal {
@@ -321,6 +325,22 @@ const HEALTH = {
   cold: { ev: ['Caught a cold', 'Wind and long days – you wake up with a sore throat and a slight fever.'], energy: -15, sym: 'cold' },
 } as const;
 
+/* ───────────── time estimates ───────────── */
+const est = (min: number, cat: TimeCat, en: string, ko: string, cost?: number, perPerson?: boolean): EstItem => ({ min, cat, label: { en, ko }, ...(cost ? { cost } : {}), ...(perPerson !== undefined ? { perPerson } : {}) });
+/** minutes from the gateway to the first place, and fare per person */
+const HUB_TIME: Record<HubId, [number, number]> = {
+  ICN: [70, 10000], GMP: [40, 1650], CJU: [30, 1500], PUS: [40, 1500], TAE: [25, 1500], CJJ: [60, 5000], YNY: [40, 3000], MWX: [80, 10000], RSU: [30, 3000],
+  'INCHEON-PORT': [25, 1500], 'BUSAN-PORT': [20, 1500], 'JEJU-PORT': [20, 1500],
+};
+/** typical visit length by place kind (minutes) */
+const VISIT_MIN: Record<Kind, number> = {
+  palace: 120, temple: 90, market: 60, mountain: 240, beach: 90, museum: 90, street: 60, village: 60, night: 60, park: 60, island: 150, workshop: 90, river: 60, memorial: 60, cave: 60, farm: 60,
+};
+/** overnight cost: [KRW, per person?] */
+const STAY_COST: Record<MissionDef['stay'], [number, boolean]> = {
+  hotel: [120000, false], hanok: [130000, false], guesthouse: [35000, true], pension: [150000, false], temple: [70000, true], jjimjilbang: [18000, true], motel: [60000, false], resort: [180000, false],
+};
+
 /* ───────────── builder ───────────── */
 const wrongGo = (h: HubId): ChoiceOption[] => [
   no('Accept a ride from a stranger offering a "taxi" in the arrivals hall', 'Unlicensed drivers overcharge and aren\'t insured – use official transport.', { money: -50000 }),
@@ -368,6 +388,13 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
   // 1 · arrival: transport · law · weather
   scenes.push({
     id: `${def.id}-1`, day: 1, bg: hub.bg,
+    est: {
+      start: '10:00',
+      items: [
+        hub.kind === 'port' ? est(45, 'task', 'Immigration at the ferry terminal', '여객터미널 입국심사') : est(50, 'task', 'Immigration, baggage claim & customs', '입국심사·수하물·세관'),
+        est(HUB_TIME[def.hub][0], 'move', def.go, `${def.stops[0].ko}까지 이동`, HUB_TIME[def.hub][1]),
+      ],
+    },
     title: { en: `Arrive at ${hub.en.replace(' International', '')}`, ko: `${hub.ko} 도착` },
     location: { en: hub.en, ko: hub.ko },
     steps: [
@@ -390,7 +417,8 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
   def.stops.forEach((s, i) => {
     if (def.morning && i > 0 && dayOf(i) > 1 && dayOf(i - 1) === 1) {
       scenes.push({
-        id: `${def.id}-m`, day: dayOf(i), bg: 'street', title: tl(def.morning.time, `Day ${dayOf(i)} morning`, `${dayOf(i)}일차 아침`), location: { en: `Your ${st.en}`, ko: st.ko },
+        id: `${def.id}-m`, day: dayOf(i), bg: 'street',
+        est: { start: '08:00', items: [est(40, 'meal', 'Breakfast', '아침 식사', 12000), est(20, 'task', 'Check-out', '체크아웃')] }, title: tl(def.morning.time, `Day ${dayOf(i)} morning`, `${dayOf(i)}일차 아침`), location: { en: `Your ${st.en}`, ko: st.ko },
         steps: [
           say(def.morning.text),
           ask('lodging', 'You check out, but want to explore before heading home. Your suitcase?', [ok('Ask the front desk to keep it, or use a station locker', 'Most hotels store luggage for free after check-out.', { energy: 5 }, 'hotel'), no('Drag it everywhere all day', 'Heavy and tiring – luggage storage is easy in Korea.', { energy: -10 })], 'lo-hotel'),
@@ -417,13 +445,19 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
     if (def.extra === 'crosswalk' && i === 0) steps.push(simulate('crosswalk', 'transport', 'Crossing the streets', 'Read the pedestrian lights and countdowns on the way – cross or wait?', {}, 'tr-walk'));
     if (def.extra === 'recycle' && i === def.stops.length - 1) steps.push(simulate('recycle', 'etiquette', 'Recycling station', 'Sort everything from your day out into the right bins.', { trash: ['pet', 'can', 'chicken-meat', 'bones', 'peel', 'tissue', 'bag', 'box'] }, 'et-trash'));
     if (def.extra === 'cashpay' && i === 1) steps.push(simulate('cashpay', 'money', 'Pay a cash-only stall', 'This little stall only takes cash. Pick the right notes and coins and check your change.', { shop: `${s.ko} 노점 Stall`, items: [{ name: '간식 Snack', price: 3000 }, { name: '음료 Drink', price: 2000 }], cashOnly: true }, 'mo-notes'));
-    scenes.push({ id: `${def.id}-s${i + 1}`, day: dayOf(i), bg: s.bg ?? KIND_BG[s.kind], title: tl(s.time, s.en, s.ko), location: { en: s.en, ko: s.ko }, steps });
+    const items: EstItem[] = [];
+    if (i > 0 && !s.bus && !s.move) {
+      if (s.walk) items.push(est(s.walk, 'walk', `Walk to ${s.en}`, `${s.ko}까지 도보`));
+      else items.push(est(s.ride ?? 20, 'move', `Subway / bus to ${s.en}`, `${s.ko}까지 지하철·버스`, 1500));
+    }
+    items.push(est(s.min ?? VISIT_MIN[s.kind], 'visit', s.en, s.ko));
+    scenes.push({ id: `${def.id}-s${i + 1}`, day: dayOf(i), bg: s.bg ?? KIND_BG[s.kind], title: tl(s.time, s.en, s.ko), location: { en: s.en, ko: s.ko }, est: { items }, steps });
 
     // 3 · meals after this place
     for (const { m: f, k } of mealAt(i)) {
       if (k > 0) {
         scenes.push({
-          id: `${def.id}-f${k + 1}`, day: dayOf(i), bg: 'restaurant', title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] },
+          id: `${def.id}-f${k + 1}`, day: dayOf(i), bg: 'restaurant', est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] },
           steps: [
             say(f.text),
             simulate('menu', 'food', `Order at ${f.place[1]}`, 'Another Korean-only menu – order for everyone (watch the 2-portion minimums and spicy marks).', { restaurant: registerMenu(`${def.id}-food${k + 1}`, f.place, f.dishes) }),
@@ -445,21 +479,21 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
         () => ask('food', 'Where is the water?', [ok('Self-service – look for the water dispenser and cups (물은 셀프)', 'Right!', { manner: 3 }), no('Wait for the staff to bring a bottle', 'In most eateries water is self-service.', { energy: -3 })], 'fo-manners'),
         () => ask('food', 'How do you eat the rice and soup?', [ok('With a spoon – chopsticks for side dishes; the bowl stays on the table', 'Correct Korean style!', { manner: 4 }, 'chopsticks'), no('Stick the chopsticks upright in the rice', 'That resembles a funeral ritual – lay them down instead.', { manner: -6 })], 'fo-manners'),
       ], def.id + 'food')());
-      scenes.push({ id: `${def.id}-f1`, day: dayOf(i), bg: 'restaurant', title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] }, steps: fsteps });
+      scenes.push({ id: `${def.id}-f1`, day: dayOf(i), bg: 'restaurant', est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] }, steps: fsteps });
     }
     // 4 · lodging after the first day's places
     if (i === lastOfDay1 && def.nights > 0) {
       const lsteps: Step[] = [say(`Evening of day ${dayOf(i)}. You check into your ${st.en}.`)];
       if (st.checkin) lsteps.push(simulate('checkin', 'lodging', `${st.en[0].toUpperCase()}${st.en.slice(1)} self check-in`, 'Read the host\'s message, open the digital door lock, find your room and remember the house rules.', { code: String(1000 + (hash(def.id) % 9000)), room: `${2 + (hash(def.id) % 3)}0${1 + (hash(def.id + 'r') % 3)}`, checkout: '11:00' }));
       lsteps.push(st.q(), learn(st.card));
-      scenes.push({ id: `${def.id}-l`, day: dayOf(i), bg: def.stay === 'temple' ? 'temple' : def.stay === 'jjimjilbang' ? 'jjimjilbang' : def.stay === 'hanok' ? 'hanok' : def.stay === 'pension' ? 'pension' : 'street', title: { en: `Night at the ${st.en}`, ko: `${st.ko}에서 하룻밤` }, location: { en: st.en, ko: st.ko }, steps: lsteps });
+      scenes.push({ id: `${def.id}-l`, day: dayOf(i), est: { items: [est(20, 'move', `To your ${st.en}`, `${st.ko}까지 이동`, 1500), est(0, 'stay', `${st.en[0].toUpperCase()}${st.en.slice(1)}${STAY_COST[def.stay][1] ? ' (per person)' : ''}`, `${st.ko}${STAY_COST[def.stay][1] ? ' (1인)' : ''}`, STAY_COST[def.stay][0], STAY_COST[def.stay][1])] }, bg: def.stay === 'temple' ? 'temple' : def.stay === 'jjimjilbang' ? 'jjimjilbang' : def.stay === 'hanok' ? 'hanok' : def.stay === 'pension' ? 'pension' : 'street', title: { en: `Night at the ${st.en}`, ko: `${st.ko}에서 하룻밤` }, location: { en: st.en, ko: st.ko }, steps: lsteps });
     }
   });
 
   // 5 · health
   const h = HEALTH[def.health ?? pick(['heat', 'sprain', 'stomach', 'cold'] as const, def.id + 'h')];
   scenes.push({
-    id: `${def.id}-h`, day: def.days, bg: 'pharmacy', title: { en: h.ev[0], ko: '건강 챙기기' }, location: { en: 'Nearby pharmacy', ko: '근처 약국' },
+    id: `${def.id}-h`, day: def.days, bg: 'pharmacy', est: { items: [est(10, 'walk', 'Walk to a pharmacy', '약국까지 도보')] }, title: { en: h.ev[0], ko: '건강 챙기기' }, location: { en: 'Nearby pharmacy', ko: '근처 약국' },
     steps: [
       event('health', h.ev[0], h.ev[1], { energy: h.energy }, 'medicine'),
       simulate('pharmacy', 'medical', 'At the pharmacy', 'Find the 약 sign, explain what\'s wrong in Korean, pick the right medicine and read the label.', { symptom: h.sym }, 'me-pharmacy'),
@@ -482,7 +516,9 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
     ], def.id + 'dep')(),
     talk('guide', pick([`What a trip – ${def.title[0]}! See you on the next mission.`, 'You travelled like a local. 다음에 또 봐요!', 'Mission complete – Korea is waiting for your next visit!'], def.id + 'bye'), P('또 올게요!', 'Tto ol-ge-yo!', 'I\'ll come again!')),
   );
-  scenes.push({ id: `${def.id}-z`, day: def.days, bg: exit.bg, title: tl(def.end, `Back to ${exit.en.replace(' International', '')}`, `${exit.ko} 귀국`), location: { en: exit.en, ko: exit.ko }, steps: dsteps });
+  scenes.push({
+    id: `${def.id}-z`, day: def.days, bg: exit.bg,
+    est: { items: [est(HUB_TIME[def.exit ?? def.hub][0], 'move', `Back to ${exit.en}`, `${exit.ko}까지 이동`, HUB_TIME[def.exit ?? def.hub][1]), exit.kind === 'airport' ? est(150, 'task', 'Airport: tax refund, check-in, security', '공항: 택스리펀드·체크인·보안검색') : est(60, 'task', 'Ferry check-in & departure', '여객선 수속·출국')] }, title: tl(def.end, `Back to ${exit.en.replace(' International', '')}`, `${exit.ko} 귀국`), location: { en: exit.en, ko: exit.ko }, steps: dsteps });
 
   const [solo, couple, friends, group] = def.fit;
   return {

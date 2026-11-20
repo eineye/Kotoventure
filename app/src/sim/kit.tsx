@@ -28,6 +28,9 @@ export interface SimResult {
   cash?: Cash;
   /** flags to add (e.g. visit:bukchon) */
   flags?: string[];
+  /** day planner: when the planned day starts and ends (minutes since midnight) */
+  startMin?: number;
+  endMin?: number;
 }
 
 export interface SimProps {
@@ -103,7 +106,7 @@ export function SimShell({
           }}
         >
           <Text style={{ fontWeight: '800', color: fb.kind === 'ok' ? '#166534' : fb.kind === 'err' ? '#991B1B' : '#075985' }}>
-            {fb.kind === 'ok' ? '✅ ' : fb.kind === 'err' ? '❌ ' : '💡 '}
+            {fb.kind === 'ok' ? '✅ ' : fb.kind === 'err' ? '⚠️ ' : '💡 '}
             {fb.text}
           </Text>
         </View>
@@ -230,13 +233,12 @@ export function MoneyTray({ amount, noteWidth = 150 }: { amount: number; noteWid
 /** real note length in mm */
 export const notePx = (v: number) => ({ 1000: 136, 5000: 142, 10000: 148, 50000: 154 })[v as 1000] ?? 154;
 
-export function DoneCard({ title, score, log, onContinue, lang }: { title: string; score: number; log: string[]; onContinue: () => void; lang: string }) {
-  const color = score >= 85 ? C.green : score >= 60 ? C.orange : C.red;
+/** End of a practice simulation: what you did (no score – this is a travel simulation). */
+export function DoneCard({ title, log, onContinue, lang }: { title: string; score?: number; log: string[]; onContinue: () => void; lang: string }) {
   return (
     <Box style={{ alignItems: 'center', gap: 8 }}>
-      <Text style={{ fontSize: 40 }}>{score >= 85 ? '🏆' : score >= 60 ? '👍' : '💪'}</Text>
+      <Text style={{ fontSize: 40 }}>✅</Text>
       <H size={20}>{title}</H>
-      <Text style={{ fontSize: 34, fontWeight: '900', color }}>{score} / 100</Text>
       <View style={{ alignSelf: 'stretch', gap: 4 }}>
         {log.map((l, i) => (
           <P key={i} style={{ fontSize: 14 }}>

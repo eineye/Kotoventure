@@ -6,7 +6,6 @@ import {
   MODE_NAME,
   REGIONS,
   WEEKDAY_KO,
-  funTarget,
   modesFor,
   regionOf,
   type Region,
@@ -123,7 +122,7 @@ export function DayPlanSim({ step, ctx, onDone }: SimProps) {
         {done && (
           <>
             <Box style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-              <Stat k={ko ? '즐거움 / 목표' : 'Fun / goal'} v={`${result.fun}/${result.target}`} />
+              <Stat k={ko ? '총 시간' : 'Total time'} v={`${Math.floor((result.endMin - startMin) / 60)}h ${(result.endMin - startMin) % 60}m`} />
               <Stat k={ko ? '쓴 돈' : 'Spent'} v={won(result.cost)} />
               <Stat k={ko ? '체력' : 'Energy'} v={`−${Math.max(0, result.energy)}`} />
               <Stat k={ko ? '방문' : 'Visited'} v={`${result.visited.length}/${stops.length}`} />
@@ -140,8 +139,10 @@ export function DayPlanSim({ step, ctx, onDone }: SimProps) {
                 onDone({
                   score: result.score,
                   effects: { money: -result.cost, energy: -Math.max(0, result.energy) },
-                  log: [`Day plan: ${result.visited.length} places, fun ${result.fun}`],
+                  log: [`Day plan: ${result.visited.length} places, ${hhmm(startMin)}–${hhmm(result.endMin)}`],
                   flags: result.visited.map((id) => `visit:${id}`),
+                  startMin,
+                  endMin: result.endMin,
                 })
               }
             />
@@ -164,7 +165,7 @@ export function DayPlanSim({ step, ctx, onDone }: SimProps) {
           </Text>
         )}
         <Text style={{ color: C.inkSoft, fontSize: 12 }}>
-          🎯 {ko ? '즐거움 목표' : 'Fun goal'} {funTarget(cfg)} · ⚡ {ko ? '현재 체력' : 'Energy now'} {ctx.energy} · {ko ? '점심을 꼭 챙기세요 (11:00–14:30)' : 'Remember lunch (11:00–14:30)'} {last ? ` · ${ko ? `${MODE_NAME[last.mode] === 'Bus' ? '버스' : '지하철'} 막차 ~${last.at}` : `Last ${MODE_NAME[last.mode].toLowerCase()} ~${last.at}`}` : ''}
+          🕘 {ko ? '하루 일정은 숙소에 돌아오는 시간까지 계산돼요' : 'Your day is timed until you are back at your stay'} · {ko ? '점심을 꼭 챙기세요 (11:00–14:30)' : 'Remember lunch (11:00–14:30)'} {last ? ` · ${ko ? `${MODE_NAME[last.mode] === 'Bus' ? '버스' : '지하철'} 막차 ~${last.at}` : `Last ${MODE_NAME[last.mode].toLowerCase()} ~${last.at}`}` : ''}
           {modes.length ? ` · ${modes.map((m) => `${MODE_ICON[m]} ${MODE_NAME[m]}`).join(' / ')}` : ''}
         </Text>
       </Box>

@@ -206,6 +206,25 @@ export interface SimStep extends StepBase {
 
 export type Step = NarrationStep | DialogStep | ChoiceStep | CardStep | EventStep | SimStep;
 
+/** Kinds of time in the trip simulation. */
+export type TimeCat = 'move' | 'walk' | 'meal' | 'visit' | 'task' | 'stay';
+export interface EstItem {
+  min: number;
+  cat: TimeCat;
+  label: L;
+  /** KRW per person (or per room for 'stay' unless perPerson) */
+  cost?: number;
+  perPerson?: boolean;
+}
+/** Realistic time/cost estimate for a scene (beyond its hands-on simulations). */
+export interface SceneEst {
+  /** clock time this scene starts at the earliest (e.g. '18:00' for a dinner) */
+  start?: string;
+  items: EstItem[];
+  /** the scene is a highlight of a day already scheduled by the day planner – adds no time */
+  recap?: boolean;
+}
+
 export interface Scene {
   id: string;
   day: number;
@@ -215,6 +234,8 @@ export interface Scene {
   bg: string;
   /** scene only happens if ALL flags are set (e.g. visit:bukchon from the day planner) */
   requires?: string[];
+  /** estimated real-world time & cost of this scene */
+  est?: SceneEst;
   steps: Step[];
 }
 
@@ -307,6 +328,19 @@ export interface RunStats {
   topics?: Partial<Record<TopicId, { c: number; n: number }>>;
   /** things to review: "sceneId:stepIndex:optionIndex" (optionIndex −1 = simulation) */
   missed?: string[];
+  /** trip clock: current day and minutes since midnight */
+  clock?: { day: number; min: number };
+  /** what happened when – the simulated timeline */
+  trail?: TrailEntry[];
+}
+
+export interface TrailEntry {
+  day: number;
+  sceneId: string;
+  title: L;
+  start: number;
+  end: number;
+  items: { cat: TimeCat; min: number; label: L; cost?: number }[];
 }
 
 export interface CourseProgress {
