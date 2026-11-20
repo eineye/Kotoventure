@@ -14,10 +14,15 @@ export const CARDS: KnowledgeCard[] = [
   },
   {
     id: 'tr-tmoney', topic: 'transport', prop: 'tmoney',
-    title: { en: 'T-money card', ko: '티머니 카드' },
-    body: { en: 'A rechargeable transit card for subway, bus, many taxis and convenience stores. Buy & top up (cash) at convenience stores (GS25, CU, 7-Eleven) or subway machines. Tap IN and OUT.', ko: '지하철·버스·택시·편의점에서 사용하는 교통카드. 편의점에서 구매·충전.' },
+    title: { en: 'Subway tickets, T-money & deposit refund', ko: '지하철 표 사기·티머니·보증금 반환' },
+    body: { en: 'Three ways to ride: a T-money card (rechargeable, also for buses, taxis and convenience stores), a single-journey card from the station machine, or a visitor/unlimited pass (e.g. Climate Card in Seoul).', ko: '티머니(충전식 교통카드), 1회용 교통카드(역 발매기), 외국인·정기권(예: 서울 기후동행카드) 중에서 골라요.' },
+    tips: [
+      { en: 'T-money: buy at a convenience store (₩3,000–4,000) and top up with CASH at the store or the station top-up machine.', ko: '티머니: 편의점에서 구입하고, 편의점이나 역 충전기에서 현금으로 충전해요.' },
+      { en: 'Single-journey card: choose your destination on the ticket machine – the fare includes a ₩500 deposit. After the ride, put the card into the deposit-refund machine (보증금 환급기) to get ₩500 back.', ko: '1회용 교통카드: 발매기에서 목적지를 고르면 보증금 ₩500이 포함돼요. 내린 뒤 보증금 환급기에 넣으면 ₩500을 돌려받아요.' },
+      { en: 'Gates: hold the card flat on the reader until it beeps, then walk through. One card per person – every person taps. Wide gates are for wheelchairs, strollers and big luggage.', ko: '개찰구: 카드를 단말기에 평평하게 대고 "삑" 소리가 나면 통과. 1인 1카드. 넓은 게이트는 휠체어·유모차·큰 짐용이에요.' },
+      { en: 'Tap OUT at the exit gate too – the fare depends on distance.', ko: '나갈 때도 꼭 찍어요 – 요금은 거리에 따라 달라요.' },
+    ],
     phrase: { hangul: '티머니 충전해 주세요', roman: 'Ti-meo-ni chung-jeon-hae ju-se-yo', meaning: 'Please top up my T-money' },
-    tips: [{ en: 'Top-ups are usually CASH only. Keep some ₩10,000 notes.' }, { en: 'Visitor cards such as WOWPASS or Climate Card combine transit and payment.' }],
   },
   {
     id: 'tr-transfer', topic: 'transport', prop: 'subway-sign',
@@ -147,8 +152,16 @@ export const CARDS: KnowledgeCard[] = [
   },
   {
     id: 'fo-bbq', topic: 'food', prop: 'bbq',
-    title: { en: 'Korean BBQ', ko: '고기구이' },
-    body: { en: 'Samgyeopsal (pork belly) or galbi grilled at your table. Staff may grill for you – let them. Wrap meat in lettuce with garlic & ssamjang (ssam) in ONE bite. Many BBQ places require at least 2 portions.', ko: '삼겹살·갈비. 쌈 싸서 한입에. 2인분 이상 주문인 곳 많음.' },
+    title: { en: 'Korean BBQ: how the table works', ko: '고깃집 이용법' },
+    body: { en: 'Meat (samgyeopsal, moksal, galbi) is grilled on a grill built into your table – staff often grill and cut it for you. Most places need at least 2 portions (2인분 이상).', ko: '테이블 화로에서 고기를 구워 먹어요. 직원이 구워 주는 곳도 많고, 보통 2인분 이상 주문해요.' },
+    tips: [
+      { en: 'Smoke pipe: the silver duct above the grill sucks up smoke – pull it down close to the grill.', ko: '연기 흡입 파이프: 화로 위 은색 관을 아래로 내려 연기를 빨아들여요.' },
+      { en: 'Scissors & tongs: meat is cut with kitchen scissors, flipped with tongs – there is no knife or fork.', ko: '가위·집게: 고기는 가위로 자르고 집게로 뒤집어요. 칼·포크는 없어요.' },
+      { en: 'Cutlery drawer: spoons and chopsticks are in a drawer on the side of the table (or a box on it) – set them for everyone.', ko: '수저통: 식탁 옆 서랍(또는 통)에 수저가 있어요. 일행 수저를 놓아 주면 좋아요.' },
+      { en: 'Storage seats: lift the seat of the stool – put your coat and bag inside so they don\'t smell of smoke (or ask for a cover/apron).', ko: '수납 의자: 의자 뚜껑을 열고 옷·가방을 넣어 냄새가 배지 않게 해요 (앞치마·옷 덮개도 요청 가능).' },
+      { en: 'Finish with "후식 냉면" – a small bowl of cold noodles after the meat – or fried rice in the pan.', ko: '마무리는 후식 냉면이나 볶음밥!' },
+    ],
+    phrase: { hangul: '불판 좀 갈아 주세요', roman: 'Bul-pan jom ga-ra ju-se-yo', meaning: 'Please change the grill plate' },
   },
   {
     id: 'fo-street', topic: 'food', prop: 'hotteok',
@@ -164,14 +177,25 @@ export const CARDS: KnowledgeCard[] = [
   },
   {
     id: 'fo-manners', topic: 'food', prop: 'chopsticks',
-    title: { en: 'Table manners', ko: '식사 예절' },
-    body: { en: 'Do not stick chopsticks upright in rice (it looks like a funeral ritual). Don\'t lift the rice bowl to your mouth. Wait for the eldest to start. Say "Jal meok-get-seum-ni-da" before and "Jal meo-geot-seum-ni-da" after.', ko: '숟가락·젓가락 밥에 꽂지 않기. 어른이 먼저 수저를 들면 시작.' },
-    phrase: { hangul: '잘 먹겠습니다', roman: 'Jal meok-get-seum-ni-da', meaning: 'I will eat well (before a meal)' },
+    title: { en: 'Table manners & meal greetings', ko: '식사 예절과 인사' },
+    body: { en: 'Before eating say "잘 먹겠습니다" (I will eat well); when you leave say "잘 먹었습니다" (I ate well) – to your host or to the restaurant staff at the counter.', ko: '식사 전 "잘 먹겠습니다", 다 먹고 나갈 때 "잘 먹었습니다"라고 인사해요.' },
+    tips: [
+      { en: 'Don\'t stick chopsticks upright in rice (it looks like a funeral ritual) and don\'t lift the rice bowl to your mouth.', ko: '밥에 수저를 꽂지 않고, 밥그릇을 들고 먹지 않아요.' },
+      { en: 'Wait for the eldest to start eating; pour drinks for others, not yourself.', ko: '어른이 먼저 수저를 든 뒤 먹고, 술은 서로 따라 줘요.' },
+      { en: 'Pay at the counter by the exit – no tipping.', ko: '계산은 출구 쪽 카운터에서, 팁은 없어요.' },
+    ],
+    phrase: { hangul: '잘 먹었습니다', roman: 'Jal meo-geot-seum-ni-da', meaning: 'I ate well – thank you (after a meal)' },
   },
   {
     id: 'fo-kimchi', topic: 'food', prop: 'kimchi',
-    title: { en: 'Kimchi', ko: '김치' },
-    body: { en: 'Fermented napa cabbage with chili, garlic and fish sauce – served with almost every meal and refilled for free. Families make it together every late autumn (gimjang), listed by UNESCO as intangible heritage.', ko: '김장 문화는 유네스코 인류무형문화유산.' },
+    title: { en: 'Kinds of kimchi', ko: '김치의 종류' },
+    body: { en: 'Kimchi comes with almost every meal and refills are free. Making it together in late autumn (gimjang) is UNESCO intangible heritage. Different dishes come with different kimchi:', ko: '김치는 거의 모든 식사에 나오고 리필은 무료예요. 김장 문화는 유네스코 인류무형문화유산이에요.' },
+    tips: [
+      { en: 'Baechu-kimchi (napa cabbage, red) – the classic. Baek-kimchi (white kimchi) – no chili, mild and refreshing.', ko: '배추김치 – 기본 김치. 백김치 – 고춧가루 없이 시원하고 순해요.' },
+      { en: 'Kkakdugi – cubed radish, crunchy; served with gukbap and seolleongtang. Chonggak-kimchi – whole "ponytail" radishes.', ko: '깍두기 – 깍둑썬 무, 국밥·설렁탕과 함께. 총각김치 – 작은 무를 통째로.' },
+      { en: 'Pa-kimchi – green onion, great with BBQ. Geotjeori – fresh, unfermented "salad" kimchi, often with kalguksu or bossam.', ko: '파김치 – 고기와 찰떡. 겉절이 – 익히지 않은 생김치, 칼국수·보쌈과 함께.' },
+      { en: 'Cut long kimchi with the scissors on the table if needed.', ko: '긴 김치는 식탁의 가위로 잘라 먹어도 돼요.' },
+    ],
   },
   {
     id: 'fo-solo', topic: 'food', prop: 'kiosk',
@@ -373,5 +397,70 @@ export const CARDS: KnowledgeCard[] = [
     id: 'me-firstaid', topic: 'medical', prop: 'firstaid',
     title: { en: 'First aid basics', ko: '응급처치' },
     body: { en: 'Heatstroke: move to shade, cool the body, small sips of water, call 119 if confused. Sprain: rest, ice, compress, elevate. Jellyfish sting: rinse with seawater (not fresh water), remove tentacles with a card. AEDs are in subway stations and big buildings.', ko: '열사병·염좌·해파리 응급처치. 지하철역 AED.' },
+  },
+  // ───────────── SUBWAY & CONVENIENCE STORES (guidebook additions) ─────────────
+  {
+    id: 'tr-subway', topic: 'transport', prop: 'subway-sign',
+    title: { en: 'Subway: numbers, exits, music & queues', ko: '지하철: 번호·출구·안내 음악·줄서기' },
+    body: { en: 'Every line has a number and a colour, and every station a number (e.g. 201 = Line 2, City Hall). Follow the colour and the number on the signs.', ko: '노선마다 번호와 색이 있고, 역에도 번호가 있어요 (예: 201 = 2호선 시청). 색과 번호를 따라가요.' },
+    tips: [
+      { en: 'Exit numbers: big stations have 10+ exits. Maps and apps tell you which exit (출구) to use – e.g. "Exit 3" – check the yellow exit signs before going up.', ko: '출구 번호: 큰 역은 출구가 10개 이상이에요. 지도 앱에서 "3번 출구"처럼 확인하고 노란 출구 표지판을 따라가요.' },
+      { en: 'Music: in Seoul a short traditional tune plays before a TRANSFER station; announcements are in Korean, English, Chinese and Japanese.', ko: '안내 음악: 서울 지하철은 환승역 전에 짧은 국악 환승 음악이 나와요. 안내 방송은 한·영·중·일 4개 언어.' },
+      { en: 'Queues: stand in the marked lines on both sides of the screen door; let people get off first, then board.', ko: '줄서기: 스크린도어 양옆 표시된 줄에 서고, 내리는 사람이 먼저 내린 뒤 타요.' },
+      { en: 'Pink seats are for pregnant women; seats at the car ends are for elderly and disabled people.', ko: '분홍 좌석은 임산부석, 칸 끝 좌석은 노약자석이에요.' },
+    ],
+    phrase: { hangul: '몇 번 출구예요?', roman: 'Myeot beon chul-gu-ye-yo?', meaning: 'Which exit number?' },
+  },
+  {
+    id: 'cv-stores', topic: 'money', prop: 'convenience',
+    title: { en: 'Convenience stores (편의점)', ko: '편의점 문화' },
+    body: { en: 'GS25, CU, emart24 and 7-Eleven are on almost every corner – most open 24 hours. They are more than shops: you can top up T-money, use an ATM, pay bills, pick up parcels and buy basic medicine.', ko: 'GS25·CU·이마트24·세븐일레븐이 거의 모든 골목에 있고 대부분 24시간이에요. 티머니 충전, ATM, 택배, 상비약까지 가능해요.' },
+    tips: [
+      { en: 'Look for "1+1" and "2+1" stickers – buy one, get one free.', ko: '"1+1", "2+1" 스티커 = 하나 더 공짜!' },
+      { en: 'Plastic bags cost a little extra – bring your own or say "봉투 필요 없어요".', ko: '봉투는 유료예요. "봉투 필요 없어요"라고 해도 돼요.' },
+      { en: 'Cards and mobile pay work everywhere; T-money can also pay for snacks.', ko: '카드·모바일 결제 가능, 티머니로도 결제할 수 있어요.' },
+    ],
+    phrase: { hangul: '봉투 필요 없어요', roman: 'Bong-tu pil-yo eop-seo-yo', meaning: 'I don\'t need a bag' },
+  },
+  {
+    id: 'cv-food', topic: 'food', prop: 'convenience',
+    title: { en: 'Convenience-store food & how to eat it', ko: '편의점 대표 음식·먹는 법' },
+    body: { en: 'Favourites: triangle gimbap, dosirak (lunch boxes), cup ramyeon, banana milk, hot dogs and fried chicken. Many stores have a small eat-in table with a microwave and hot water.', ko: '대표 음식: 삼각김밥, 도시락, 컵라면, 바나나우유, 핫바·치킨. 매장 안 테이블에 전자레인지와 온수기가 있어요.' },
+    tips: [
+      { en: 'Triangle gimbap: pull tab ① down the middle, then pull corners ② and ③ – the seaweed stays crisp.', ko: '삼각김밥: ①번 띠를 가운데로 쭉 내리고 ②·③ 모서리를 당겨요 – 김이 바삭해요.' },
+      { en: 'Cup ramyeon: open the lid halfway, fill to the inside line with hot water, wait 3–4 minutes.', ko: '컵라면: 뚜껑을 반만 열고 안쪽 선까지 뜨거운 물을 부은 뒤 3~4분 기다려요.' },
+      { en: 'Dosirak: remove the sauce cup and lid as printed, microwave about 1–2 minutes (check the label).', ko: '도시락: 소스 컵을 빼고 표시대로 전자레인지에 1~2분 데워요.' },
+    ],
+  },
+  {
+    id: 'cv-howto', topic: 'etiquette', prop: 'trash-bins',
+    title: { en: 'Using the store machines & eat-in table', ko: '편의점 기기 사용법·이용 예절' },
+    body: { en: 'Self-service hot-water dispenser, microwave, coffee machine and (in some stores) a self-checkout kiosk. Han River stores even have automatic ramyeon cookers.', ko: '온수기·전자레인지·커피머신, 일부 매장은 셀프 계산대도 있어요. 한강 편의점에는 즉석 라면 조리기도 있어요.' },
+    tips: [
+      { en: 'Hot water: put the cup under the nozzle and press – mind your fingers.', ko: '온수기: 컵을 노즐 아래 두고 버튼을 눌러요. 손 조심!' },
+      { en: 'Ramyeon cooker: buy the paper-bowl ramyeon, put noodles + soup in the bowl, place it on the plate and press start (about 2–3 min).', ko: '라면 조리기: 종이 용기 라면을 사서 면·스프를 넣고 받침에 올려 시작 버튼 (약 2~3분).' },
+      { en: 'After eating: pour leftover soup into the sink/food-waste bin, sort cups and cans, wipe the table.', ko: '다 먹으면 국물은 개수대·음식물 통에, 용기·캔은 분리하고 테이블을 닦아요.' },
+    ],
+  },
+  {
+    id: 'cv-unmanned', topic: 'money', prop: 'kiosk',
+    title: { en: '24-hour unmanned stores', ko: '24시간 무인 판매점' },
+    body: { en: 'Unmanned ice-cream shops, snack stores and late-night convenience stores have no staff – you scan and pay yourself at a kiosk.', ko: '무인 아이스크림 가게·과자점·심야 무인 편의점은 직원 없이 키오스크에서 직접 계산해요.' },
+    tips: [
+      { en: 'Entry: some doors open only after you tap a card or scan a QR code (adult check at night).', ko: '입장: 카드를 대거나 QR을 찍어야 문이 열리는 곳도 있어요 (밤에는 성인 인증).' },
+      { en: 'Pay: scan each barcode at the kiosk, then pay by card – many take no cash.', ko: '결제: 키오스크에 바코드를 하나씩 찍고 카드로 결제 – 현금이 안 되는 곳이 많아요.' },
+      { en: 'Everything is on CCTV – always pay before leaving and keep the receipt.', ko: 'CCTV가 있어요 – 꼭 결제하고 나가고 영수증을 챙겨요.' },
+    ],
+  },
+  {
+    id: 'fo-ssam', topic: 'food', prop: 'bbq',
+    title: { en: 'Ssam & ssamjang: how to wrap', ko: '쌈 싸 먹는 법·쌈장' },
+    body: { en: 'Ssam = a bite wrapped in a leaf. Ssamjang is the thick reddish-brown dip (soybean paste + chili paste) that comes with BBQ.', ko: '쌈은 잎에 싸서 한입에 먹는 방식이에요. 쌈장은 된장과 고추장을 섞은 걸쭉한 양념이에요.' },
+    tips: [
+      { en: '1) Lettuce or perilla leaf in your palm  2) a piece of meat  3) a dab of ssamjang, garlic, green chili or kimchi  4) fold and eat in ONE bite.', ko: '① 상추·깻잎을 손바닥에 ② 고기 한 점 ③ 쌈장·마늘·고추·김치 조금 ④ 싸서 한입에!' },
+      { en: 'Too big for one bite? Make a smaller one – biting a ssam in half gets messy.', ko: '한입에 너무 크면 작게 싸요 – 반으로 베어 먹으면 흘러요.' },
+      { en: 'Leaves and side dishes are refilled for free – ask "상추 좀 더 주세요".', ko: '쌈 채소와 반찬은 무료 리필 – "상추 좀 더 주세요".' },
+    ],
+    phrase: { hangul: '상추 좀 더 주세요', roman: 'Sang-chu jom deo ju-se-yo', meaning: 'More lettuce, please' },
   },
 ];

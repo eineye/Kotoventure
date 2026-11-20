@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Animated, Easing, Modal, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { Animated, Easing, Modal, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import * as Speech from 'expo-speech';
 import { TOPICS, tr, type KnowledgeCard } from '@kotoventure/shared';
 import { Prop } from '../art/props';
@@ -11,16 +11,20 @@ import { C, R } from './theme';
  * (a short "animated explainer"). ‹ › browse the other cards of the list.
  */
 export function CardPopup({ cards, index, lang, onClose, onIndex, locked }: { cards: KnowledgeCard[]; index: number | null; lang: string; onClose: () => void; onIndex: (i: number) => void; locked?: (c: KnowledgeCard) => string[] | null }) {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const card = index !== null ? cards[index] : null;
   const ko = lang === 'ko';
   // fresh animated values per opened card (keyed below), so every open replays the animation
   return (
     <Modal visible={!!card} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable testID="card-popup-backdrop" onPress={onClose} style={{ flex: 1, backgroundColor: '#0F172ACC', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+      <View style={{ flex: 1, backgroundColor: '#0F172ACC', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+        <Pressable testID="card-popup-backdrop" onPress={onClose} style={StyleSheet.absoluteFill} accessibilityLabel={ko ? '닫기' : 'Close'} />
         {card && (
-          <Pressable onPress={() => {}} style={{ width: Math.min(width - 32, 420), maxHeight: '90%' }}>
-            {locked?.(card) ? <LockedBody key={card.id} card={card} lang={lang} missions={locked(card)!} /> : <CardBody key={card.id} card={card} lang={lang} />}
+          <View style={{ width: Math.min(width - 32, 420), maxHeight: height * 0.88 }}>
+            {/* the whole card scrolls when its content is taller than the screen */}
+            <ScrollView testID="card-scroll" style={{ flexGrow: 0, borderRadius: R.l }} showsVerticalScrollIndicator>
+              {locked?.(card) ? <LockedBody key={card.id} card={card} lang={lang} missions={locked(card)!} /> : <CardBody key={card.id} card={card} lang={lang} />}
+            </ScrollView>
             <View style={{ flexDirection: 'row', gap: 8, marginTop: 10, alignItems: 'center' }}>
               <Btn testID="card-prev" small kind="ghost" label="‹" disabled={index === 0} onPress={() => onIndex(Math.max(0, (index ?? 0) - 1))} style={{ backgroundColor: '#FFF', width: 56 }} />
               <Text style={{ flex: 1, textAlign: 'center', color: '#FFF', fontWeight: '800' }}>
@@ -29,9 +33,9 @@ export function CardPopup({ cards, index, lang, onClose, onIndex, locked }: { ca
               <Btn testID="card-next" small kind="ghost" label="›" disabled={(index ?? 0) >= cards.length - 1} onPress={() => onIndex(Math.min(cards.length - 1, (index ?? 0) + 1))} style={{ backgroundColor: '#FFF', width: 56 }} />
               <Btn testID="card-close" small label={ko ? '닫기' : 'Close'} onPress={onClose} />
             </View>
-          </Pressable>
+          </View>
         )}
-      </Pressable>
+      </View>
     </Modal>
   );
 }
@@ -39,7 +43,7 @@ export function CardPopup({ cards, index, lang, onClose, onIndex, locked }: { ca
 function CardBody({ card, lang }: { card: KnowledgeCard; lang: string }) {
   const ko = lang === 'ko';
   const topic = TOPICS.find((t) => t.id === card.topic)!;
-  const points = [tr(card.body, lang), ...(card.tips ?? []).slice(0, 3).map((t) => tr(t, lang))];
+  const points = [tr(card.body, lang), ...(card.tips ?? []).map((t) => tr(t, lang))];
   const [pop] = useState(() => new Animated.Value(0));
   const [bob] = useState(() => new Animated.Value(0));
   const [shown] = useState(() => points.map(() => new Animated.Value(0)));
@@ -75,7 +79,7 @@ function CardBody({ card, lang }: { card: KnowledgeCard; lang: string }) {
           <Prop id={card.prop} size={140} />
         </Animated.View>
       </View>
-      <ScrollView style={{ maxHeight: 360 }} contentContainerStyle={{ padding: 16, gap: 8 }}>
+      <View style={{ padding: 16, gap: 8 }}>
         <H size={20}>{tr(card.title, lang)}</H>
         {points.map((pt, i) => (
           <Animated.View key={i} style={{ flexDirection: 'row', gap: 8, opacity: shown[i], transform: [{ translateX: shown[i].interpolate({ inputRange: [0, 1], outputRange: [24, 0] }) }] }}>
@@ -97,7 +101,7 @@ function CardBody({ card, lang }: { card: KnowledgeCard; lang: string }) {
             <Text style={{ fontSize: 11, color: C.inkSoft, marginTop: 2 }}>{ko ? '눌러서 발음 듣기' : 'Tap to hear it'}</Text>
           </Pressable>
         )}
-      </ScrollView>
+      </View>
     </Animated.View>
   );
 }

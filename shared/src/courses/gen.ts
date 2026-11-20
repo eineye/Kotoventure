@@ -410,6 +410,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
       ask('transport', `How do you get to ${def.stops[0].en}?`, [ok(def.go, 'Good choice – easy and good value.', { money: -5000 }, 'subway-sign'), ...wrongGo(def.hub)], 'tr-transfer'),
       event('weather', S.ev[0], S.ev[1], undefined, S.prop),
       S.q(),
+      ...(['seoul', 'incheon', 'gyeonggi'].includes(def.area) ? [learn('tr-subway')] : []),
     ],
   });
 
@@ -496,6 +497,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
     id: `${def.id}-h`, day: def.days, bg: 'pharmacy', est: { items: [est(10, 'walk', 'Walk to a pharmacy', '약국까지 도보')] }, title: { en: h.ev[0], ko: '건강 챙기기' }, location: { en: 'Nearby pharmacy', ko: '근처 약국' },
     steps: [
       event('health', h.ev[0], h.ev[1], { energy: h.energy }, 'medicine'),
+      learn(pick(['cv-stores', 'cv-food', 'cv-howto', 'cv-unmanned'], def.id + 'cv')),
       simulate('pharmacy', 'medical', 'At the pharmacy', 'Find the 약 sign, explain what\'s wrong in Korean, pick the right medicine and read the label.', { symptom: h.sym }, 'me-pharmacy'),
       ask('medical', 'If it gets worse and you can\'t explain it in Korean?', [ok('Visit a clinic (의원) with my passport and call 1330 for free interpretation', 'Exactly – 1330 interprets 24/7.', { manner: 3 }, 'hotline'), no('Call 119 for a mild problem', '119 is for emergencies – a clinic and 1330 are the right help.', { manner: -4 })], 'me-1330'),
     ],

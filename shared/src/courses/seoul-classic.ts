@@ -34,7 +34,7 @@ export const seoulClassic: Course = {
   coverBg: 'palace',
   access: 'base',
   isPublished: true,
-  version: 4,
+  version: 5,
   sortOrder: 1,
   scenes: [
     {
@@ -72,6 +72,7 @@ export const seoulClassic: Course = {
       title: { en: 'Subway to Myeongdong', ko: '지하철로 명동 가기' },
       location: { en: 'Seoul Station → Myeongdong (Line 4)', ko: '서울역 → 명동역 (4호선)' },
       steps: [
+        learn('tr-subway'),
         say('At Seoul Station you must transfer from AREX to Subway Line 4 (sky-blue) towards Dangogae.'),
         ask('transport', 'How do you find the right platform?', [
           ok('Follow the light-blue "4" signs and the direction (next station)', 'Yes! Every line has a colour and a number. Station numbers like 424 help too.', { manner: 3 }, 'subway-sign'),
@@ -94,6 +95,7 @@ export const seoulClassic: Course = {
       title: { en: 'Myeongdong check-in & street food', ko: '명동 체크인 & 길거리 음식' },
       location: { en: 'Myeongdong', ko: '명동' },
       steps: [
+        learn('cv-stores'),
         say('It\'s 11:00. Your hotel check-in is at 15:00.', { parties: ['solo', 'couple', 'group'] }),
         say('It\'s 11:00. Your hotel check-in is at 15:00 – and four friends\' worth of suitcases is a lot to drag around.', { parties: ['friends'] }),
         ask('lodging', 'What do you do with your luggage?', [
@@ -138,6 +140,7 @@ export const seoulClassic: Course = {
           ok('Wrap meat, garlic and ssamjang in a lettuce leaf and eat it in one bite', 'Delicious! That\'s "ssam".', { energy: 10 }, 'bbq'),
           no('Cut the lettuce with the scissors and use a fork', 'The scissors are for the meat. There is no fork.', { energy: 5 }),
         ], 'fo-bbq'),
+        learn('fo-ssam'),
         say('Your friends order soju. Let\'s see if you know the drinking manners.', { parties: ['friends', 'group'] }),
         say('A friendly older man at the next table offers to share his soju with you.', { parties: ['solo', 'couple'] }),
         ask('food', 'An older person offers to pour you a glass. What do you do?', [
