@@ -346,7 +346,8 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     );
   }
 
-  const sceneH = Math.min(height * 0.36, 300);
+  // picture is kept compact so the mission panel gets most of the screen
+  const sceneH = Math.max(140, Math.min(height * 0.26, 220));
   const speaker = step?.type === 'dialog' ? step.speaker : null;
   const overlayProp = step?.type === 'event' ? step.prop : phase === 'card' ? undefined : undefined;
   const here = (stats.trail ?? []).find((x) => x.sceneId === scene.id);
@@ -382,7 +383,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
       <View style={{ height: sceneH, overflow: 'hidden' }}>
         <Background id={scene.bg} width={width} height={sceneH} />
         <View style={{ position: 'absolute', left: 4, bottom: -4 }}>
-          <PartyArt party={party} lead={avatar} size={Math.min(170, width * 0.42)} />
+          <PartyArt party={party} lead={avatar} size={Math.min(170, width * 0.42, sceneH * 0.8)} />
         </View>
         {speaker && (
           <View style={{ position: 'absolute', right: 12, bottom: 12, backgroundColor: '#FFFFFFE6', borderRadius: 999, padding: 4, ...shadow }}>
@@ -400,9 +401,10 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
       </View>
 
       {/* Panel */}
-      <Animated.View style={{ flex: 1, backgroundColor: C.paper, borderTopLeftRadius: R.l, borderTopRightRadius: R.l, marginTop: -16, opacity: fade, transform: [{ translateY: fade.interpolate({ inputRange: [0, 1], outputRange: [12, 0] }) }] }}>
+      <Animated.View style={{ flex: 1, backgroundColor: C.paper, borderTopLeftRadius: R.l, borderTopRightRadius: R.l, marginTop: -16, overflow: 'hidden', opacity: fade, transform: [{ translateY: fade.interpolate({ inputRange: [0, 1], outputRange: [12, 0] }) }] }}>
         {phase === 'intro' && (
-          <Pressable style={{ flex: 1, padding: 20, justifyContent: 'center' }} testID="continue" onPress={() => setPhase('step')} accessibilityRole="button">
+          <ScrollView key={`intro-${sceneIdx}`} contentContainerStyle={{ flexGrow: 1 }}>
+          <Pressable style={{ flexGrow: 1, padding: 20, paddingTop: 24, paddingBottom: 30 }} testID="continue" onPress={() => setPhase('step')} accessibilityRole="button">
             <Text style={{ color: C.red, fontWeight: '900', fontSize: 16 }}>
               {L.day} {scene.day}
             </Text>
@@ -441,6 +443,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
             )}
             <Text style={{ marginTop: 24, color: C.inkSoft, fontWeight: '800' }}>▸ {L.tapContinue}</Text>
           </Pressable>
+          </ScrollView>
         )}
 
         {phase !== 'intro' && !step && (
@@ -450,7 +453,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
         )}
 
         {phase !== 'intro' && step && (
-          <ScrollView contentContainerStyle={{ padding: 18, paddingBottom: 30, flexGrow: 1 }}>
+          <ScrollView key={`step-${sceneIdx}-${stepIdx}-${phase}`} contentContainerStyle={{ padding: 18, paddingTop: 22, paddingBottom: 30, flexGrow: 1 }}>
             {step.type === 'narration' && (
               <Pressable testID="continue" onPress={onTapContinue} style={{ flexGrow: 1 }} accessibilityRole="button">
                 <P style={{ fontSize: 17, lineHeight: 26 }}>{tr(step.text, lang)}</P>
