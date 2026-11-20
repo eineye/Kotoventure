@@ -10,7 +10,7 @@ import { C, R } from './theme';
  * Pop-up for a knowledge card: the illustration bounces in, then the key points appear one by one
  * (a short "animated explainer"). ‹ › browse the other cards of the list.
  */
-export function CardPopup({ cards, index, lang, onClose, onIndex }: { cards: KnowledgeCard[]; index: number | null; lang: string; onClose: () => void; onIndex: (i: number) => void }) {
+export function CardPopup({ cards, index, lang, onClose, onIndex, noteFor }: { cards: KnowledgeCard[]; index: number | null; lang: string; onClose: () => void; onIndex: (i: number) => void; noteFor?: (c: KnowledgeCard) => string | undefined }) {
   const { width } = useWindowDimensions();
   const card = index !== null ? cards[index] : null;
   const ko = lang === 'ko';
@@ -21,6 +21,7 @@ export function CardPopup({ cards, index, lang, onClose, onIndex }: { cards: Kno
         {card && (
           <Pressable onPress={() => {}} style={{ width: Math.min(width - 32, 420), maxHeight: '90%' }}>
             <CardBody key={card.id} card={card} lang={lang} />
+            {noteFor?.(card) && <Text style={{ color: '#FDE68A', textAlign: 'center', fontWeight: '800', marginTop: 8 }}>{noteFor(card)}</Text>}
             <View style={{ flexDirection: 'row', gap: 8, marginTop: 10, alignItems: 'center' }}>
               <Btn testID="card-prev" small kind="ghost" label="‹" disabled={index === 0} onPress={() => onIndex(Math.max(0, (index ?? 0) - 1))} style={{ backgroundColor: '#FFF', width: 56 }} />
               <Text style={{ flex: 1, textAlign: 'center', color: '#FFF', fontWeight: '800' }}>
