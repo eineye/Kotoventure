@@ -4,7 +4,7 @@
  * All values are typical estimates for planning, not guarantees.
  */
 import type { EstItem, L, PartyType, Scene, SimStep, TimeCat } from './types';
-import { BUS_FARE, LOCKERS, BAG_SIZE, MEDICINES, PARTY_PEOPLE, RESTAURANTS, SYMPTOMS, TICKET_SITES, ticketTotal, type TicketKind } from './practice';
+import { BUS_FARE, LOCKERS, BAG_SIZE, MEDICINES, PARTY_PEOPLE, RESTAURANTS, SYMPTOMS, mainsNeeded, TICKET_SITES, ticketTotal, type TicketKind } from './practice';
 import { timetable, toMin } from './rail';
 import { bestRoute } from './subway';
 
@@ -57,7 +57,7 @@ export function simEstimate(step: SimStep, party: PartyType): EstItem | null {
     case 'menu': {
       const r = RESTAURANTS[cfg.restaurant ?? 'bbq'];
       const main = r?.items.find((i) => i.main && !i.spicy) ?? r?.items[0];
-      return { min: 60, cat: 'meal', label, cost: (main?.price ?? 10000) * Math.max(n, main?.min ?? 1), perPerson: false };
+      return { min: 60, cat: 'meal', label, cost: (main?.price ?? 10000) * Math.max(r ? mainsNeeded(r, n) : n, main?.min ?? 1), perPerson: false };
     }
     case 'recycle': return { min: 5, cat: 'task', label };
     case 'pharmacy': return { min: 15, cat: 'task', label, cost: MEDICINES.find((m) => m.id === SYMPTOMS[cfg.symptom ?? 'cold']?.med)?.price, perPerson: false };

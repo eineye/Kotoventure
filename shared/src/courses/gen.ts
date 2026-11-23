@@ -8,7 +8,7 @@
  * Question banks are keyed by place kind, so the same rules are taught in context everywhere.
  * Prices, hours and routes are realistic examples – players are told to check before travelling.
  */
-import { CUISINES, TICKET_SITES, RESTAURANTS, inferCuisine, type BusColor, type CuisineKind, type MenuItem } from '../practice';
+import { CUISINES, TICKET_SITES, RESTAURANTS, inferCuisine, menuIntro, type BusColor, type CuisineKind, type MenuItem } from '../practice';
 import type { Area, ChoiceOption, Course, EstItem, PartyType, Scene, Step, TimeCat, TopicId } from '../types';
 import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
@@ -380,6 +380,29 @@ function registerMenu(id: string, place: [string, string], dishes: Dish[], kind?
   return id;
 }
 
+/** Menu simulation whose intro explains how ordering works at this kind of restaurant. */
+function menuSim(id: string, f: Meal, cardId?: string): Step {
+  const rid = registerMenu(id, f.place, f.dishes, f.kind);
+  const st = simulate('menu', 'food', `Order at ${f.place[1]}`, '', { restaurant: rid }, cardId);
+  return { ...st, intro: menuIntro(RESTAURANTS[rid]) } as Step;
+}
+
+/** Questions after the meal that fit the kind of restaurant. */
+function mealQuiz(kind: CuisineKind): (() => Step)[] {
+  const water = () => ask('food', 'Where is the water?', [ok('Self-service – look for the water dispenser and cups (물은 셀프)', 'Right!', { manner: 3 }), no('Wait for the staff to bring a bottle', 'In most eateries water is self-service.', { energy: -3 })], 'fo-manners');
+  const tip = () => ask('food', 'The meal was great. Do you leave a tip?', [ok('No – there is no tipping in Korea; a "잘 먹었습니다" is enough', 'Right! Prices already include service.', { manner: 3 }), no('Leave 15% on the table', 'No need – staff may even run after you to return it.', {})], 'fo-manners');
+  const spoon = () => ask('food', 'How do you eat the rice and soup?', [ok('With a spoon – chopsticks for side dishes; the bowl stays on the table', 'Correct Korean style!', { manner: 4 }, 'chopsticks'), no('Stick the chopsticks upright in the rice', 'That resembles a funeral ritual – lay them down instead.', { manner: -6 })], 'fo-manners');
+  const refill: Record<string, () => Step> = {
+    banchan: () => ask('food', 'Your meal comes with lots of small side dishes (banchan). They are…', [ok('Free and refillable – just ask', 'Yes! Ask "반찬 좀 더 주세요".', { energy: 6 }, 'baekban'), no('Charged per dish', 'No – banchan are free and refillable.', {})], 'fo-baekban'),
+    danmuji: () => ask('food', 'The yellow pickled radish (danmuji) on the table is…', [ok('Free – ask "단무지 좀 더 주세요" or help yourself', 'Yes! Danmuji and onions are refilled for free.', { energy: 3 }), no('Charged per plate', 'No – danmuji is always free.', {})], 'fo-manners'),
+    pickle: () => ask('food', 'The little dish of cucumber pickles is…', [ok('Free and refillable – "피클 더 주세요"', 'Yes! Korean Western restaurants serve pickles for free.', { energy: 3 }), no('An extra you pay for', 'No – pickles come free with pasta and pizza in Korea.', {})], 'fo-manners'),
+    radish: () => ask('food', 'The white cubes of pickled radish (치킨무) are…', [ok('Free – they come with every chicken', 'Yes! They cut the grease. Ask for more anytime.', { energy: 3 }), no('A side dish you pay for', 'No – chicken-mu is free.', {})], 'fo-manners'),
+    water,
+  };
+  const korean = ['korean', 'bbq', 'seafood', 'noodle'].includes(kind);
+  return [refill[CUISINES[kind].refill], korean ? spoon : tip, CUISINES[kind].refill === 'water' ? tip : water];
+}
+
 export function buildMission(def: MissionDef, sortOrder: number): Course {
   const hub = HUBS[def.hub];
   const exit = HUBS[def.exit ?? def.hub];
@@ -469,7 +492,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
           id: `${def.id}-f${k + 1}`, day: dayOf(i), bg: 'restaurant', photo: { ko: f.dishes.slice(0, 2).map((d) => d[0]).join(' '), en: f.dishes.slice(0, 2).map((d) => d[1]).join(' ') }, est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] },
           steps: [
             say(f.text),
-            simulate('menu', 'food', `Order at ${f.place[1]}`, 'Another Korean-only menu – order for everyone (watch the 2-portion minimums and spicy marks).', { restaurant: registerMenu(`${def.id}-food${k + 1}`, f.place, f.dishes, f.kind) }),
+            menuSim(`${def.id}-food${k + 1}`, f),
             ...(f.tip ? [talk('local', f.tip)] : []),
             k === 1
               ? ask('food', 'An older person at your table pours you a drink.', [ok('Hold the glass with two hands and turn slightly when drinking', 'Beautiful manners!', { manner: 6 }, 'soju'), no('Pour my own glass next time', 'In Korea you pour for each other, not yourself.', { manner: -4 })], 'fo-drink')
@@ -480,14 +503,10 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
       }
       const fsteps: Step[] = [
         say(f.text),
-        simulate('menu', 'food', `Order at ${f.place[1]}`, `The menu is in Korean. Order the right amount for your party, call the staff, enjoy free refills and pay the Korean way.`, { restaurant: registerMenu(`${def.id}-food`, f.place, f.dishes, f.kind) }, 'fo-bell'),
+        menuSim(`${def.id}-food`, f, 'fo-bell'),
       ];
       if (f.tip) fsteps.push(talk('local', f.tip));
-      fsteps.push(pick([
-        () => ask('food', 'Your meal comes with lots of small side dishes (banchan). They are…', [ok('Free and refillable – just ask', 'Yes! Ask "반찬 좀 더 주세요".', { energy: 6 }, 'baekban'), no('Charged per dish', 'No – banchan are free and refillable.', {})], 'fo-baekban'),
-        () => ask('food', 'Where is the water?', [ok('Self-service – look for the water dispenser and cups (물은 셀프)', 'Right!', { manner: 3 }), no('Wait for the staff to bring a bottle', 'In most eateries water is self-service.', { energy: -3 })], 'fo-manners'),
-        () => ask('food', 'How do you eat the rice and soup?', [ok('With a spoon – chopsticks for side dishes; the bowl stays on the table', 'Correct Korean style!', { manner: 4 }, 'chopsticks'), no('Stick the chopsticks upright in the rice', 'That resembles a funeral ritual – lay them down instead.', { manner: -6 })], 'fo-manners'),
-      ], def.id + 'food')());
+      fsteps.push(pick(mealQuiz(RESTAURANTS[`${def.id}-food`].kind ?? 'korean'), def.id + 'food')());
       scenes.push({ id: `${def.id}-f1`, day: dayOf(i), bg: 'restaurant', photo: { ko: f.dishes.slice(0, 2).map((d) => d[0]).join(' '), en: f.dishes.slice(0, 2).map((d) => d[1]).join(' ') }, est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] }, steps: fsteps });
     }
     // 4 · lodging after the first day's places
