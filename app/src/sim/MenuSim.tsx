@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { CUISINES, RESTAURANTS, mainPortions, orderTotal, tr, type RefillKind } from '@kotoventure/shared';
+import { CUISINES, RESTAURANTS, mainPortions, mainsNeeded, orderTotal, tr, type RefillKind } from '@kotoventure/shared';
 import { H, P, PhotoLink, won } from '../ui/kit';
 import { C } from '../ui/theme';
 import { Box, DoneCard, OptBtn, PARTY_SIZE, SimShell, useScore, type SimProps } from './kit';
@@ -30,11 +30,14 @@ export function MenuSim({ step, ctx, onDone }: SimProps) {
     const under = r.items.find((i) => i.min && (order[i.id] ?? 0) > 0 && (order[i.id] ?? 0) < i.min);
     if (under) return sc.miss(L(`"${under.ko}"는 ${under.min}인분 이상 주문해야 해요 (메뉴판의 "${under.min}인분 이상").`, `"${under.ko}" needs at least ${under.min} portions – the menu says "${under.min}인분 이상".`));
     const mains = mainPortions(r, order);
-    if (mains < people)
-      return sc.miss(L(`${people}명인데 주메뉴가 ${mains}인분이에요. 고깃집·식당은 보통 1인 1메뉴(1인분)로 시켜요.`, `You are ${people} but ordered ${mains} main portion(s). In Korea you usually order one portion per person.`));
+    const need = mainsNeeded(r, people);
+    if (mains < need)
+      return need < people
+        ? sc.miss(L(`${people}명이면 주메뉴를 ${need}개 이상 시켜요. 보통 2명당 하나(치킨 한 마리·안주 하나)예요.`, `For ${people} people order at least ${need} mains – about one for every two people.`))
+        : sc.miss(L(`${people}명인데 주메뉴가 ${mains}인분이에요. 보통 1인 1메뉴(1인분)로 시켜요.`, `You are ${people} but ordered ${mains} main portion(s). In Korea you usually order one portion per person.`));
     if (kids && !r.items.some((i) => i.main && (order[i.id] ?? 0) > 0 && !i.spicy))
       return sc.miss(L('아이들이 있어요 – 안 매운 메뉴도 하나 시키세요 (고추 표시 없는 메뉴).', 'The kids can\'t eat spicy food – add one non-spicy main (no chili mark).'));
-    if (mains > people * 2) sc.info(L('음식이 너무 많아요… 남기면 아까워요. 그래도 주문할게요.', 'That\'s a lot of food… but OK!'));
+    if (mains > need * 2) sc.info(L('음식이 너무 많아요… 남기면 아까워요. 그래도 주문할게요.', 'That\'s a lot of food… but OK!'));
     else sc.ok(L('주문 내용이 딱 좋아요!', 'Perfect order!'));
     add(`Ordered: ${r.items.filter((i) => order[i.id]).map((i) => `${i.en} ×${order[i.id]}`).join(', ')} – ${won(total)}`);
     setStage('call');

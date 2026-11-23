@@ -120,6 +120,38 @@ export const CUISINES: Record<CuisineKind, { ko: string; en: string; icon: strin
   fusion: { ko: '퓨전', en: 'Fusion', icon: '✨', refill: 'pickle', extras: [['fries', '감자튀김', 'French fries', 7000, 'side'], ['ade', '자몽에이드', 'Grapefruit ade', 6500, 'drink'], ['beer', '수제 맥주', 'Craft beer', 8000, 'drink'], ['cola', '콜라', 'Cola', 3000, 'drink']] },
 };
 
+/** Kinds where dishes are shared: one main per two people is enough (a whole chicken, pub snacks). */
+export const SHARED_KINDS: CuisineKind[] = ['chicken', 'pub'];
+/** Main portions a party should order at this restaurant. */
+export const mainsNeeded = (r: Restaurant, people: number) => (SHARED_KINDS.includes(r.kind ?? 'korean') ? Math.ceil(people / 2) : people);
+
+/** How ordering works, per kind – shown as the intro of the menu simulation. */
+const HOW_TO_ORDER: Record<CuisineKind, [en: string, ko: string]> = {
+  korean: ['The menu on the wall is only in Korean. Order one main dish per person – side dishes (banchan) come free.', '벽에 붙은 메뉴판은 한글뿐이에요. 1인 1메뉴로 주문하세요. 반찬은 무료로 나와요.'],
+  bbq: ['Korean BBQ: meat is ordered by the portion (인분) and grilled at your table. Order one portion per person, then doenjang stew, rice or cold noodles to finish.', '고깃집: 고기는 인분 단위로 주문하고 테이블에서 구워요. 1인 1인분이 기본이고, 마무리로 된장찌개·공기밥·냉면을 시켜요.'],
+  seafood: ['Seafood restaurant: big platters are priced per dish for sharing, but count one main per person. After sashimi, the bones become a spicy stew (매운탕).', '해산물 식당: 큰 접시는 나눠 먹지만 인원수만큼 주메뉴를 시켜요. 회를 먹고 나면 남은 뼈로 매운탕을 끓여 줘요.'],
+  noodle: ['Noodle house: one bowl per person. Kimchi is on the table and refills are free; add rice to drop into the leftover broth.', '국숫집: 1인 1그릇. 김치는 테이블에 있고 리필은 무료예요. 남은 국물에 공기밥을 말아 먹어요.'],
+  chinese: ['Korean-Chinese restaurant: one noodle dish per person (jjajangmyeon or spicy jjamppong) and tangsuyuk to share. Danmuji and onion come free.', '중식당: 1인 1면(짜장면·짬뽕)에 탕수육은 함께 나눠 먹어요. 단무지·양파는 무료예요.'],
+  snack: ['Bunsik (snack bar): cheap and quick. Order one dish per person and a few to share – danmuji is free.', '분식집: 싸고 빨라요. 1인 1메뉴에 나눠 먹을 메뉴를 더해요. 단무지는 무료예요.'],
+  chicken: ['Fried-chicken pub: one whole chicken feeds about two people, so order one chicken for every two. Free pickled radish (치킨무) comes with it.', '치킨집: 치킨 한 마리는 2명 정도가 먹어요. 2명당 한 마리를 시키세요. 치킨무는 무료예요.'],
+  pub: ['Korean pub: everyone shares anju (food for drinking) – about one dish for every two people – plus drinks.', '호프·포차: 안주를 함께 나눠 먹어요. 2명당 안주 하나 정도에 음료를 시켜요.'],
+  street: ['Market stalls: point at what you want and pay on the spot. Get one item per person and try a few things.', '시장·노점: 원하는 음식을 가리키고 바로 계산해요. 1인 1개씩 골라 여러 가지를 맛보세요.'],
+  bakery: ['Bakery: take a tray and tongs, pick one bread per person and pay at the counter. Drinks are ordered at the counter too.', '빵집: 쟁반과 집게를 들고 1인 1개씩 골라 계산대에서 계산해요. 음료도 계산대에서 주문해요.'],
+  convenience: ['Convenience store: pick one item per person, pay at the counter, then use the hot-water machine or microwave yourself.', '편의점: 1인 1개씩 골라 계산대에서 계산하고, 온수기·전자레인지는 직접 사용해요.'],
+  western: ['Western restaurant in Korea: one main per person and no 2-portion rule. Pickles come free, water is often self-service and there is no tipping.', '한국의 양식당: 1인 1메뉴, 2인분 제한은 없어요. 피클은 무료, 물은 셀프인 경우가 많고 팁은 없어요.'],
+  fusion: ['Fusion restaurant: Korean flavours on Western dishes. One main per person, a side to share – free pickles, no tipping.', '퓨전 식당: 서양 요리에 한국 맛을 더했어요. 1인 1메뉴에 나눠 먹을 사이드 하나, 피클은 무료이고 팁은 없어요.'],
+};
+/** Intro text of the menu simulation, matching the kind of restaurant and its menu. */
+export function menuIntro(r: Restaurant): { en: string; ko: string } {
+  const [en, ko] = HOW_TO_ORDER[r.kind ?? 'korean'];
+  const min = r.items.find((i) => i.min);
+  const spicy = r.items.some((i) => i.spicy);
+  return {
+    en: [en, min ? `Watch the "${min.min}인분 이상" mark – some dishes need at least ${min.min} portions.` : '', spicy ? '🌶️ marks spicy dishes.' : ''].filter(Boolean).join(' '),
+    ko: [ko, min ? `"${min.min}인분 이상" 표시가 있는 메뉴는 ${min.min}인분부터 주문할 수 있어요.` : '', spicy ? '🌶️ 표시는 매운 음식이에요.' : ''].filter(Boolean).join(' '),
+  };
+}
+
 /** Guess the kind of a restaurant from its name and dishes (Korean). Order matters. */
 export function inferCuisine(placeKo: string, dishesKo: string[]): CuisineKind {
   const all = [placeKo, ...dishesKo].join(' ');
