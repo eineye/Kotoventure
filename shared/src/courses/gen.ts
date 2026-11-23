@@ -8,7 +8,7 @@
  * Question banks are keyed by place kind, so the same rules are taught in context everywhere.
  * Prices, hours and routes are realistic examples – players are told to check before travelling.
  */
-import { TICKET_SITES, RESTAURANTS, type BusColor, type MenuItem } from '../practice';
+import { CUISINES, TICKET_SITES, RESTAURANTS, inferCuisine, type BusColor, type CuisineKind, type MenuItem } from '../practice';
 import type { Area, ChoiceOption, Course, EstItem, PartyType, Scene, Step, TimeCat, TopicId } from '../types';
 import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
 
@@ -53,6 +53,8 @@ export interface Meal {
   /** key of the stop after which this meal happens (default: 1st meal after stop 1, 2nd after stop 2, 3rd after stop 3) */
   after?: string;
   time?: string;
+  /** kind of restaurant; guessed from the name and dishes when omitted */
+  kind?: CuisineKind;
 }
 
 export type Dish = [ko: string, en: string, price: number, min?: number, spicy?: 0 | 1 | 2];
@@ -363,10 +365,16 @@ function registerTicket(def: MissionDef, s: Stop) {
   return id;
 }
 
-function registerMenu(id: string, place: [string, string], dishes: Dish[]) {
+function registerMenu(id: string, place: [string, string], dishes: Dish[], kind?: CuisineKind) {
+  const k = kind ?? inferCuisine(place[0], dishes.map((d) => d[0]));
   const items: MenuItem[] = dishes.map(([ko, en, price, min, spicy], i) => ({ id: `d${i}`, ko, en, price, main: true, ...(min ? { min } : {}), ...(spicy ? { spicy } : {}), cat: 'main' }));
-  items.push({ id: 'rice', ko: '공기밥', en: 'Bowl of rice', price: 1000, cat: 'side' }, { id: 'drink', ko: '음료수', en: 'Soft drink', price: 2000, cat: 'drink' });
-  RESTAURANTS[id] = { id, ko: place[0], en: place[1], items, payAt: 'counter', selfBar: false };
+  // sides and drinks that this kind of restaurant really has (skip ones already on the menu as a main)
+  const base = (s: string) => s.replace(/\s*\(.*$/, '');
+  for (const [eid, ko, en, price, cat, spicy] of CUISINES[k].extras) {
+    if (items.some((i) => base(i.ko) === base(ko))) continue;
+    items.push({ id: eid, ko, en, price, cat, ...(spicy ? { spicy } : {}) });
+  }
+  RESTAURANTS[id] = { id, kind: k, ko: place[0], en: place[1], items, payAt: 'counter', selfBar: k === 'bbq' };
   // a mild main dish is needed for the family test; guarantee one exists
   if (!items.some((i) => i.main && !i.spicy)) items[0] = { ...items[0], spicy: 0 };
   return id;
@@ -461,7 +469,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
           id: `${def.id}-f${k + 1}`, day: dayOf(i), bg: 'restaurant', photo: { ko: f.dishes.slice(0, 2).map((d) => d[0]).join(' '), en: f.dishes.slice(0, 2).map((d) => d[1]).join(' ') }, est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] },
           steps: [
             say(f.text),
-            simulate('menu', 'food', `Order at ${f.place[1]}`, 'Another Korean-only menu – order for everyone (watch the 2-portion minimums and spicy marks).', { restaurant: registerMenu(`${def.id}-food${k + 1}`, f.place, f.dishes) }),
+            simulate('menu', 'food', `Order at ${f.place[1]}`, 'Another Korean-only menu – order for everyone (watch the 2-portion minimums and spicy marks).', { restaurant: registerMenu(`${def.id}-food${k + 1}`, f.place, f.dishes, f.kind) }),
             ...(f.tip ? [talk('local', f.tip)] : []),
             k === 1
               ? ask('food', 'An older person at your table pours you a drink.', [ok('Hold the glass with two hands and turn slightly when drinking', 'Beautiful manners!', { manner: 6 }, 'soju'), no('Pour my own glass next time', 'In Korea you pour for each other, not yourself.', { manner: -4 })], 'fo-drink')
@@ -472,7 +480,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
       }
       const fsteps: Step[] = [
         say(f.text),
-        simulate('menu', 'food', `Order at ${f.place[1]}`, `The menu is in Korean. Order the right amount for your party, call the staff, enjoy free refills and pay the Korean way.`, { restaurant: registerMenu(`${def.id}-food`, f.place, f.dishes) }, 'fo-bell'),
+        simulate('menu', 'food', `Order at ${f.place[1]}`, `The menu is in Korean. Order the right amount for your party, call the staff, enjoy free refills and pay the Korean way.`, { restaurant: registerMenu(`${def.id}-food`, f.place, f.dishes, f.kind) }, 'fo-bell'),
       ];
       if (f.tip) fsteps.push(talk('local', f.tip));
       fsteps.push(pick([

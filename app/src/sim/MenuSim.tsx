@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { RESTAURANTS, mainPortions, orderTotal, tr } from '@kotoventure/shared';
+import { CUISINES, RESTAURANTS, mainPortions, orderTotal, tr, type RefillKind } from '@kotoventure/shared';
 import { H, P, PhotoLink, won } from '../ui/kit';
 import { C } from '../ui/theme';
 import { Box, DoneCard, OptBtn, PARTY_SIZE, SimShell, useScore, type SimProps } from './kit';
@@ -21,6 +21,8 @@ export function MenuSim({ step, ctx, onDone }: SimProps) {
   const [log, setLog] = useState<string[]>([]);
   const add = (s: string) => setLog((l) => [...l, s]);
   const total = orderTotal(r, order);
+  const cuisine = CUISINES[r.kind ?? 'korean'];
+  const rf = REFILL[cuisine.refill];
 
   const setQty = (id: string, d: number) => setOrder((o) => ({ ...o, [id]: Math.max(0, (o[id] ?? 0) + d) }));
 
@@ -47,10 +49,10 @@ export function MenuSim({ step, ctx, onDone }: SimProps) {
   };
 
   const refill = (how: 'free' | 'pay' | 'none') => {
-    if (how === 'pay') return sc.miss(L('반찬은 무료로 더 줘요! 돈을 낼 필요 없어요.', 'Side dishes are refilled for free – no need to pay.'));
-    if (how === 'none') return sc.miss(L('눈치 볼 필요 없어요. 반찬 리필은 무료이고 자연스러워요.', 'No need to be shy – free banchan refills are normal.'));
-    sc.ok(r.selfBar ? L('셀프바에서 반찬을 가져왔어요 ("셀프" 표시).', 'You refill at the self-service bar ("셀프").') : L('"반찬 좀 더 주세요" – 무료로 더 줘요.', '"Banchan jom deo juseyo" – more for free.'));
-    add('Refilled side dishes for free');
+    if (how === 'pay') return sc.miss(L(rf.payKo, rf.payEn));
+    if (how === 'none') return sc.miss(L(rf.noneKo, rf.noneEn));
+    sc.ok(r.selfBar ? L('셀프바에서 반찬을 가져왔어요 ("셀프" 표시).', 'You refill at the self-service bar ("셀프").') : L(rf.okKo, rf.okEn));
+    add(rf.log);
     setStage('pay');
   };
 
@@ -71,15 +73,19 @@ export function MenuSim({ step, ctx, onDone }: SimProps) {
         <>
           <Box style={{ backgroundColor: '#2B1A10', gap: 2 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Text style={{ color: '#FDE68A', fontWeight: '900', fontSize: 17 }}>📜 {r.ko} 메뉴</Text>
+              <Text style={{ color: '#FDE68A', fontWeight: '900', fontSize: 17, flex: 1 }}>📜 {r.ko} 메뉴</Text>
               <Pressable testID="menu-en" onPress={() => setShowEn((v) => !v)} style={{ backgroundColor: '#FDE68A', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
-                <Text style={{ fontWeight: '900', fontSize: 11 }}>{showEn ? '한글만' : '📷 번역 앱'}</Text>
+                <Text style={{ fontWeight: '900', fontSize: 11 }}>{showEn ? L('한글만 보기', 'Korean only') : L('📷 번역 앱', '📷 Translate app')}</Text>
               </Pressable>
             </View>
+            <Text testID="menu-kind" style={{ color: '#FCD34D', fontSize: 12, fontWeight: '800' }}>
+              {cuisine.icon} {ko ? cuisine.ko : `${cuisine.en} · ${cuisine.ko}`}
+            </Text>
             {r.items.map((i) => (
               <View key={i.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, borderTopWidth: 1, borderTopColor: '#5B3A22', paddingVertical: 5 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ color: '#FFF', fontWeight: '900', fontSize: 15 }}>
+                    {i.cat !== 'main' ? <Text style={{ color: '#FCD34D', fontSize: 11 }}>{i.cat === 'drink' ? '🥤 ' : '➕ '}</Text> : null}
                     {i.ko} {i.spicy ? '🌶️'.repeat(i.spicy) : ''}
                     {i.min ? <Text style={{ color: '#FCA5A5', fontSize: 11 }}> ({i.min}인분 이상)</Text> : null}
                   </Text>
@@ -96,11 +102,11 @@ export function MenuSim({ step, ctx, onDone }: SimProps) {
                 </Pressable>
               </View>
             ))}
-            <Text style={{ color: '#FCA5A5', fontSize: 11, marginTop: 4 }}>* 가격은 1인분 기준 · {L('예시 가격', 'example prices')}</Text>
+            <Text style={{ color: '#FCA5A5', fontSize: 11, marginTop: 4 }}>{L('* 가격은 1인분 기준 · 예시 가격', '* Prices per portion · example prices')}</Text>
           </Box>
           <Box style={{ gap: 6 }}>
             <Text style={{ color: C.ink, fontWeight: '800' }}>
-              👥 {L(`일행 ${people}명`, `${people} people`)}
+              👥 {L(`일행 ${people}명`, `${people} ${people === 1 ? 'person' : 'people'}`)}
               {kids ? L(' (아이 2명 포함 – 매운 것 못 먹어요)', ' (incl. 2 kids – no spicy food)') : ''}
             </Text>
             <Text style={{ color: C.ink, fontWeight: '900' }}>
@@ -123,10 +129,10 @@ export function MenuSim({ step, ctx, onDone }: SimProps) {
 
       {stage === 'meal' && (
         <Box style={{ gap: 8 }}>
-          <Text style={{ fontSize: 36, textAlign: 'center' }}>🥢🍚🥬🥩🍲</Text>
-          <H size={15}>{L('반찬 그릇이 비었어요. 어떻게 할까요?', 'The side-dish bowls are empty. What now?')}</H>
-          <OptBtn testID="refill-free" label={r.selfBar ? L('"셀프" 반찬 코너에서 더 가져온다', 'Get more from the "셀프" (self-service) bar') : L('"반찬 좀 더 주세요"라고 부탁한다', 'Ask "Banchan jom deo juseyo"')} onPress={() => refill('free')} />
-          <OptBtn testID="refill-pay" label={L('추가 요금을 내고 반찬을 시킨다', 'Order extra side dishes and pay for them')} onPress={() => refill('pay')} />
+          <Text style={{ fontSize: 36, textAlign: 'center' }}>{rf.icons}</Text>
+          <H size={15}>{L(rf.qKo, rf.qEn)}</H>
+          <OptBtn testID="refill-free" label={r.selfBar ? L('"셀프" 반찬 코너에서 더 가져온다', 'Get more from the "셀프" (self-service) bar') : L(rf.freeKo, rf.freeEn)} onPress={() => refill('free')} />
+          <OptBtn testID="refill-pay" label={L(rf.payOptKo, rf.payOptEn)} onPress={() => refill('pay')} />
           <OptBtn testID="refill-none" label={L('더 달라고 하면 실례니까 참는다', 'Don\'t ask – it would be rude')} onPress={() => refill('none')} />
         </Box>
       )}
@@ -148,6 +154,45 @@ export function MenuSim({ step, ctx, onDone }: SimProps) {
     </SimShell>
   );
 }
+
+/** What is refilled for free depends on the kind of restaurant. */
+const REFILL: Record<RefillKind, { icons: string; qKo: string; qEn: string; freeKo: string; freeEn: string; payOptKo: string; payOptEn: string; okKo: string; okEn: string; payKo: string; payEn: string; noneKo: string; noneEn: string; log: string }> = {
+  banchan: {
+    icons: '🥢🍚🥬🥩🍲', qKo: '반찬 그릇이 비었어요. 어떻게 할까요?', qEn: 'The side-dish bowls are empty. What now?',
+    freeKo: '"반찬 좀 더 주세요"라고 부탁한다', freeEn: 'Ask "Banchan jom deo juseyo"', payOptKo: '추가 요금을 내고 반찬을 시킨다', payOptEn: 'Order extra side dishes and pay for them',
+    okKo: '"반찬 좀 더 주세요" – 무료로 더 줘요.', okEn: '"Banchan jom deo juseyo" – more for free.',
+    payKo: '반찬은 무료로 더 줘요! 돈을 낼 필요 없어요.', payEn: 'Side dishes are refilled for free – no need to pay.',
+    noneKo: '눈치 볼 필요 없어요. 반찬 리필은 무료이고 자연스러워요.', noneEn: 'No need to be shy – free banchan refills are normal.', log: 'Refilled side dishes for free',
+  },
+  danmuji: {
+    icons: '🥢🟡🧅🥟', qKo: '단무지와 양파 접시가 비었어요. 어떻게 할까요?', qEn: 'The yellow pickled radish (danmuji) and onion plate is empty. What now?',
+    freeKo: '"단무지 좀 더 주세요"라고 부탁한다 (셀프면 직접)', freeEn: 'Ask "Danmuji jom deo juseyo" (or help yourself if it says 셀프)', payOptKo: '단무지를 메뉴에서 따로 주문한다', payOptEn: 'Order danmuji separately from the menu',
+    okKo: '단무지·양파·춘장은 무료로 더 줘요.', okEn: 'Danmuji, onion and black-bean paste are refilled for free.',
+    payKo: '단무지는 무료예요! 따로 주문할 필요 없어요.', payEn: 'Danmuji is free – no need to order it.',
+    noneKo: '단무지 리필은 무료이고 아주 흔한 부탁이에요.', noneEn: 'Asking for more danmuji is free and very normal.', log: 'Got free danmuji refills',
+  },
+  pickle: {
+    icons: '🍝🥒🍕💧', qKo: '테이블의 피클 접시가 비었어요. 어떻게 할까요?', qEn: 'The little pickle dish on the table is empty. What now?',
+    freeKo: '"피클 더 주세요"라고 부탁한다', freeEn: 'Ask "Pikeul deo juseyo" (more pickles, please)', payOptKo: '피클을 추가 메뉴로 따로 주문한다', payOptEn: 'Order pickles as an extra and pay for them',
+    okKo: '한국 양식·퓨전 식당은 오이 피클을 무료로 더 줘요. 물은 보통 셀프예요.', okEn: 'Korean Western & fusion restaurants refill cucumber pickles for free. Water is usually self-service.',
+    payKo: '피클은 무료예요! 한국 양식당에서는 기본으로 나와요.', payEn: 'Pickles are free – they come with the meal in Korean Western restaurants.',
+    noneKo: '피클 리필은 무료이고 자연스러운 부탁이에요.', noneEn: 'Asking for more pickles is free and normal.', log: 'Got free pickle refills',
+  },
+  radish: {
+    icons: '🍗🍺⬜🥤', qKo: '치킨무가 다 떨어졌어요. 어떻게 할까요?', qEn: 'The cubes of pickled radish (chicken-mu) are gone. What now?',
+    freeKo: '"치킨무 좀 더 주세요"라고 부탁한다', freeEn: 'Ask "Chikin-mu jom deo juseyo"', payOptKo: '치킨무를 추가 요금 내고 산다', payOptEn: 'Buy an extra pickled radish',
+    okKo: '매장에서는 치킨무를 무료로 더 줘요.', okEn: 'In the restaurant, chicken-mu is refilled for free.',
+    payKo: '매장에서 먹으면 치킨무는 무료로 더 줘요!', payEn: 'When you eat in, chicken-mu is refilled for free.',
+    noneKo: '치킨무 리필은 무료예요. 편하게 부탁하세요.', noneEn: 'Chicken-mu refills are free – just ask.', log: 'Got free chicken-mu refills',
+  },
+  water: {
+    icons: '💧🥤🍢', qKo: '목이 말라요. 물은 어떻게 할까요?', qEn: 'You are thirsty. How do you get water?',
+    freeKo: '정수기·물통에서 무료로 물을 받아 마신다 ("셀프")', freeEn: 'Take free water from the water dispenser ("셀프")', payOptKo: '물을 꼭 사서 마셔야 한다', payOptEn: 'Water must be bought',
+    okKo: '대부분 정수기 물은 무료이고 셀프예요.', okEn: 'Water from the dispenser is free and self-service almost everywhere.',
+    payKo: '정수기 물은 무료예요. 생수병을 원할 때만 사요.', payEn: 'Dispenser water is free – buy a bottle only if you want one.',
+    noneKo: '물은 무료이고 셀프예요. 참지 마세요!', noneEn: 'Water is free and self-service – no need to go thirsty!', log: 'Took free self-service water',
+  },
+};
 
 const btn = { width: 30, height: 30, borderRadius: 15, backgroundColor: '#FDE68A', alignItems: 'center' as const, justifyContent: 'center' as const };
 const btnT = { fontSize: 17, fontWeight: '900' as const, color: '#3B1D0F' };

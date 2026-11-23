@@ -53,6 +53,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     desc: 'Find your personal colour, learn a 10-step routine and shop like a local in Myeongdong and Seongsu.',
     hub: 'ICN', go: 'Airport limousine bus to Myeongdong', days: 2, nights: 1, diff: 1, fit: [5, 5, 4, 2], budget: 400000, season: 'spring', stay: 'hotel',
     food: { place: ['명동 칼국수', 'Myeongdong kalguksu house'], text: 'A legendary noodle shop in Myeongdong: kalguksu with dumplings and very garlicky kimchi.', dishes: [['칼국수', 'Knife-cut noodle soup', 11000], ['만두', 'Dumplings', 11000], ['비빔국수', 'Spicy mixed noodles', 11000, 0, 2]] },
+    food2: { place: ['성수 퓨전 레스토랑', 'Seongsu fusion bistro'], kind: 'fusion', after: 'seongsu', text: 'In an old factory turned bistro: Korean flavours meet Western dishes – rosé tteokbokki, bulgogi pizza, kimchi fried rice with cheese.', dishes: [['로제 떡볶이', 'Rosé tteokbokki (creamy)', 16000, 0, 1], ['불고기 피자', 'Bulgogi pizza', 22000], ['김치 치즈 볶음밥', 'Kimchi fried rice with cheese', 15000, 0, 1]], tip: 'Fusion places in Seongsu are popular – join the waiting list on the tablet at the door.' },
     stops: [
       { key: 'color', ko: '퍼스널컬러 진단', en: 'Personal-colour studio', kind: 'workshop', text: 'A consultant drapes coloured fabrics under your face to find your "season" – spring warm? winter cool?', phrase: ['예약했어요', 'Ye-ya-kae-sseo-yo', 'I have a reservation'] },
       { key: 'myeongdong', ko: '명동', en: 'Myeongdong', kind: 'street', text: 'Dozens of cosmetics shops hand out free samples; many offer instant tax-free refunds.' },
@@ -91,6 +92,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     desc: 'Five thousand years in two days: golden crowns, the invention of Hangeul and the story of the Korean War.',
     hub: 'ICN', go: 'AREX to Seoul Station, then Line 4 to Ichon', days: 2, nights: 1, diff: 1, fit: [5, 4, 3, 5], budget: 200000, season: 'winter', stay: 'hotel',
     food: { place: ['용산 백반집', 'Yongsan home-style eatery'], text: 'A no-frills lunch place full of office workers – one set menu, a dozen side dishes.', dishes: [['백반', 'Home-style set meal', 9000], ['김치찌개', 'Kimchi stew', 9000, 0, 1], ['제육볶음', 'Spicy pork stir-fry', 10000, 0, 2]] },
+    food2: { place: ['이태원 양식 레스토랑', 'Itaewon Western restaurant'], kind: 'western', after: 'war', text: 'Itaewon, right next to the War Memorial, is Seoul\'s international food street – pasta, steak and brunch.', dishes: [['토마토 파스타', 'Tomato pasta', 18000], ['스테이크', 'Sirloin steak', 39000], ['까르보나라', 'Carbonara', 19000]], tip: 'Many Western restaurants put free pickles on the table – ask "피클 더 주세요" for more.' },
     stops: [
       { key: 'nmk', ko: '국립중앙박물관', en: 'National Museum of Korea', kind: 'museum', text: 'One of the world\'s largest museums – Silla gold crowns, celadon and the 10-storey Gyeongcheonsa pagoda indoors. Free.' },
       { key: 'hangeul', ko: '국립한글박물관', en: 'National Hangeul Museum', kind: 'museum', text: 'King Sejong created Hangeul in 1443 so everyone could read. Try writing your name in Korean!', phrase: ['제 이름은 ___예요', 'Je i-reu-meun ___-ye-yo', 'My name is ___'] },

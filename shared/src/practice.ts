@@ -95,10 +95,52 @@ export interface Restaurant {
   /** how you pay */
   payAt: 'counter' | 'table';
   selfBar?: boolean;
+  /** kind of restaurant – decides extras, refills and the label on the menu board */
+  kind?: CuisineKind;
+}
+
+/* ───────────── kinds of restaurants ───────────── */
+export type CuisineKind = 'korean' | 'bbq' | 'seafood' | 'noodle' | 'chinese' | 'snack' | 'chicken' | 'pub' | 'street' | 'bakery' | 'convenience' | 'western' | 'fusion';
+/** what you can get more of for free – asked in the "meal" stage */
+export type RefillKind = 'banchan' | 'danmuji' | 'pickle' | 'radish' | 'water';
+type Extra = [id: string, ko: string, en: string, price: number, cat: 'side' | 'drink', spicy?: 1 | 2];
+export const CUISINES: Record<CuisineKind, { ko: string; en: string; icon: string; refill: RefillKind; extras: Extra[] }> = {
+  korean: { ko: '한식', en: 'Korean', icon: '🍚', refill: 'banchan', extras: [['rice', '공기밥', 'Bowl of rice', 1000, 'side'], ['gyeran', '계란말이', 'Rolled omelette (to share)', 8000, 'side'], ['makgeolli', '막걸리', 'Makgeolli (rice wine)', 5000, 'drink'], ['cola', '콜라', 'Cola', 2000, 'drink']] },
+  bbq: { ko: '고깃집', en: 'Korean BBQ', icon: '🥩', refill: 'banchan', extras: [['doenjang', '된장찌개', 'Soybean stew', 3000, 'side'], ['naeng', '물냉면', 'Cold noodles (after the meat)', 8000, 'side'], ['rice', '공기밥', 'Bowl of rice', 1000, 'side'], ['soju', '소주', 'Soju', 5000, 'drink'], ['cola', '콜라', 'Cola', 2000, 'drink']] },
+  seafood: { ko: '해산물·횟집', en: 'Seafood', icon: '🐟', refill: 'banchan', extras: [['maeuntang', '매운탕 (회 먹은 후)', 'Spicy fish-bone stew (after sashimi)', 5000, 'side', 2], ['rice', '공기밥', 'Bowl of rice', 1000, 'side'], ['soju', '소주', 'Soju', 5000, 'drink'], ['cider', '사이다', 'Cider (lemon-lime soda)', 2000, 'drink']] },
+  noodle: { ko: '국수·칼국수', en: 'Noodle house', icon: '🍜', refill: 'banchan', extras: [['mandu', '왕만두', 'Big dumplings', 6000, 'side'], ['rice', '공기밥 (국물에 말아 먹기)', 'Rice (to drop into the broth)', 1000, 'side'], ['cola', '콜라', 'Cola', 2000, 'drink']] },
+  chinese: { ko: '중식 (한국식 중화요리)', en: 'Chinese-Korean', icon: '🥟', refill: 'danmuji', extras: [['gunmandu', '군만두', 'Fried dumplings', 6000, 'side'], ['rice', '공기밥', 'Bowl of rice', 1000, 'side'], ['goryangju', '고량주', 'Kaoliang liquor', 8000, 'drink'], ['cola', '콜라', 'Cola', 2000, 'drink']] },
+  snack: { ko: '분식', en: 'Bunsik (snack bar)', icon: '🍙', refill: 'danmuji', extras: [['sundae', '순대', 'Korean blood sausage', 5000, 'side'], ['eomuk', '어묵', 'Fish-cake skewers', 3000, 'side'], ['twigim', '모둠튀김', 'Assorted fritters', 5000, 'side'], ['coolpis', '쿨피스', 'Coolpis (peach drink)', 1500, 'drink']] },
+  chicken: { ko: '치킨집', en: 'Fried-chicken pub', icon: '🍗', refill: 'radish', extras: [['fries', '감자튀김', 'French fries', 5000, 'side'], ['beer', '생맥주 500cc', 'Draft beer 500 ml', 4500, 'drink'], ['cola', '콜라 1.25L', 'Cola 1.25 L', 3000, 'drink']] },
+  pub: { ko: '호프·포차', en: 'Korean pub', icon: '🍺', refill: 'banchan', extras: [['fries', '감자튀김', 'French fries', 6000, 'side'], ['beer', '생맥주 500cc', 'Draft beer 500 ml', 4000, 'drink'], ['soju', '소주', 'Soju', 5000, 'drink'], ['cider', '사이다', 'Cider (soda)', 2000, 'drink']] },
+  street: { ko: '시장·노점', en: 'Market & street food', icon: '🏮', refill: 'water', extras: [['eomuk', '어묵 꼬치', 'Fish-cake skewer', 1500, 'side'], ['sikhye', '식혜', 'Sikhye (sweet rice drink)', 3000, 'drink'], ['water', '생수', 'Bottled water', 1000, 'drink']] },
+  bakery: { ko: '빵집·베이커리', en: 'Bakery', icon: '🥐', refill: 'water', extras: [['milk', '우유', 'Milk', 2500, 'drink'], ['americano', '아메리카노', 'Americano', 4500, 'drink'], ['latte', '카페라테', 'Café latte', 5000, 'drink']] },
+  convenience: { ko: '편의점', en: 'Convenience store', icon: '🏪', refill: 'water', extras: [['samgak', '삼각김밥', 'Triangle gimbap', 1500, 'side'], ['banana', '바나나맛 우유', 'Banana milk', 1700, 'drink'], ['beer', '캔맥주', 'Canned beer', 3000, 'drink']] },
+  western: { ko: '양식', en: 'Western', icon: '🍝', refill: 'pickle', extras: [['salad', '시저 샐러드', 'Caesar salad (to share)', 13000, 'side'], ['fries', '트러플 감자튀김', 'Truffle fries', 9000, 'side'], ['wine', '하우스 와인 (잔)', 'House wine (glass)', 9000, 'drink'], ['ade', '레몬에이드', 'Lemonade', 6000, 'drink'], ['cola', '콜라', 'Cola', 3000, 'drink']] },
+  fusion: { ko: '퓨전', en: 'Fusion', icon: '✨', refill: 'pickle', extras: [['fries', '감자튀김', 'French fries', 7000, 'side'], ['ade', '자몽에이드', 'Grapefruit ade', 6500, 'drink'], ['beer', '수제 맥주', 'Craft beer', 8000, 'drink'], ['cola', '콜라', 'Cola', 3000, 'drink']] },
+};
+
+/** Guess the kind of a restaurant from its name and dishes (Korean). Order matters. */
+export function inferCuisine(placeKo: string, dishesKo: string[]): CuisineKind {
+  const all = [placeKo, ...dishesKo].join(' ');
+  const has = (re: RegExp, s = all) => re.test(s);
+  if (has(/편의점/, placeKo)) return 'convenience';
+  if (has(/빵집|베이커리|제과/, placeKo)) return 'bakery';
+  if (has(/중식|중화|반점/, placeKo) || dishesKo.filter((d) => /^(짜장|짬뽕|탕수육|깐풍|양장피)/.test(d)).length >= 2) return 'chinese';
+  if (has(/양식|이탈리안|비스트로|파스타|피자|스테이크|버거/, placeKo)) return 'western';
+  if (has(/퓨전/, placeKo)) return 'fusion';
+  if (has(/치킨|통닭|닭강정/, placeKo)) return 'chicken';
+  if (has(/노가리|호프|포차/, placeKo)) return 'pub';
+  if (has(/분식|김밥/, placeKo)) return 'snack';
+  if (has(/횟집|수산|조개구이|해녀|갈치|게장|꼬막/, placeKo)) return 'seafood';
+  if (has(/고깃집|삼겹살|한우|갈비|흑돼지|닭갈비|막창/, placeKo)) return 'bbq';
+  if (has(/칼국수|국수|밀면|막국수|수제비|냉면/, placeKo)) return 'noodle';
+  if (has(/야시장|장터|시장/, placeKo)) return 'street';
+  return 'korean';
 }
 export const RESTAURANTS: Record<string, Restaurant> = {
   bbq: {
-    id: 'bbq', ko: '을지로 고깃집', en: 'Euljiro BBQ house', payAt: 'counter', selfBar: true,
+    id: 'bbq', kind: 'bbq', ko: '을지로 고깃집', en: 'Euljiro BBQ house', payAt: 'counter', selfBar: true,
     items: [
       { id: 'samgyeop', ko: '삼겹살', en: 'Pork belly', price: 16000, main: true, min: 2, cat: 'main' },
       { id: 'moksal', ko: '목살', en: 'Pork neck', price: 16000, main: true, min: 2, cat: 'main' },
@@ -111,7 +153,7 @@ export const RESTAURANTS: Record<string, Restaurant> = {
     ],
   },
   blackpork: {
-    id: 'blackpork', ko: '제주 흑돼지집', en: 'Jeju black-pork house', payAt: 'counter', selfBar: false,
+    id: 'blackpork', kind: 'bbq', ko: '제주 흑돼지집', en: 'Jeju black-pork house', payAt: 'counter', selfBar: false,
     items: [
       { id: 'ogyeop', ko: '흑돼지 오겹살', en: 'Black pork belly', price: 23000, main: true, min: 2, cat: 'main' },
       { id: 'bpmok', ko: '흑돼지 목살', en: 'Black pork neck', price: 22000, main: true, min: 2, cat: 'main' },
@@ -123,7 +165,7 @@ export const RESTAURANTS: Record<string, Restaurant> = {
     ],
   },
   jjigae: {
-    id: 'jjigae', ko: '인사동 백반집', en: 'Insadong home-style eatery', payAt: 'counter',
+    id: 'jjigae', kind: 'korean', ko: '인사동 백반집', en: 'Insadong home-style eatery', payAt: 'counter',
     items: [
       { id: 'kimchi-jjigae', ko: '김치찌개', en: 'Kimchi stew', price: 9000, main: true, spicy: 1, cat: 'main' },
       { id: 'doenjang-jjigae', ko: '된장찌개', en: 'Soybean stew', price: 9000, main: true, cat: 'main' },
@@ -135,7 +177,7 @@ export const RESTAURANTS: Record<string, Restaurant> = {
     ],
   },
   ssambap: {
-    id: 'ssambap', ko: '교촌 쌈밥집', en: 'Gyochon ssambap house', payAt: 'table',
+    id: 'ssambap', kind: 'korean', ko: '교촌 쌈밥집', en: 'Gyochon ssambap house', payAt: 'table',
     items: [
       { id: 'ssam', ko: '쌈밥 정식', en: 'Leaf-wrap rice set', price: 15000, main: true, min: 2, cat: 'main' },
       { id: 'ssam-bulgogi', ko: '불고기 쌈밥', en: 'Bulgogi wrap set', price: 18000, main: true, min: 2, cat: 'main' },
