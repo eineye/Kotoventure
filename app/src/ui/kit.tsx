@@ -1,6 +1,6 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
-import { TOPICS, tr, type KnowledgeCard, type TopicId } from '@kotoventure/shared';
+import { Linking, Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { TOPICS, cardPhotoQuery, photoHost, photoUrl, tr, type KnowledgeCard, type L, type TopicId } from '@kotoventure/shared';
 import { Prop } from '../art/props';
 import { C, R, shadow } from './theme';
 
@@ -125,7 +125,30 @@ export function CardView({ card, lang, compact }: { card: KnowledgeCard; lang: s
           </P>
         ))}
       {card.phrase && <PhraseBox phrase={card.phrase} />}
+      {!compact && <PhotoLink q={cardPhotoQuery(card)} lang={lang} />}
     </View>
+  );
+}
+
+/** "See real photos" – opens an image search for the place/thing (Naver for Korean, Google otherwise). */
+export function PhotoLink({ q, lang, small, testID = 'photo-link' }: { q?: L; lang: string; small?: boolean; testID?: string }) {
+  const url = photoUrl(q, lang);
+  if (!url) return null;
+  const ko = lang === 'ko';
+  if (small)
+    return (
+      <Pressable testID={testID} accessibilityRole="link" accessibilityLabel={ko ? '실제 사진 보기' : 'See real photos'} onPress={() => Linking.openURL(url)} hitSlop={8} style={{ paddingHorizontal: 4 }}>
+        <Text style={{ fontSize: 15 }}>📷</Text>
+      </Pressable>
+    );
+  return (
+    <Pressable testID={testID} accessibilityRole="link" onPress={() => Linking.openURL(url)} style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', backgroundColor: pressed ? '#DBEAFE' : '#EEF4FF', borderRadius: 999, paddingVertical: 6, paddingHorizontal: 12, marginTop: 8 })}>
+      <Text style={{ fontSize: 14 }}>📷</Text>
+      <View>
+        <Text style={{ color: C.blue, fontWeight: '900', fontSize: 13 }}>{ko ? `실제 사진 보기: ${q?.ko ?? q?.en}` : `See real photos: ${q?.en}`}</Text>
+        <Text style={{ color: C.inkSoft, fontSize: 10 }}>🔗 {photoHost(lang)}</Text>
+      </View>
+    </Pressable>
   );
 }
 

@@ -45,6 +45,8 @@ export interface KnowledgeCard {
   prop?: string;
   phrase?: Phrase;
   tips?: L[];
+  /** image-search query to see real photos (defaults to the title) */
+  photo?: L;
 }
 
 export interface Effects {
@@ -236,6 +238,8 @@ export interface Scene {
   requires?: string[];
   /** estimated real-world time & cost of this scene */
   est?: SceneEst;
+  /** image-search query for real photos of this place (defaults to the location) */
+  photo?: L;
   steps: Step[];
 }
 

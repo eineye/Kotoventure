@@ -458,7 +458,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
     for (const { m: f, k } of mealAt(i)) {
       if (k > 0) {
         scenes.push({
-          id: `${def.id}-f${k + 1}`, day: dayOf(i), bg: 'restaurant', est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] },
+          id: `${def.id}-f${k + 1}`, day: dayOf(i), bg: 'restaurant', photo: { ko: f.dishes.slice(0, 2).map((d) => d[0]).join(' '), en: f.dishes.slice(0, 2).map((d) => d[1]).join(' ') }, est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] },
           steps: [
             say(f.text),
             simulate('menu', 'food', `Order at ${f.place[1]}`, 'Another Korean-only menu – order for everyone (watch the 2-portion minimums and spicy marks).', { restaurant: registerMenu(`${def.id}-food${k + 1}`, f.place, f.dishes) }),
@@ -480,7 +480,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
         () => ask('food', 'Where is the water?', [ok('Self-service – look for the water dispenser and cups (물은 셀프)', 'Right!', { manner: 3 }), no('Wait for the staff to bring a bottle', 'In most eateries water is self-service.', { energy: -3 })], 'fo-manners'),
         () => ask('food', 'How do you eat the rice and soup?', [ok('With a spoon – chopsticks for side dishes; the bowl stays on the table', 'Correct Korean style!', { manner: 4 }, 'chopsticks'), no('Stick the chopsticks upright in the rice', 'That resembles a funeral ritual – lay them down instead.', { manner: -6 })], 'fo-manners'),
       ], def.id + 'food')());
-      scenes.push({ id: `${def.id}-f1`, day: dayOf(i), bg: 'restaurant', est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] }, steps: fsteps });
+      scenes.push({ id: `${def.id}-f1`, day: dayOf(i), bg: 'restaurant', photo: { ko: f.dishes.slice(0, 2).map((d) => d[0]).join(' '), en: f.dishes.slice(0, 2).map((d) => d[1]).join(' ') }, est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] }, steps: fsteps });
     }
     // 4 · lodging after the first day's places
     if (i === lastOfDay1 && def.nights > 0) {

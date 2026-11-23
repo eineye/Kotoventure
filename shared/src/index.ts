@@ -15,6 +15,7 @@ import { kcultureExperience } from './courses/kculture-experience';
 
 import { buildMission } from './courses/gen';
 import { ORIGINAL_EST } from './courses/estimates';
+import { SCENE_PHOTO } from './photos';
 import { SEOUL_MISSIONS } from './courses/missions-seoul';
 import { REGION_MISSIONS } from './courses/missions-regions';
 
@@ -22,7 +23,10 @@ const ORIGINAL = [seoulClassic, busanFood, gyeongjuHeritage, jejuAdventure, kcul
 const ORIGINAL_AREA = { 'seoul-classic': 'seoul', 'busan-food': 'gyeongsang', 'gyeongju-heritage': 'gyeongsang', 'jeju-adventure': 'jeju', 'kculture-experience': 'seoul' } as const;
 for (const c of ORIGINAL) {
   c.area = ORIGINAL_AREA[c.id as keyof typeof ORIGINAL_AREA];
-  for (const sc of c.scenes) if (ORIGINAL_EST[sc.id]) sc.est = ORIGINAL_EST[sc.id];
+  for (const sc of c.scenes) {
+    if (ORIGINAL_EST[sc.id]) sc.est = ORIGINAL_EST[sc.id];
+    if (SCENE_PHOTO[sc.id]) sc.photo = { ko: SCENE_PHOTO[sc.id][0], en: SCENE_PHOTO[sc.id][1] };
+  }
 }
 
 /** 50 regional missions (Seoul 15 + 7 regions × 5) generated from compact definitions. */
@@ -50,3 +54,4 @@ export * from './subway';
 export * from './dayplan';
 export * from './practice';
 export * from './timeline';
+export * from './photos';

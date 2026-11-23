@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { RESTAURANTS, mainPortions, orderTotal, tr } from '@kotoventure/shared';
-import { H, P, won } from '../ui/kit';
+import { H, P, PhotoLink, won } from '../ui/kit';
 import { C } from '../ui/theme';
 import { Box, DoneCard, OptBtn, PARTY_SIZE, SimShell, useScore, type SimProps } from './kit';
 
@@ -85,6 +85,7 @@ export function MenuSim({ step, ctx, onDone }: SimProps) {
                   </Text>
                   {showEn && <Text style={{ color: '#FCD34D', fontSize: 11 }}>{i.en}</Text>}
                 </View>
+                <PhotoLink small q={{ ko: i.ko, en: i.en }} lang={ctx.lang} testID={`m-photo-${i.id}`} />
                 <Text style={{ color: '#FDE68A', fontWeight: '900', width: 70, textAlign: 'right' }}>{won(i.price)}</Text>
                 <Pressable testID={`m-minus-${i.id}`} onPress={() => setQty(i.id, -1)} style={btn}>
                   <Text style={btnT}>−</Text>
