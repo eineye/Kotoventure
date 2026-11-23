@@ -1,4 +1,5 @@
 /** Pure game logic shared by app (gameplay) and admin (preview / validation). */
+import { translateText } from './i18n/translate';
 import type { ContentBundle, Course, Effects, KnowledgeCard, L, PartyType, RunStats, Scene, Step, TopicId } from './types';
 import { TOPICS } from './meta';
 import { stationById } from './rail';
@@ -15,7 +16,8 @@ export function applySim(s: RunStats, points: number): RunStats {
   return { ...s, answered: s.answered + 1, correct: s.correct + p / 100, sims: (s.sims ?? 0) + 1, simPoints: (s.simPoints ?? 0) + p };
 }
 
-export const tr = (l: L | undefined, lang = 'en'): string => (l ? l[lang] || l.en || '' : '');
+/** Text of an L object in a language; ja/zh/es come from the translation dictionaries when the object has none. */
+export const tr = (l: L | undefined, lang = 'en'): string => (l ? l[lang] || (lang !== 'en' && lang !== 'ko' && l.en ? translateText(l.en, lang) : '') || l.en || '' : '');
 
 export const initialStats = (course: Course): RunStats => ({
   energy: 100,

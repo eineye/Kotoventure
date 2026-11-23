@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, View, useWindowDimensions } from 'react-native';
+import { Text } from '../ui/Text';
 import Svg, { Circle, G, Line, Polyline, Rect, Text as T } from 'react-native-svg';
 import { LINES, STATIONS, stationById, timetable, toMin, tr, type TrainRun } from '@kotoventure/shared';
 import { Btn, H, P, won } from '../ui/kit';

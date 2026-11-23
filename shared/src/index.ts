@@ -65,4 +65,5 @@ export * from './practice';
 export * from './timeline';
 export * from './photos';
 export * from './seasons';
+export * from './i18n/translate';
 export * from './planner';

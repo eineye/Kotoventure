@@ -1,4 +1,5 @@
-import { Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
+import { Text } from '../ui/Text';
 import { PARTY_TYPES, TOPICS, courseEstimate, courseTopics, dur, tr } from '@kotoventure/shared';
 import { Background } from '../art/backgrounds';
 import { useStore } from '../data/store';

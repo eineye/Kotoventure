@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { Text } from '../ui/Text';
 import { tr } from '@kotoventure/shared';
 import { H, P } from '../ui/kit';
 import { Box, DoneCard, OptBtn, SimShell, useScore, type SimProps } from './kit';

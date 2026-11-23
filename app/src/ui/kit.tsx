@@ -1,5 +1,6 @@
 import React from 'react';
-import { Linking, Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { Linking, Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { Text } from './Text';
 import { TOPICS, cardPhotoQuery, photoHost, photoUrl, tr, type KnowledgeCard, type L, type TopicId } from '@kotoventure/shared';
 import { Prop } from '../art/props';
 import { C, R, shadow } from './theme';

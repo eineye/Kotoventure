@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Text, View, useWindowDimensions } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
+import { Text } from '../ui/Text';
 import { addCash, currencyForCountry, tr } from '@kotoventure/shared';
 import { P, won } from '../ui/kit';
 import { C } from '../ui/theme';

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { Text } from '../ui/Text';
 import { TAXI_NIGHT_SURCHARGE, tr } from '@kotoventure/shared';
 import { H, P, won } from '../ui/kit';
 import { C, R } from '../ui/theme';

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
+import { Text } from '../ui/Text';
 import { AREAS, PARTY_TYPES, recommend, tr, type Course } from '@kotoventure/shared';
 import { Background } from '../art/backgrounds';
 import { Traveller, avatarById } from '../art/Characters';

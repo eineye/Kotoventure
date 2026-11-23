@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { Text } from '../ui/Text';
 import { DENOMS, addCash, bestPayment, cashTotal, removePieces, tr, type Cash } from '@kotoventure/shared';
 import { Banknote, Coin } from '../art/Money';
 import { Btn, H, P, won } from '../ui/kit';

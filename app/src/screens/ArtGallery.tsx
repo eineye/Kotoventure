@@ -1,4 +1,5 @@
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { Text } from '../ui/Text';
 import { BACKGROUND_IDS, PROP_IDS } from '@kotoventure/shared';
 import { Background } from '../art/backgrounds';
 import { AVATARS, Kachi, PartyArt, SpeakerPortrait, Traveller } from '../art/Characters';

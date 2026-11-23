@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { Text } from '../ui/Text';
 import { CUISINES, RESTAURANTS, mainPortions, mainsNeeded, orderTotal, tr, type RefillKind } from '@kotoventure/shared';
 import { H, P, PhotoLink, won } from '../ui/kit';
 import { C } from '../ui/theme';

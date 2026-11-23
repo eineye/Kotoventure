@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { Text } from '../ui/Text';
 import { BAG_SIZE, LOCKERS, tr, type LockerSize } from '@kotoventure/shared';
 import { H, P, won } from '../ui/kit';
 import { C } from '../ui/theme';

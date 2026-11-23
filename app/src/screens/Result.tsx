@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Animated, Easing, Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { Animated, Easing, Linking, Pressable, ScrollView, View } from 'react-native';
+import { Text } from '../ui/Text';
 import { TIME_CAT, TOPICS, dur, hm, tr, type TimeCat } from '@kotoventure/shared';
 import { PartyArt, avatarById } from '../art/Characters';
 import { Prop } from '../art/props';

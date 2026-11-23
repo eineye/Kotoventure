@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { Text } from '../ui/Text';
 import { tr } from '@kotoventure/shared';
 import { H, P } from '../ui/kit';
 import { C } from '../ui/theme';
