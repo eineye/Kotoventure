@@ -21,6 +21,7 @@ import {
   score,
   tr,
   visibleSteps,
+  SEASON_DEFAULT_MONTH,
   type ChoiceStep,
   type CourseProgress,
   type Effects,
@@ -59,10 +60,10 @@ const toMin = (s: string) => {
  * the scene's estimated items are laid out from the current time, and scene-level costs are paid.
  * Recap scenes (already covered by the day planner) add no time.
  */
-function enterScene(st: RunStats, course: Course, idx: number, party: PartyType, seed: string): RunStats {
+function enterScene(st: RunStats, course: Course, idx: number, party: PartyType, seed: string, month?: number): RunStats {
   const scene = course.scenes[idx];
   if (!scene || scene.est?.recap) return st;
-  const sims = visibleSteps(scene, party, st.flags ?? [], seed).filter((x): x is SimStep => x.type === 'sim');
+  const sims = visibleSteps(scene, party, st.flags ?? [], seed, month).filter((x): x is SimStep => x.type === 'sim');
   const items = sceneItems(scene, sims, party);
   const clock = st.clock ?? { day: scene.day, min: toMin(scene.est?.start ?? '09:00') };
   let start = clock.min;
@@ -82,6 +83,8 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
   const L = t(lang);
   const course = content.courses.find((c) => c.id === id)!;
   const party = profile?.party ?? 'solo';
+  // travel month decides the seasonal blocks; courses written for one season fall back to it
+  const month = profile?.month ?? SEASON_DEFAULT_MONTH[course.season ?? 'spring'];
   const avatar = avatarById(profile?.avatar);
   const prev = progress[id];
 
@@ -89,7 +92,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
   const resume = !restart && prev && !prev.completedAt && prev.courseVersion === course.version;
   const [sceneIdx, setSceneIdx] = useState(resume ? prev!.sceneIndex : 0);
   const [stepIdx, setStepIdx] = useState(resume ? prev!.stepIndex : 0);
-  const [stats, setStats] = useState<RunStats>(() => (resume ? prev!.stats : enterScene(initialStats(course), course, 0, profile?.party ?? 'solo', String((prev?.plays ?? 0) + 1))));
+  const [stats, setStats] = useState<RunStats>(() => (resume ? prev!.stats : enterScene(initialStats(course), course, 0, profile?.party ?? 'solo', String((prev?.plays ?? 0) + 1), month)));
   const [cards, setCards] = useState<string[]>(resume ? prev!.cards : prev?.cards ?? []);
   const [phrases, setPhrases] = useState<string[]>(resume ? prev!.phrases : prev?.phrases ?? []);
   const [phase, setPhase] = useState<Phase>(resume && prev!.stepIndex > 0 ? 'step' : 'intro');
@@ -105,7 +108,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
   const flags = stats.flags ?? [];
 
   const scene = course.scenes[Math.min(sceneIdx, course.scenes.length - 1)];
-  const steps = visibleSteps(scene, party, flags, String(plays));
+  const steps = visibleSteps(scene, party, flags, String(plays), month);
   const step: Step | undefined = steps[stepIdx];
 
   // panel fade-in on every change
@@ -152,7 +155,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
   };
 
   const goScene = (idx: number, st0: RunStats, cs: string[], ps: string[]) => {
-    const st = enterScene(st0, course, idx, party, String(plays));
+    const st = enterScene(st0, course, idx, party, String(plays), month);
     setStats(st);
     setSceneIdx(idx);
     setStepIdx(0);
@@ -165,7 +168,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
     setDelta(null);
     const fl = st.flags ?? [];
     // flags may have changed → recompute this scene's visible steps and continue after the current one
-    const fresh = visibleSteps(scene, party, fl, String(plays));
+    const fresh = visibleSteps(scene, party, fl, String(plays), month);
     const pos = step ? fresh.indexOf(step) : -1;
     const nextStep = pos >= 0 ? pos + 1 : stepIdx + 1;
     if (nextStep < fresh.length) {

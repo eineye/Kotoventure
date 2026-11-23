@@ -11,6 +11,7 @@ import { Play } from './src/screens/Play';
 import { Result } from './src/screens/Result';
 import { C } from './src/ui/theme';
 import { ArtGallery } from './src/screens/ArtGallery';
+import { Planner } from './src/screens/Planner';
 
 // Web preview only: render SVG text with a sans-serif stack (native already uses the system font)
 if (Platform.OS === 'web' && typeof document !== 'undefined') {
@@ -27,7 +28,8 @@ type Route =
   | { name: 'home'; tab: Tab }
   | { name: 'course'; id: string }
   | { name: 'play'; id: string; restart: boolean }
-  | { name: 'result'; id: string };
+  | { name: 'result'; id: string }
+  | { name: 'planner'; tripId?: string };
 
 function Router() {
   const { ready, profile } = useStore();
@@ -72,10 +74,21 @@ function Router() {
           tab={route.tab}
           setTab={(tab) => setStack((s) => [...s.slice(0, -1), { name: 'home', tab }])}
           openCourse={(id) => push({ name: 'course', id })}
+          openPlanner={() => push({ name: 'planner' })}
         />
       );
     case 'course':
-      return <CourseDetail id={route.id} onBack={pop} onPlay={(restart) => push({ name: 'play', id: route.id, restart })} />;
+      return <CourseDetail id={route.id} onBack={pop} onPlay={(restart) => push({ name: 'play', id: route.id, restart })} onEdit={() => push({ name: 'planner', tripId: route.id })} />;
+    case 'planner':
+      return (
+        <Planner
+          key={route.tripId ?? 'new'}
+          tripId={route.tripId}
+          onBack={pop}
+          onDeleted={() => reset({ name: 'home', tab: 'missions' })}
+          onSaved={(id) => setStack((s) => [...s.slice(0, route.tripId ? -2 : -1), { name: 'course', id }])}
+        />
+      );
     case 'play':
       return (
         <Play

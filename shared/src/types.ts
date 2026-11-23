@@ -80,6 +80,8 @@ interface StepBase {
   unlessFlags?: string[];
   /** Random event: probability 0..1 that the step happens on a given play. */
   chance?: number;
+  /** Only show in these travel months (1–12). Undefined = all year. */
+  months?: number[];
 }
 
 export interface NarrationStep extends StepBase {
@@ -257,6 +259,8 @@ export interface Course {
   categoryId: string;
   /** province-level area for the mission list filter */
   area?: Area;
+  /** season the course was written for (decides the month blocks when the player picked no travel month) */
+  season?: 'spring' | 'summer' | 'autumn' | 'winter';
   title: L;
   subtitle: L;
   description: L;

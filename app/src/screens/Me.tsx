@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Linking, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
-import { PARTY_TYPES, tr } from '@kotoventure/shared';
+import { MONTH_NAMES, PARTY_TYPES, tr } from '@kotoventure/shared';
 import { AVATARS, Traveller, avatarById } from '../art/Characters';
 import { useStore } from '../data/store';
 import { isDemoMode } from '../data/supabase';
@@ -25,6 +25,7 @@ export function Me() {
           <H>{profile.nickname}</H>
           <P dim>
             {profile.country} · {tr(PARTY_TYPES.find((p) => p.id === profile.party)?.name, lang)}
+            {profile.month ? ` · ${lang === "ko" ? MONTH_NAMES[profile.month - 1].ko : MONTH_NAMES[profile.month - 1].en}` : ""}
           </P>
           <Text style={{ fontSize: 11, color: isDemoMode ? C.orange : C.green, fontWeight: '800', marginTop: 4 }}>
             ● {isDemoMode ? L.demoMode : L.online}
@@ -37,6 +38,14 @@ export function Me() {
         <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
           <Chip label="English" active={lang === 'en'} onPress={() => updateProfile({ lang: 'en' })} />
           <Chip label="한국어" active={lang === 'ko'} onPress={() => updateProfile({ lang: 'ko' })} />
+        </View>
+        <H size={17} style={{ marginTop: 14 }}>
+          📅 {lang === 'ko' ? '여행하는 달' : 'Travel month'}
+        </H>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
+          {MONTH_NAMES.map((m, i) => (
+            <Chip key={m.en} testID={`me-month-${i + 1}`} label={`${m.icon} ${lang === 'ko' ? m.ko : m.en.slice(0, 3)}`} active={profile.month === i + 1} onPress={() => updateProfile({ month: i + 1 })} color={C.green} />
+          ))}
         </View>
         <H size={17} style={{ marginTop: 14 }}>
           {L.party}

@@ -13,13 +13,13 @@ import { Me } from './Me';
 
 export type Tab = 'missions' | 'guide' | 'me';
 
-export function Home({ tab, setTab, openCourse }: { tab: Tab; setTab: (t: Tab) => void; openCourse: (id: string) => void }) {
+export function Home({ tab, setTab, openCourse, openPlanner }: { tab: Tab; setTab: (t: Tab) => void; openCourse: (id: string) => void; openPlanner: () => void }) {
   const { profile } = useStore();
   const L = t(profile?.lang);
   return (
     <View style={{ flex: 1, backgroundColor: C.paper }}>
       <View style={{ flex: 1 }}>
-        {tab === 'missions' && <Missions openCourse={openCourse} />}
+        {tab === 'missions' && <Missions openCourse={openCourse} openPlanner={openPlanner} />}
         {tab === 'guide' && <Guidebook />}
         {tab === 'me' && <Me />}
       </View>
@@ -41,14 +41,15 @@ export function Home({ tab, setTab, openCourse }: { tab: Tab; setTab: (t: Tab) =
   );
 }
 
-function Missions({ openCourse }: { openCourse: (id: string) => void }) {
+function Missions({ openCourse, openPlanner }: { openCourse: (id: string) => void; openPlanner: () => void }) {
   const { content, profile, progress } = useStore();
   const lang = profile?.lang ?? 'en';
   const L = t(lang);
   const [cat, setCat] = useState<string | null>(null);
   const [area, setArea] = useState<string | null>(null);
   const party = profile?.party ?? 'solo';
-  const published = content.courses.filter((c) => c.isPublished);
+  const published = content.courses.filter((c) => c.isPublished && !c.id.startsWith('my-'));
+  const mine = content.courses.filter((c) => c.id.startsWith('my-'));
   const recs = useMemo(() => recommend(published, party).slice(0, 3), [published, party]);
   const cats = content.categories.filter((c) => c.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
   const list = published.filter((c) => (!cat || c.categoryId === cat) && (!area || c.area === area)).sort((a, b) => a.sortOrder - b.sortOrder);
@@ -83,6 +84,29 @@ function Missions({ openCourse }: { openCourse: (id: string) => void }) {
           <BigCard key={c.id} c={c} lang={lang} onPress={() => openCourse(c.id)} done={!!progress[c.id]?.completedAt} />
         ))}
       </ScrollView>
+
+      <Pressable testID="open-planner" onPress={openPlanner} accessibilityRole="button" style={{ marginTop: 20, backgroundColor: C.navy, borderRadius: R.l, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12, ...shadow }}>
+        <Text style={{ fontSize: 30 }}>🧭</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#FFF', fontWeight: '900', fontSize: 17 }}>{lang === 'ko' ? '나만의 여행 만들기' : 'Plan my own trip'}</Text>
+          <Text style={{ color: '#CBD5E1', fontSize: 12, fontWeight: '700' }}>
+            {lang === 'ko' ? '가고 싶은 곳과 일정을 직접 짜고 시뮬레이션해 보세요' : 'Choose your own places and days, then simulate the trip'}
+          </Text>
+        </View>
+        <Text style={{ color: C.yellow, fontWeight: '900', fontSize: 20 }}>›</Text>
+      </Pressable>
+      {mine.length > 0 && (
+        <>
+          <H style={{ marginTop: 18 }} size={19}>
+            🧳 {lang === 'ko' ? '내가 만든 여행' : 'My trips'}
+          </H>
+          <View style={{ gap: 12, marginTop: 10 }}>
+            {mine.map((c) => (
+              <RowCard key={c.id} c={c} lang={lang} onPress={() => openCourse(c.id)} />
+            ))}
+          </View>
+        </>
+      )}
 
       <H style={{ marginTop: 22 }} size={19}>
         🗺️ {L.allMissions}

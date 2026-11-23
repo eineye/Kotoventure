@@ -1,17 +1,22 @@
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
-import { PARTY_TYPES, tr, type PartyType } from '@kotoventure/shared';
+import { MONTH_NAMES, PARTY_TYPES, tr, type PartyType } from '@kotoventure/shared';
 import { AVATARS, Kachi, PartyArt, Traveller, avatarById } from '../art/Characters';
 import { useStore } from '../data/store';
 import { t } from '../i18n';
 import { Btn, Chip, H, P } from '../ui/kit';
 import { C, R, shadow } from '../ui/theme';
 
-const COUNTRIES = [
-  ['AU', '🇦🇺 Australia'], ['US', '🇺🇸 USA'], ['JP', '🇯🇵 Japan'], ['CN', '🇨🇳 China'], ['TW', '🇹🇼 Taiwan'],
-  ['VN', '🇻🇳 Vietnam'], ['TH', '🇹🇭 Thailand'], ['PH', '🇵🇭 Philippines'], ['SG', '🇸🇬 Singapore'], ['IN', '🇮🇳 India'],
-  ['GB', '🇬🇧 UK'], ['DE', '🇩🇪 Germany'], ['FR', '🇫🇷 France'], ['CA', '🇨🇦 Canada'], ['BR', '🇧🇷 Brazil'], ['OT', '🌍 Other'],
-] as const;
+/** Countries in A–Z order of their English name ("Other" last). */
+const COUNTRIES: [code: string, flag: string, name: string][] = [
+  ['AU', '🇦🇺', 'Australia'], ['BR', '🇧🇷', 'Brazil'], ['CA', '🇨🇦', 'Canada'], ['CN', '🇨🇳', 'China'], ['FR', '🇫🇷', 'France'],
+  ['DE', '🇩🇪', 'Germany'], ['HK', '🇭🇰', 'Hong Kong'], ['IN', '🇮🇳', 'India'], ['ID', '🇮🇩', 'Indonesia'], ['JP', '🇯🇵', 'Japan'],
+  ['MY', '🇲🇾', 'Malaysia'], ['MN', '🇲🇳', 'Mongolia'], ['NZ', '🇳🇿', 'New Zealand'], ['PH', '🇵🇭', 'Philippines'], ['RU', '🇷🇺', 'Russia'],
+  ['SG', '🇸🇬', 'Singapore'], ['ES', '🇪🇸', 'Spain'], ['TW', '🇹🇼', 'Taiwan'], ['TH', '🇹🇭', 'Thailand'], ['GB', '🇬🇧', 'UK'],
+  ['US', '🇺🇸', 'USA'], ['VN', '🇻🇳', 'Vietnam'],
+];
+COUNTRIES.sort((a, b) => a[2].localeCompare(b[2]));
+COUNTRIES.push(['OT', '🌍', 'Other']);
 
 /** Languages offered at the start. Only fully translated ones can be chosen; others are announced. */
 const LANGUAGES: { id: string; label: string; sub: string; ready: boolean }[] = [
@@ -35,6 +40,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
   const [lang, setLang] = useState<'en' | 'ko'>('en');
   const [nickname, setNickname] = useState('');
   const [country, setCountry] = useState('AU');
+  const [month, setMonth] = useState(() => new Date().getMonth() + 1);
   const [party, setParty] = useState<PartyType>('solo');
   const [avatar, setAvatar] = useState(AVATARS[0].id);
   const [busy, setBusy] = useState(false);
@@ -44,7 +50,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
 
   const finish = async () => {
     setBusy(true);
-    await signUp({ nickname: nickname.trim() || (ko ? '여행자' : 'Traveller'), country, party, avatar, lang });
+    await signUp({ nickname: nickname.trim() || (ko ? '여행자' : 'Traveller'), country, party, avatar, lang, month });
     setBusy(false);
     onDone();
   };
@@ -112,8 +118,15 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
             />
             <H style={{ marginTop: 22 }}>{L.country}</H>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
-              {COUNTRIES.map(([code, label]) => (
-                <Chip key={code} label={label} active={country === code} onPress={() => setCountry(code)} color={C.blue} />
+              {COUNTRIES.map(([code, flag, name]) => (
+                <Chip key={code} testID={`country-${code}`} label={`${flag} ${name}`} active={country === code} onPress={() => setCountry(code)} color={C.blue} />
+              ))}
+            </View>
+            <H style={{ marginTop: 22 }}>{ko ? '언제 한국에 가나요?' : 'When are you visiting Korea?'}</H>
+            <P dim style={{ fontSize: 13, marginTop: 2 }}>{ko ? '여행하는 달의 날씨·명절 카드를 미션에서 알려 드려요.' : 'Missions will show the weather and holiday cards for your travel month.'}</P>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
+              {MONTH_NAMES.map((m, i) => (
+                <Chip key={m.en} testID={`month-${i + 1}`} label={`${m.icon} ${ko ? m.ko : m.en.slice(0, 3)}`} active={month === i + 1} onPress={() => setMonth(i + 1)} color={C.green} />
               ))}
             </View>
             <View style={{ flexDirection: 'row', gap: 10, marginTop: 28 }}>
