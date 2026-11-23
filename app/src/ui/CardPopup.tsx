@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Animated, Easing, Modal, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import * as Speech from 'expo-speech';
-import { TOPICS, tr, type KnowledgeCard } from '@kotoventure/shared';
+import { TOPICS, cardPhotoQuery, tr, type KnowledgeCard } from '@kotoventure/shared';
 import { Prop } from '../art/props';
-import { Btn, H, P } from './kit';
+import { Btn, H, P, PhotoLink } from './kit';
 import { C, R } from './theme';
 
 /**
@@ -81,6 +81,7 @@ function CardBody({ card, lang }: { card: KnowledgeCard; lang: string }) {
       </View>
       <View style={{ padding: 16, gap: 8 }}>
         <H size={20}>{tr(card.title, lang)}</H>
+        <PhotoLink q={cardPhotoQuery(card)} lang={lang} testID="card-photo" />
         {points.map((pt, i) => (
           <Animated.View key={i} style={{ flexDirection: 'row', gap: 8, opacity: shown[i], transform: [{ translateX: shown[i].interpolate({ inputRange: [0, 1], outputRange: [24, 0] }) }] }}>
             <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: i === 0 ? topic.color : C.yellow, alignItems: 'center', justifyContent: 'center' }}>

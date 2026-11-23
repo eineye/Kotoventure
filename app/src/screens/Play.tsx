@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Animated, Easing, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import {
   applyEffects,
+  scenePhotoQuery,
   TIME_CAT,
   dur,
   hm,
@@ -33,7 +34,7 @@ import { PartyArt, SpeakerPortrait, avatarById, speakerLabel } from '../art/Char
 import { Prop, hasProp } from '../art/props';
 import { useStore } from '../data/store';
 import { t } from '../i18n';
-import { Btn, CardView, H, P, PhraseBox, TopicChip, won } from '../ui/kit';
+import { Btn, CardView, H, P, PhotoLink, PhraseBox, TopicChip, won } from '../ui/kit';
 import { C, R, shadow } from '../ui/theme';
 import { SIM_ICON, SimRunner } from '../sim/SimRunner';
 import { PARTY_SIZE, type SimCtx, type SimResult } from '../sim/kit';
@@ -410,6 +411,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
             </Text>
             <H size={26}>{tr(scene.title, lang)}</H>
             <P dim style={{ marginTop: 4 }}>📍 {tr(scene.location, lang)}</P>
+            <PhotoLink q={scenePhotoQuery(scene)} lang={lang} testID="scene-photo" />
             <RouteDots total={course.scenes.length} at={sceneIdx} />
             {scene.est?.recap ? (
               <P dim style={{ marginTop: 12 }}>📸 {lang === 'ko' ? '오늘 짠 일정 중 한 장면이에요 (시간은 일정에 포함).' : 'A highlight of the day you planned (time already in your plan).'}</P>
