@@ -49,9 +49,10 @@ const flagsOk = (ifF: string[] | undefined, unlessF: string[] | undefined, flags
   (!ifF || ifF.every((f) => flags.includes(f))) && (!unlessF || !unlessF.some((f) => flags.includes(f)));
 
 /** Steps visible for the party type, the consequence flags and (for random events) this play's seed. */
-export const visibleSteps = (scene: Scene, party: PartyType, flags: string[] = [], seed = ''): Step[] =>
+export const visibleSteps = (scene: Scene, party: PartyType, flags: string[] = [], seed = '', month?: number): Step[] =>
   scene.steps.filter(
     (st, i) =>
+      (!st.months || !month || st.months.includes(month)) &&
       (!st.parties || st.parties.length === 0 || st.parties.includes(party)) &&
       flagsOk(st.ifFlags, st.unlessFlags, flags) &&
       (st.chance === undefined || roll(`${seed}|${scene.id}|${i}`) < st.chance),

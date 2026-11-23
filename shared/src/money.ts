@@ -103,7 +103,7 @@ export const CURRENCIES: Record<string, HomeCurrency> = {
 
 const BY_COUNTRY: Record<string, string> = {
   AU: 'AUD', US: 'USD', JP: 'JPY', CN: 'CNY', TW: 'TWD', VN: 'VND', TH: 'THB', PH: 'PHP', SG: 'SGD',
-  IN: 'INR', GB: 'GBP', DE: 'EUR', FR: 'EUR', CA: 'CAD', BR: 'BRL',
+  IN: 'INR', GB: 'GBP', DE: 'EUR', FR: 'EUR', CA: 'CAD', BR: 'BRL', ES: 'EUR',
 };
 
 export const currencyForCountry = (country?: string): HomeCurrency => CURRENCIES[BY_COUNTRY[country ?? ''] ?? 'USD'];

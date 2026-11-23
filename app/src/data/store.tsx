@@ -1,6 +1,8 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
   SEED_BUNDLE,
+  buildTrip,
+  type TripSpec,
   type ContentBundle,
   type Course,
   type CourseProgress,
@@ -19,6 +21,8 @@ export interface Profile {
   party: PartyType;
   avatar: string;
   lang: 'en' | 'ko';
+  /** month of the planned trip (1–12): seasonal knowledge cards and weather follow it */
+  month?: number;
   /** guide = instant feedback; real = results revealed in a nightly summary */
   mode?: 'guide' | 'real';
 }
@@ -29,9 +33,13 @@ interface State {
   profile: Profile | null;
   progress: Record<string, CourseProgress>;
   entitlements: string[];
+  /** trips the player planned themselves (built into playable courses) */
+  trips: TripSpec[];
 }
 
 interface Api extends State {
+  saveTrip(t: TripSpec): void;
+  deleteTrip(id: string): void;
   signUp(p: Omit<Profile, 'id' | 'lang'> & { lang?: Profile['lang'] }): Promise<void>;
   updateProfile(patch: Partial<Profile>): void;
   saveProgress(p: CourseProgress): void;
@@ -43,13 +51,13 @@ interface Api extends State {
   signOut(): Promise<void>;
 }
 
-const K = { profile: 'kv.profile', progress: 'kv.progress', ent: 'kv.entitlements' };
+const K = { profile: 'kv.profile', progress: 'kv.progress', ent: 'kv.entitlements', trips: 'kv.trips' };
 const Ctx = createContext<Api | null>(null);
 
 const localId = () => 'local-' + Math.random().toString(36).slice(2, 10);
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
-  const [s, setS] = useState<State>({ ready: false, content: SEED_BUNDLE, profile: null, progress: {}, entitlements: ['app_base'] });
+  const [s, setS] = useState<State>({ ready: false, content: SEED_BUNDLE, profile: null, progress: {}, entitlements: ['app_base'], trips: [] });
 
   /* boot: cached content + local profile, then remote sync */
   useEffect(() => {
@@ -58,7 +66,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const profile = await getJSON<Profile>(K.profile);
       const progress = (await getJSON<Record<string, CourseProgress>>(K.progress)) ?? {};
       const ent = (await getJSON<string[]>(K.ent)) ?? ['app_base'];
-      setS({ ready: true, content, profile, progress, entitlements: ent });
+      const trips = (await getJSON<TripSpec[]>(K.trips)) ?? [];
+      setS({ ready: true, content, profile, progress, entitlements: ent, trips });
 
       if (supabase && profile) {
         const { data } = await supabase.auth.getSession();
@@ -131,7 +140,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setS((x) => {
       const progress = { ...x.progress, [p.courseId]: p };
       setJSON(K.progress, progress);
-      if (supabase && x.profile && !x.profile.id.startsWith('local-')) {
+      if (supabase && x.profile && !x.profile.id.startsWith('local-') && !p.courseId.startsWith('my-')) {
         supabase
           .from('progress')
           .upsert({
@@ -182,13 +191,34 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(async () => {
     if (supabase) await supabase.auth.signOut();
-    await Promise.all([dropKey(K.profile), dropKey(K.progress), dropKey(K.ent)]);
-    setS((x) => ({ ...x, profile: null, progress: {}, entitlements: ['app_base'] }));
+    await Promise.all([dropKey(K.profile), dropKey(K.progress), dropKey(K.ent), dropKey(K.trips)]);
+    setS((x) => ({ ...x, profile: null, progress: {}, entitlements: ['app_base'], trips: [] }));
   }, []);
+
+  const saveTrip = useCallback((t: TripSpec) => {
+    setS((x) => {
+      const trips = [t, ...x.trips.filter((y) => y.id !== t.id)];
+      setJSON(K.trips, trips);
+      return { ...x, trips };
+    });
+  }, []);
+  const deleteTrip = useCallback((id: string) => {
+    setS((x) => {
+      const trips = x.trips.filter((y) => y.id !== id);
+      setJSON(K.trips, trips);
+      const progress = Object.fromEntries(Object.entries(x.progress).filter(([k]) => k !== id));
+      setJSON(K.progress, progress);
+      return { ...x, trips, progress };
+    });
+  }, []);
+
+  // the player's own trips are built into courses and listed with the others
+  const tripCourses = useMemo(() => s.trips.map((t, i) => buildTrip(t, 1000 + i)).filter((c): c is Course => !!c), [s.trips]);
+  const content = useMemo(() => (tripCourses.length ? { ...s.content, courses: [...s.content.courses, ...tripCourses] } : s.content), [s.content, tripCourses]);
 
   const collectedCards = useMemo(() => new Set(Object.values(s.progress).flatMap((p) => p.cards)), [s.progress]);
 
-  const api: Api = { ...s, signUp, updateProfile, saveProgress, resetProgress, isUnlocked, productFor, purchase, collectedCards, signOut };
+  const api: Api = { ...s, content, saveTrip, deleteTrip, signUp, updateProfile, saveProgress, resetProgress, isUnlocked, productFor, purchase, collectedCards, signOut };
   return <Ctx.Provider value={api}>{children}</Ctx.Provider>;
 }
 

@@ -6,7 +6,7 @@ import { t } from '../i18n';
 import { Btn, H, P, Panel, Stars, TopicChip, won } from '../ui/kit';
 import { C, R } from '../ui/theme';
 
-export function CourseDetail({ id, onBack, onPlay }: { id: string; onBack: () => void; onPlay: (restart: boolean) => void }) {
+export function CourseDetail({ id, onBack, onPlay, onEdit }: { id: string; onBack: () => void; onPlay: (restart: boolean) => void; onEdit?: () => void }) {
   const { content, profile, progress, isUnlocked, productFor, purchase } = useStore();
   const { width } = useWindowDimensions();
   const lang = profile?.lang ?? 'en';
@@ -36,6 +36,9 @@ export function CourseDetail({ id, onBack, onPlay }: { id: string; onBack: () =>
             <H size={24}>{tr(c.title, lang)}</H>
             <P dim>{tr(c.subtitle, lang)}</P>
             <P style={{ marginTop: 10 }}>{tr(c.description, lang)}</P>
+            {c.id.startsWith('my-') && onEdit && (
+              <Btn testID="trip-edit" small kind="ghost" label={lang === 'ko' ? '✏️ 일정 수정·삭제' : '✏️ Edit or delete this trip'} onPress={onEdit} style={{ marginTop: 10, alignSelf: 'flex-start' }} />
+            )}
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 14, marginTop: 12 }}>
               <Info k={L.startsAt} v={`${c.entry.kind === 'airport' ? '✈' : '⚓'} ${tr(c.entry.name, lang)}`} />
               <Info k={L.endsAt} v={`${c.exit.kind === 'airport' ? '✈' : '⚓'} ${tr(c.exit.name, lang)}`} />

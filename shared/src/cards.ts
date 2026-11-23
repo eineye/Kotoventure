@@ -349,6 +349,52 @@ export const CARDS: KnowledgeCard[] = [
     title: { en: 'Emergency alerts', ko: '재난문자' },
     body: { en: 'Your phone may blast loud emergency alerts (heat, rain, earthquake, missing person). They are in Korean (often with English). Install the "Emergency Ready" (Safety Korea) app for alerts and shelters in English.', ko: '재난문자 수신. 안전디딤돌 앱(영문).' },
   },
+  {
+    id: 'we-blossom', topic: 'weather', prop: 'spring',
+    title: { en: 'Cherry-blossom season', ko: '벚꽃 시즌' },
+    body: { en: 'Late March–mid April the cherry trees bloom from Jeju and Busan up to Seoul. Festivals (Jinhae, Yeouido, Gyeongju) are packed on weekends, and evenings are still chilly – bring a light jacket.', ko: '3월 말–4월 중순, 남쪽부터 벚꽃이 피어요. 주말 축제는 붐비고 저녁은 아직 쌀쌀해요.' },
+    tips: [
+      { en: 'Go on a weekday morning – weekend festival roads and trains are crowded.', ko: '평일 오전에 가세요. 주말 축제 도로와 열차는 붐벼요.' },
+      { en: 'Spring days can also bring yellow dust – check the air quality and carry a mask.', ko: '봄에는 황사도 와요. 대기질을 확인하고 마스크를 챙기세요.' },
+    ],
+  },
+  {
+    id: 'we-foliage', topic: 'weather', prop: 'autumn',
+    title: { en: 'Autumn leaves', ko: '단풍철' },
+    body: { en: 'Mid October–mid November the mountains turn red and gold, starting in Seoraksan and moving south. It is the busiest hiking season: trails and buses to national parks are crowded at weekends.', ko: '10월 중순–11월 중순, 설악산부터 남쪽으로 단풍이 내려와요. 주말 국립공원 등산로와 버스는 붐벼요.' },
+    tips: [
+      { en: 'Mornings can be near 5 °C and afternoons 20 °C – dress in layers.', ko: '아침 5°C, 오후 20°C까지 일교차가 커요. 겹쳐 입으세요.' },
+      { en: 'The sun sets around 17:30 in November – start hikes early.', ko: '11월엔 17시 30분쯤 해가 져요. 산행은 일찍 시작하세요.' },
+    ],
+  },
+  {
+    id: 'we-snow', topic: 'weather', prop: 'winter',
+    title: { en: 'Snow & black ice', ko: '눈·빙판길' },
+    body: { en: 'From December to February snow and "black ice" make pavements and stairs slippery, and mountain roads may need snow chains. Ski resorts in Gangwon open in December.', ko: '12–2월에는 눈과 블랙아이스로 길과 계단이 미끄러워요. 강원도 스키장은 12월에 개장해요.' },
+    tips: [
+      { en: 'Wear shoes with grip and hold the handrails on outdoor stairs.', ko: '미끄럼 방지 신발을 신고 바깥 계단에선 난간을 잡으세요.' },
+      { en: 'Heat packs (핫팩) from the convenience store keep hands and pockets warm.', ko: '편의점 핫팩으로 손과 주머니를 따뜻하게 하세요.' },
+    ],
+  },
+  {
+    id: 'et-seollal', topic: 'etiquette', prop: 'hanbok',
+    title: { en: 'Seollal – Lunar New Year', ko: '설날' },
+    body: { en: 'Korea\'s biggest holiday (late January or February, 3 days). Families travel home, so trains and buses sell out weeks ahead and many small restaurants and markets close. Palaces and museums usually stay open, some with free entry and folk games.', ko: '1월 말이나 2월의 3일 연휴. 귀성 행렬로 기차·버스가 일찍 매진되고 작은 식당과 시장은 쉬는 곳이 많아요. 궁궐과 박물관은 대부분 열고, 무료 입장이나 민속놀이 행사도 있어요.' },
+    tips: [
+      { en: 'Book KTX and express buses early and check opening days before you go.', ko: 'KTX와 고속버스는 일찍 예매하고, 영업일을 미리 확인하세요.' },
+      { en: 'Say "새해 복 많이 받으세요" – "Have lots of luck in the new year".', ko: '"새해 복 많이 받으세요"라고 인사해 보세요.' },
+    ],
+    phrase: { hangul: '새해 복 많이 받으세요', roman: 'Sae-hae bok ma-ni ba-deu-se-yo', meaning: 'Happy New Year' },
+  },
+  {
+    id: 'et-chuseok', topic: 'etiquette', prop: 'hanbok',
+    title: { en: 'Chuseok – harvest holiday', ko: '추석' },
+    body: { en: 'Korean Thanksgiving (September or early October, 3 days). Roads and trains are packed, many shops and restaurants close for a day or two, and people eat songpyeon rice cakes. Palaces often have free entry and traditional events.', ko: '9월이나 10월 초의 3일 연휴. 도로와 기차가 꽉 차고 하루이틀 쉬는 가게와 식당이 많아요. 송편을 먹고, 궁궐은 무료 입장과 전통 행사가 열리기도 해요.' },
+    tips: [
+      { en: 'Convenience stores, big chains and tourist areas stay open – plan meals there.', ko: '편의점, 대형 체인, 관광지는 문을 열어요. 식사는 그곳에서 계획하세요.' },
+      { en: 'Inter-city travel is hardest on the first and last holiday days.', ko: '연휴 첫날과 마지막 날은 도시 간 이동이 가장 힘들어요.' },
+    ],
+  },
   // ───────────── MEDICAL ─────────────
   {
     id: 'me-pharmacy', topic: 'medical', prop: 'pharmacy',

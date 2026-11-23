@@ -8,6 +8,7 @@
  * Question banks are keyed by place kind, so the same rules are taught in context everywhere.
  * Prices, hours and routes are realistic examples – players are told to check before travelling.
  */
+import { monthSteps, SEASON_MONTHS } from '../seasons';
 import { CUISINES, TICKET_SITES, RESTAURANTS, inferCuisine, menuIntro, type BusColor, type CuisineKind, type MenuItem } from '../practice';
 import type { Area, ChoiceOption, Course, EstItem, PartyType, Scene, Step, TimeCat, TopicId } from '../types';
 import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
@@ -93,11 +94,13 @@ export interface MissionDef {
   tips?: Partial<Record<PartyType, string>>;
   /** 'base' = included with the app; otherwise sold in the area pack */
   free?: boolean;
+  /** a lodging scene after the last place of every day with a night (player-made trips); default: only after day 1 */
+  everyNight?: boolean;
 }
 
 /* ───────────── gateways ───────────── */
 export type HubId = 'ICN' | 'GMP' | 'CJU' | 'PUS' | 'TAE' | 'CJJ' | 'YNY' | 'MWX' | 'RSU' | 'INCHEON-PORT' | 'BUSAN-PORT' | 'JEJU-PORT';
-const HUBS: Record<HubId, { kind: 'airport' | 'port'; ko: string; en: string; bg: string }> = {
+export const HUBS: Record<HubId, { kind: 'airport' | 'port'; ko: string; en: string; bg: string }> = {
   ICN: { kind: 'airport', ko: '인천국제공항', en: 'Incheon International Airport', bg: 'airport' },
   GMP: { kind: 'airport', ko: '김포국제공항', en: 'Gimpo International Airport', bg: 'airport' },
   CJU: { kind: 'airport', ko: '제주국제공항', en: 'Jeju International Airport', bg: 'airport' },
@@ -406,7 +409,6 @@ function mealQuiz(kind: CuisineKind): (() => Step)[] {
 export function buildMission(def: MissionDef, sortOrder: number): Course {
   const hub = HUBS[def.hub];
   const exit = HUBS[def.exit ?? def.hub];
-  const S = SEASON[def.season];
   const st = STAY[def.stay];
   const scenes: Scene[] = [];
   const perDay = Math.max(1, Math.ceil(def.stops.length / Math.max(1, def.days - 1)));
@@ -439,8 +441,9 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
         ? ask('law', 'At the ferry terminal arrival hall, what do you need?', [ok('My passport and entry approval – same as at an airport', 'Yes. Ports are international borders too.', { manner: 3 }, 'passport'), no('Only my ferry ticket', 'The ticket isn\'t ID – immigration needs your passport.', { energy: -8 })], 'tr-ferry')
         : ask('law', 'Customs asks if you have fresh fruit or meat in your bag.', [ok('Declare it honestly – many fresh foods can\'t be brought in', 'Correct. Undeclared food can be fined.', { manner: 4 }, 'passport'), no('Say no and hope', 'The detector dog finds the sausage – fine!', { money: -100000 })], 'la-safety'),
       ask('transport', `How do you get to ${def.stops[0].en}?`, [ok(def.go, 'Good choice – easy and good value.', { money: -5000 }, 'subway-sign'), ...wrongGo(def.hub)], 'tr-transfer'),
-      event('weather', S.ev[0], S.ev[1], undefined, S.prop),
-      S.q(),
+      // weather for the player's travel month: month note + cards, and a question for that season
+      ...monthSteps(),
+      ...(Object.keys(SEASON) as (keyof typeof SEASON)[]).map((k) => ({ ...SEASON[k].q(), months: SEASON_MONTHS[k] }) as Step),
       ...(['seoul', 'incheon', 'gyeonggi'].includes(def.area) ? [learn('tr-subway')] : []),
     ],
   });
@@ -509,7 +512,11 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
       fsteps.push(pick(mealQuiz(RESTAURANTS[`${def.id}-food`].kind ?? 'korean'), def.id + 'food')());
       scenes.push({ id: `${def.id}-f1`, day: dayOf(i), bg: 'restaurant', photo: { ko: f.dishes.slice(0, 2).map((d) => d[0]).join(' '), en: f.dishes.slice(0, 2).map((d) => d[1]).join(' ') }, est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] }, steps: fsteps });
     }
-    // 4 · lodging after the first day's places
+    // 4 · lodging after the first day's places (player-made trips: after every day that has a night)
+    const lastOfDay = Math.max(...def.stops.map((_, j) => j).filter((j) => dayOf(j) === dayOf(i)));
+    if (def.everyNight && i === lastOfDay && dayOf(i) > 1 && dayOf(i) <= def.nights) {
+      scenes.push({ id: `${def.id}-l${dayOf(i)}`, day: dayOf(i), est: { items: [est(20, 'move', `To your ${st.en}`, `${st.ko}까지 이동`, 1500), est(0, 'stay', `${st.en[0].toUpperCase()}${st.en.slice(1)}${STAY_COST[def.stay][1] ? ' (per person)' : ''}`, `${st.ko}${STAY_COST[def.stay][1] ? ' (1인)' : ''}`, STAY_COST[def.stay][0], STAY_COST[def.stay][1])] }, bg: 'street', title: { en: `Night ${dayOf(i)} at the ${st.en}`, ko: `${st.ko}에서 ${dayOf(i)}번째 밤` }, location: { en: st.en, ko: st.ko }, steps: [say(`Evening of day ${dayOf(i)}. You check into your ${st.en}.`)] });
+    }
     if (i === lastOfDay1 && def.nights > 0) {
       const lsteps: Step[] = [say(`Evening of day ${dayOf(i)}. You check into your ${st.en}.`)];
       if (st.checkin) lsteps.push(simulate('checkin', 'lodging', `${st.en[0].toUpperCase()}${st.en.slice(1)} self check-in`, 'Read the host\'s message, open the digital door lock, find your room and remember the house rules.', { code: String(1000 + (hash(def.id) % 9000)), room: `${2 + (hash(def.id) % 3)}0${1 + (hash(def.id + 'r') % 3)}`, checkout: '11:00' }));
@@ -554,6 +561,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
     id: def.id,
     categoryId: def.cat,
     area: def.area,
+    season: def.season,
     title: { en: def.title[0], ko: def.title[1] },
     subtitle: { en: def.sub[0], ko: def.sub[1] },
     description: { en: def.desc },

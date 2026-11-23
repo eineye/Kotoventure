@@ -14,6 +14,7 @@ import { jejuAdventure } from './courses/jeju-adventure';
 import { kcultureExperience } from './courses/kculture-experience';
 
 import { buildMission } from './courses/gen';
+import { monthSteps } from './seasons';
 import { ORIGINAL_EST } from './courses/estimates';
 import { SCENE_PHOTO } from './photos';
 import { SEOUL_MISSIONS } from './courses/missions-seoul';
@@ -21,8 +22,12 @@ import { REGION_MISSIONS } from './courses/missions-regions';
 
 const ORIGINAL = [seoulClassic, busanFood, gyeongjuHeritage, jejuAdventure, kcultureExperience];
 const ORIGINAL_AREA = { 'seoul-classic': 'seoul', 'busan-food': 'gyeongsang', 'gyeongju-heritage': 'gyeongsang', 'jeju-adventure': 'jeju', 'kculture-experience': 'seoul' } as const;
+const ORIGINAL_SEASON = { 'seoul-classic': 'spring', 'busan-food': 'summer', 'gyeongju-heritage': 'autumn', 'jeju-adventure': 'summer', 'kculture-experience': 'spring' } as const;
 for (const c of ORIGINAL) {
   c.area = ORIGINAL_AREA[c.id as keyof typeof ORIGINAL_AREA];
+  c.season = ORIGINAL_SEASON[c.id as keyof typeof ORIGINAL_SEASON];
+  // the story keeps its season; the arrival scene adds what to know in the player's travel month
+  c.scenes[0].steps.push(...monthSteps());
   for (const sc of c.scenes) {
     if (ORIGINAL_EST[sc.id]) sc.est = ORIGINAL_EST[sc.id];
     if (SCENE_PHOTO[sc.id]) sc.photo = { ko: SCENE_PHOTO[sc.id][0], en: SCENE_PHOTO[sc.id][1] };
@@ -59,3 +64,5 @@ export * from './dayplan';
 export * from './practice';
 export * from './timeline';
 export * from './photos';
+export * from './seasons';
+export * from './planner';
