@@ -287,7 +287,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
       <ScrollView style={{ flex: 1, backgroundColor: C.paper }} contentContainerStyle={{ padding: 18, gap: 12 }}>
         {!restOnly && (
           <Text style={{ fontSize: 13, fontWeight: '900', color: C.red }}>
-            🌙 {L.day} {summary.day} {lang === 'ko' ? '정산' : 'review'}
+            🌙 {lang === 'ko' ? `${summary.day}일차 정산` : `Day ${summary.day} review`}
           </Text>
         )}
         {summary.collapsed && (
@@ -363,7 +363,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
             <Text style={{ color: '#FFF', fontSize: 18, fontWeight: '900' }}>✕</Text>
           </Pressable>
           <Text style={{ color: '#FFF', fontWeight: '900' }}>
-            {L.day} {scene.day} · {Math.min(sceneIdx + 1, course.scenes.length)}/{course.scenes.length}
+            {lang === 'ko' ? `${scene.day}일차` : `Day ${scene.day}`} · {Math.min(sceneIdx + 1, course.scenes.length)}/{course.scenes.length}
           </Text>
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={{ color: C.yellow, fontWeight: '900' }}>💰 {won(Math.max(0, course.startBudget - stats.money))}</Text>
@@ -407,7 +407,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
           <ScrollView key={`intro-${sceneIdx}`} contentContainerStyle={{ flexGrow: 1 }}>
           <Pressable style={{ flexGrow: 1, padding: 20, paddingTop: 24, paddingBottom: 30 }} testID="continue" onPress={() => setPhase('step')} accessibilityRole="button">
             <Text style={{ color: C.red, fontWeight: '900', fontSize: 16 }}>
-              {L.day} {scene.day}
+              {lang === 'ko' ? `${scene.day}일차` : `Day ${scene.day}`}
             </Text>
             <H size={26}>{tr(scene.title, lang)}</H>
             <P dim style={{ marginTop: 4 }}>📍 {tr(scene.location, lang)}</P>
