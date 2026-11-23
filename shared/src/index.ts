@@ -29,10 +29,14 @@ for (const c of ORIGINAL) {
   }
 }
 
+import { localizeCourses } from './i18n/localize';
+
 /** 50 regional missions (Seoul 15 + 7 regions × 5) generated from compact definitions. */
 export const REGIONAL_COURSES = [...SEOUL_MISSIONS, ...REGION_MISSIONS].map((d, i) => buildMission(d, 10 + i));
 
 export const COURSES = [...ORIGINAL, ...REGIONAL_COURSES];
+/** sentences still without Korean (reported by the validator) */
+export const UNTRANSLATED = localizeCourses(COURSES, CARDS);
 for (const p of PRODUCTS) {
   if (p.type === 'paid_app') p.courseIds = COURSES.filter((c) => c.access === 'base').map((c) => c.id);
   else if (p.id.startsWith('pack_') && !p.courseIds.length) p.courseIds = COURSES.filter((c) => c.productId === p.id).map((c) => c.id);
