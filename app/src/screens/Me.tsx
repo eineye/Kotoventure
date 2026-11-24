@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Linking, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Linking, Pressable, ScrollView, TextInput, View } from 'react-native';
+import { Text } from '../ui/Text';
 import { MONTH_NAMES, PARTY_TYPES, tr } from '@kotoventure/shared';
 import { AVATARS, Traveller, avatarById } from '../art/Characters';
 import { useStore } from '../data/store';
@@ -35,9 +36,12 @@ export function Me() {
 
       <Panel>
         <H size={17}>{L.language}</H>
-        <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
           <Chip label="English" active={lang === 'en'} onPress={() => updateProfile({ lang: 'en' })} />
           <Chip label="한국어" active={lang === 'ko'} onPress={() => updateProfile({ lang: 'ko' })} />
+          <Chip label="日本語" active={lang === 'ja'} onPress={() => updateProfile({ lang: 'ja' })} />
+          <Chip label="简体中文" active={lang === 'zh'} onPress={() => updateProfile({ lang: 'zh' })} />
+          <Chip label="Español" active={lang === 'es'} onPress={() => updateProfile({ lang: 'es' })} />
         </View>
         <H size={17} style={{ marginTop: 14 }}>
           📅 {lang === 'ko' ? '여행하는 달' : 'Travel month'}

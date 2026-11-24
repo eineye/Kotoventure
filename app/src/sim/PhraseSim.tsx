@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { Text } from '../ui/Text';
 import * as Speech from 'expo-speech';
 import { roll, tr } from '@kotoventure/shared';
 import { Btn, H, P } from '../ui/kit';

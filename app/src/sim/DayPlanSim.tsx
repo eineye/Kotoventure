@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Pressable, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, View, useWindowDimensions } from 'react-native';
+import { Text } from '../ui/Text';
 import Svg, { Circle, G, Line, Path, Polyline, Rect, Text as T } from 'react-native-svg';
 import {
   MODE_ICON,

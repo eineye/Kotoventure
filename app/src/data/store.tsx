@@ -10,6 +10,7 @@ import {
   type Product,
 } from '@kotoventure/shared';
 import { loadContent } from './content';
+import { LangContext } from '../ui/Text';
 import { buyProduct } from './purchases';
 import { dropKey, getJSON, setJSON } from './storage';
 import { supabase } from './supabase';
@@ -20,7 +21,8 @@ export interface Profile {
   country: string;
   party: PartyType;
   avatar: string;
-  lang: 'en' | 'ko';
+  /** ja/zh/es are translated at runtime from English (shared/src/i18n) */
+  lang: 'en' | 'ko' | 'ja' | 'zh' | 'es';
   /** month of the planned trip (1–12): seasonal knowledge cards and weather follow it */
   month?: number;
   /** guide = instant feedback; real = results revealed in a nightly summary */
@@ -219,7 +221,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const collectedCards = useMemo(() => new Set(Object.values(s.progress).flatMap((p) => p.cards)), [s.progress]);
 
   const api: Api = { ...s, content, saveTrip, deleteTrip, signUp, updateProfile, saveProgress, resetProgress, isUnlocked, productFor, purchase, collectedCards, signOut };
-  return <Ctx.Provider value={api}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider value={api}>
+      <LangContext.Provider value={s.profile?.lang ?? 'en'}>{children}</LangContext.Provider>
+    </Ctx.Provider>
+  );
 }
 
 export function useStore() {

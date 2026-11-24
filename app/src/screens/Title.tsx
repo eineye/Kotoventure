@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Animated, Easing, Pressable, Text, View, useWindowDimensions } from 'react-native';
+import { Animated, Easing, Pressable, View, useWindowDimensions } from 'react-native';
+import { Text } from '../ui/Text';
 import { Background } from '../art/backgrounds';
 import { Kachi } from '../art/Characters';
 import { Logo } from '../art/Logo';
 import { t } from '../i18n';
 import { C } from '../ui/theme';
 
-export function Title({ onStart, lang }: { onStart: () => void; lang?: 'en' | 'ko' }) {
+export function Title({ onStart, lang }: { onStart: () => void; lang?: string }) {
   const { width, height } = useWindowDimensions();
   const bob = useState(() => new Animated.Value(0))[0];
   const fly = useState(() => new Animated.Value(0))[0];

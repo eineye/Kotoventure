@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
+import { Text } from '../ui/Text';
 import { TOPICS, tr, type TopicId } from '@kotoventure/shared';
 import { Prop } from '../art/props';
 import { useStore } from '../data/store';

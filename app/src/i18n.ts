@@ -120,4 +120,5 @@ const ko: Dict = {
 };
 export const STRINGS = { en, ko };
 export type Lang = keyof typeof STRINGS;
-export const t = (lang: Lang | undefined) => STRINGS[lang ?? 'en'] ?? en;
+/** ja/zh/es use the English table; the Text component translates it. */
+export const t = (lang: string | undefined) => STRINGS[(lang ?? 'en') as Lang] ?? en;

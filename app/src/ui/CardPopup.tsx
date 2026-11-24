@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Animated, Easing, Modal, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Animated, Easing, Modal, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Text } from './Text';
 import * as Speech from 'expo-speech';
 import { TOPICS, cardPhotoQuery, tr, type KnowledgeCard } from '@kotoventure/shared';
 import { Prop } from '../art/props';

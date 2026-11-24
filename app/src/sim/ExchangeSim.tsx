@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Pressable, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, View, useWindowDimensions } from 'react-native';
+import { Text } from '../ui/Text';
 import { KRW_COINS, KRW_NOTES, VENUE_SPREAD, addCash, breakdownKRW, currencyForCountry, tr, CURRENCIES } from '@kotoventure/shared';
 import { Banknote, Coin } from '../art/Money';
 import { Btn, H, P, won } from '../ui/kit';

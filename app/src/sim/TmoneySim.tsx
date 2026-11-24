@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Pressable, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, View, useWindowDimensions } from 'react-native';
+import { Text } from '../ui/Text';
 import { addCash, tr, type Cash } from '@kotoventure/shared';
 import { Btn, H, P, won } from '../ui/kit';
 import { C } from '../ui/theme';

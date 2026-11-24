@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { Text } from '../ui/Text';
 import { BUS_COLORS, BUS_FARE, tr, type BusColor } from '@kotoventure/shared';
 import { TmoneyCard } from '../art/TmoneyCard';
 import { H, P, won } from '../ui/kit';
