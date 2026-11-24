@@ -867,6 +867,11 @@ const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   street: require('../../assets/bg/street.webp'),
   dmz: require('../../assets/bg/dmz.webp'),
   songdo: require('../../assets/bg/songdo.webp'),
+  stage: require('../../assets/bg/stage.webp'),
+  hanok: require('../../assets/bg/hanok.webp'),
+  tower: require('../../assets/bg/tower.webp'),
+  market: require('../../assets/bg/market.webp'),
+  cafe: require('../../assets/bg/cafe.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {
