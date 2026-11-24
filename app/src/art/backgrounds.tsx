@@ -886,6 +886,10 @@ const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   kitchen: require('../../assets/bg/kitchen.webp'),
   coast: require('../../assets/bg/coast.webp'),
   storm: require('../../assets/bg/storm.webp'),
+  'night-beach': require('../../assets/bg/night-beach.webp'),
+  temple: require('../../assets/bg/temple.webp'),
+  mountain: require('../../assets/bg/mountain.webp'),
+  volcano: require('../../assets/bg/volcano.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {
