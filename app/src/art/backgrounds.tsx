@@ -252,7 +252,7 @@ const nSeoulTower = (x: number, y: number, s = 1, lit = false) => (
   </G>
 );
 
-const BG: Record<BackgroundId, React.ReactNode> = {
+const BG: Partial<Record<BackgroundId, React.ReactNode>> = {
   airport: (
     <G>
       {day}
@@ -862,6 +862,11 @@ const BG: Record<BackgroundId, React.ReactNode> = {
 const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   airport: require('../../assets/bg/airport.webp'),
   palace: require('../../assets/bg/palace.webp'),
+  port: require('../../assets/bg/port.webp'),
+  subway: require('../../assets/bg/subway.webp'),
+  street: require('../../assets/bg/street.webp'),
+  dmz: require('../../assets/bg/dmz.webp'),
+  songdo: require('../../assets/bg/songdo.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {
