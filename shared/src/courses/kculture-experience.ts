@@ -1,5 +1,5 @@
 import type { Course } from '../types';
-import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
+import { ask, event, learn, M, no, ok, P, say, simulate, talk } from '../dsl';
 
 const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
 
@@ -45,8 +45,8 @@ export const kcultureExperience: Course = {
         ], 'tr-transfer'),
         simulate('tmoney', 'transport', 'Get your T-money at Gimpo', 'Subway gates only take transit cards. Buy a T-money card, top it up at the machine and ride Line 9 to Hongdae.', { buyCard: true }, 'tr-tmoney'),
         learn('mo-card'),
-        event('weather', 'Spring yellow dust', 'It\'s April. Cherry blossoms are out – but so is "hwangsa" (yellow dust) blowing from the continent.', { energy: -5 }, 'fine-dust'),
-        learn('we-dust'),
+        event('weather', 'Spring yellow dust', 'It\'s April. Cherry blossoms are out – but so is "hwangsa" (yellow dust) blowing from the continent.', { energy: -5 }, 'fine-dust', { months: M.spring }),
+        learn('we-dust', { months: M.spring }),
       ],
     },
     {
@@ -80,7 +80,19 @@ export const kcultureExperience: Course = {
         ask('weather', 'Spring nights in Seoul drop to 8 °C and the DMZ hills are windy. What do you pack for the next days?', [
           flag(ok('A light warm jacket and a KF94 mask for the yellow dust', 'Prepared for cold wind and dust.', { energy: 2 }, 'fine-dust'), 'jacket'),
           no('T-shirts only – it\'s spring!', 'We\'ll see…', {}),
-        ], 'we-seasons'),
+        ], 'we-seasons', { months: M.spring }),
+        ask('weather', 'Autumn nights in Seoul drop to 8 °C and the DMZ hills are windy. What do you pack for the next days?', [
+          flag(ok('A light warm jacket and a KF94 mask for dusty days', 'Prepared for cold wind and dust.', { energy: 2 }, 'fine-dust'), 'jacket'),
+          no('T-shirts only – the afternoons are still warm!', 'We\'ll see…', {}),
+        ], 'we-seasons', { months: M.autumn }),
+        ask('weather', 'It\'s −5 °C in Seoul and the DMZ hills are even colder. What do you pack for the next days?', [
+          flag(ok('A padded coat, gloves and a KF94 mask', 'Prepared for the icy wind.', { energy: 2 }, 'winter'), 'jacket'),
+          no('A light hoodie – I\'ll be on the bus anyway', 'We\'ll see…', {}),
+        ], 'we-cold', { months: M.winter }),
+        ask('weather', 'It\'s hot in Seoul, but the DMZ hills are windy and the tour bus is strongly air-conditioned. What do you pack for the next days?', [
+          flag(ok('A light long-sleeved layer and a KF94 mask', 'Prepared for wind and cold air-conditioning.', { energy: 2 }, 'fine-dust'), 'jacket'),
+          no('T-shirts only – it\'s summer!', 'We\'ll see…', {}),
+        ], 'we-heat', { months: M.summer }),
       ],
     },
     {
@@ -112,7 +124,7 @@ export const kcultureExperience: Course = {
       title: { en: 'Free afternoon: plan your Tuesday', ko: '자유일정: 화요일 오후' },
       location: { en: 'Seoul – your choice', ko: '서울 – 내가 고른 곳' },
       steps: [
-        talk('guide', 'The class ends at 13:00 – the rest of Tuesday is yours. You already ate lunch. Remember palace closing days, and spring showers in the evening!'),
+        talk('guide', 'The class ends at 13:00 – the rest of Tuesday is yours. You already ate lunch. Remember palace closing days, and possible showers in the evening!'),
         simulate('dayplan', 'transport', 'Plan your K-culture afternoon', 'Start from Insadong at 13:00 and finish at your Hongdae guesthouse. Places you visit become scenes.', {
           weekday: 'Tue',
           hotel: 'hotel-hongdae',
@@ -177,8 +189,9 @@ export const kcultureExperience: Course = {
           no('Sneak a quick photo', 'The soldier asks you to delete it – rules near the border are strict. There are marked photo points with great views.', { manner: -15 }),
         ], 'la-camera'),
         event('weather', 'Cold wind', 'The open hills near the border are windy – glad you packed that jacket.', { energy: -2 }, 'winter', { ifFlags: ['jacket'] }),
-        event('weather', 'Cold wind', 'The open hills near the border are windy and much colder than Seoul – and you\'re in a T-shirt.', { energy: -12 }, 'winter', { unlessFlags: ['jacket'] }),
-        learn('we-cold'),
+        event('weather', 'Cold wind', 'The open hills near the border are windy and much colder than Seoul – and you\'re in a T-shirt.', { energy: -12 }, 'winter', { unlessFlags: ['jacket'], months: M.coldHalf.concat([5, 9]) }),
+        event('weather', 'Windy hills', 'The open hills near the border are windy and the bus is icy with air-conditioning – a T-shirt isn\'t enough.', { energy: -8 }, 'summer', { unlessFlags: ['jacket'], months: M.summer }),
+        learn('we-cold', { months: M.coldHalf }),
         talk('guide', 'The DMZ is also an accidental nature reserve – cranes and rare animals live here.'),
       ],
     },

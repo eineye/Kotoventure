@@ -1,5 +1,5 @@
 import type { Course } from '../types';
-import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
+import { ask, event, learn, M, no, ok, P, say, simulate, talk } from '../dsl';
 
 const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
 
@@ -108,7 +108,7 @@ export const seoulClassic: Course = {
         simulate('cashpay', 'money', 'Street-food stall: pay in cash', 'The stall only takes cash. Pick the right notes and coins from your wallet for a cup of tteokbokki and an egg bread – and check your change.', { shop: '명동 노점 Myeongdong street stall', items: [{ name: '떡볶이 Tteokbokki cup', price: 5000 }, { name: '계란빵 Egg bread', price: 2500 }], cashOnly: true }),
         learn('fo-street'),
         ask('weather', 'Your weather app warns of heavy showers on WEDNESDAY afternoon. The convenience store sells compact umbrellas for ₩6,000.', [
-          flag(ok('Buy one now – it fits in my bag', 'Prepared for the monsoon-style downpours.', { money: -6000 }, 'umbrella'), 'umbrella'),
+          flag(ok('Buy one now – it fits in my bag', 'Prepared for sudden downpours.', { money: -6000 }, 'umbrella'), 'umbrella'),
           no('Skip it – I\'ll deal with rain when it comes', 'Saved ₩6,000… for now.', {}),
         ]),
         ask('etiquette', 'You finished your snack. There\'s no bin in sight. What now?', [
@@ -292,7 +292,7 @@ export const seoulClassic: Course = {
         simulate('transfer', 'transport', 'Subway to Seongsu', 'Get from Myeongdong to Seongsu station by subway – find the fastest route (Line 2 is the green circle line).', { fromStation: 'myeongdong', toStation: 'seongsu', timeLimit: 60 }),
         say('Your fine-dust app shows "bad" (나쁨) air quality today.', undefined),
         ask('weather', 'The fine-dust index is "bad". What\'s the best move?', [
-          ok('Wear a KF94 mask from the convenience store and stay indoors more', 'Good choice. Spring often has fine dust and yellow-dust days.', { energy: 5, money: -2000 }, 'fine-dust'),
+          ok('Wear a KF94 mask from the convenience store and stay indoors more', 'Good choice. Fine dust is common from late autumn to spring.', { energy: 5, money: -2000 }, 'fine-dust'),
           no('Ignore it and run along the river', 'Your throat is scratchy for the rest of the day.', { energy: -10 }),
         ], 'we-dust'),
         say('At a famous pop-up there\'s a long line and a tablet at the entrance.'),

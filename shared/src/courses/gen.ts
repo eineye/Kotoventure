@@ -11,7 +11,7 @@
 import { monthSteps, SEASON_MONTHS } from '../seasons';
 import { CUISINES, TICKET_SITES, RESTAURANTS, inferCuisine, menuIntro, type BusColor, type CuisineKind, type MenuItem } from '../practice';
 import type { Area, ChoiceOption, Course, EstItem, PartyType, Scene, Step, TimeCat, TopicId } from '../types';
-import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
+import { ask, event, learn, M, no, ok, P, say, simulate, talk } from '../dsl';
 
 export type Kind =
   | 'palace' | 'temple' | 'market' | 'mountain' | 'beach' | 'museum' | 'street' | 'village'
@@ -186,7 +186,11 @@ const BANK: Record<Kind, Q[]> = {
     () => ask('law', 'There are flags and a lifeguard tower. You want to swim far out.', [
       ok('Swim only inside the buoys during lifeguard hours', 'Safe. Swimming outside the zone or at night can be fined.', { energy: 4 }, 'firstaid'),
       no('Swim past the buoys at night', 'Very dangerous and not allowed – rip currents are strong.', { energy: -15 }),
-    ], 'me-firstaid'),
+    ], 'me-firstaid', { months: M.swim }),
+    () => ask('law', 'The beach is out of season: no lifeguards, and a friend wants to wade into the sea.', [
+      ok('Stay on the sand – outside July–August there are no lifeguards and the water is cold', 'Wise. Enjoy the walk, the waves and the seafood instead.', { manner: 3 }, 'firstaid'),
+      no('Swim out anyway', 'Cold water and no lifeguards – you come out shivering and a patrol warns you.', { energy: -12 }),
+    ], 'me-firstaid', { months: M.noSwim }),
     () => ask('etiquette', 'You finished a picnic on the sand.', [
       ok('Take everything back and sort it into the recycling bins', 'Thank you! Volunteers clean these beaches every morning.', { manner: 6 }, 'trash-bins'),
       no('Bury the cans in the sand', 'Please don\'t – use the sorting bins by the boardwalk.', { manner: -8 }),
@@ -194,7 +198,11 @@ const BANK: Record<Kind, Q[]> = {
     () => ask('weather', 'It\'s 33 °C on the beach at 2 pm.', [
       ok('Sunscreen, shade, lots of water – swim and rest in turns', 'Smart. Summer heat in Korea is humid and tiring.', { energy: 6 }, 'heatwave'),
       no('Sleep in the sun without sunscreen', 'Painful sunburn and a heat headache.', { energy: -12 }),
-    ], 'we-heat'),
+    ], 'we-heat', { months: M.summer }),
+    () => ask('weather', 'A cold wind blows across the beach.', [
+      ok('A windproof jacket, a short walk, then hot eomuk or coffee in a café', 'Cosy – Korean seas in the cold months are beautiful but windy.', { energy: 6 }, 'winter'),
+      no('Sit on the sand in a T-shirt for an hour', 'You get chilled to the bone.', { energy: -10 }),
+    ], 'we-cold', { months: M.coldHalf }),
   ],
   museum: [
     () => ask('etiquette', 'Inside the exhibition hall a sign shows a crossed-out camera with a flash.', [
@@ -274,7 +282,7 @@ const BANK: Record<Kind, Q[]> = {
     () => ask('law', 'A friend wants to swim in the river to cool down.', [
       ok('Don\'t – swimming is banned in most city rivers; use pools or beaches', 'Right. Currents and boats make it dangerous.', { manner: 4 }),
       no('Jump in from the bridge', 'Very dangerous and not allowed – park patrols will stop you.', { energy: -15 }),
-    ]),
+    ], undefined, { months: M.summer }),
     () => ask('etiquette', 'You order chicken delivery to the riverside park.', [
       ok('Meet the rider at the delivery zone and clean up afterwards', 'The classic Korean riverside picnic!', { manner: 4 }, 'chicken'),
       no('Leave the boxes on the grass', 'Park staff have to clean it – use the bins.', { manner: -8 }),
@@ -530,7 +538,9 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
   scenes.push({
     id: `${def.id}-h`, day: def.days, bg: 'pharmacy', est: { items: [est(10, 'walk', 'Walk to a pharmacy', '약국까지 도보')] }, title: { en: h.ev[0], ko: '건강 챙기기' }, location: { en: 'Nearby pharmacy', ko: '근처 약국' },
     steps: [
-      event('health', h.ev[0], h.ev[1], { energy: h.energy }, 'medicine'),
+      ...(h.sym === 'heat'
+        ? [event('health', h.ev[0], h.ev[1], { energy: h.energy }, 'medicine', { months: M.warmHalf }), event('health', h.ev[0], 'The long walk catches up with you – dizzy and exhausted.', { energy: h.energy }, 'medicine', { months: M.coldHalf })]
+        : [event('health', h.ev[0], h.ev[1], { energy: h.energy }, 'medicine')]),
       learn(pick(['cv-stores', 'cv-food', 'cv-howto', 'cv-unmanned'], def.id + 'cv')),
       simulate('pharmacy', 'medical', 'At the pharmacy', 'Find the 약 sign, explain what\'s wrong in Korean, pick the right medicine and read the label.', { symptom: h.sym }, 'me-pharmacy'),
       ask('medical', 'If it gets worse and you can\'t explain it in Korean?', [ok('Visit a clinic (의원) with my passport and call 1330 for free interpretation', 'Exactly – 1330 interprets 24/7.', { manner: 3 }, 'hotline'), no('Call 119 for a mild problem', '119 is for emergencies – a clinic and 1330 are the right help.', { manner: -4 })], 'me-1330'),
