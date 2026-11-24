@@ -122,6 +122,13 @@ const caches: Record<string, Map<string, string>> = {};
 /** strings that had no translation (dev tooling reads this to find gaps) */
 export const MISSING: Record<string, Set<string>> = { ja: new Set(), zh: new Set(), es: new Set() };
 
+const found: Record<string, Map<string, string | undefined>> = {};
+function lookupCached(s: string, lang: DictLang): string | undefined {
+  const m = (found[lang] ??= new Map());
+  if (!m.has(s)) m.set(s, lookup(s, lang));
+  return m.get(s);
+}
+
 function lookup(s: string, lang: DictLang): string | undefined {
   const d = DICTS[lang];
   const exact = d['=' + fnv(s)];
@@ -138,11 +145,33 @@ function lookup(s: string, lang: DictLang): string | undefined {
     if (!m) continue;
     let ok = true;
     const out = f(m, (x) => {
-      const r = translateText(x, lang);
-      if (r === x && /[A-Za-z]{3}/.test(x)) ok = false;
+      const t = x.trim();
+      // names may stay the same in a language (Spanish keeps romanised names) – what matters is that we know them
+      const r = /^[\d:]+$/.test(t) ? t : lookupCached(t, lang);
+      if (r === undefined) {
+        ok = false;
+        return x;
+      }
       return r;
     });
     if (ok) return out;
+  }
+  // a leading icon/symbol (emoji, ✈, 📍…) or a trailing count: translate the words only
+  const pre = s.match(/^([^\p{L}\p{N}"'(¿¡]+?)\s*([\p{L}\p{N}"'(¿¡].*)$/u);
+  if (pre && pre[1]) {
+    const r = lookupCached(pre[2], lang);
+    if (r !== undefined) return `${pre[1]} ${r}`;
+  }
+  const cnt = s.match(/^(\p{L}.*?)\s+(\d+)$/u);
+  if (cnt) {
+    const r = lookupCached(cnt[1], lang);
+    if (r !== undefined) return `${r} ${cnt[2]}`;
+  }
+  // several sentences joined together: translate each one
+  const parts = s.split(/(?<=[.!?])\s+(?=[A-Z"🌶])/);
+  if (parts.length > 1) {
+    const tr = parts.map((x) => lookupCached(x, lang));
+    if (tr.every((x) => x !== undefined)) return tr.join(lang === 'es' ? ' ' : '');
   }
   return undefined;
 }
@@ -163,4 +192,10 @@ export function translateText(s: string, lang: string): string {
   const res = out === undefined ? s : lead + out + tail;
   cache.set(s, res);
   return res;
+}
+
+/** True when the dictionaries know this English text (even if the translation is identical, e.g. a place name). */
+export function hasTranslation(s: string, lang: DictLang): boolean {
+  const core = s.trim();
+  return !/[A-Za-z]/.test(core) || lookupCached(core, lang) !== undefined;
 }
