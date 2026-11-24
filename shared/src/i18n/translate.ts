@@ -27,6 +27,21 @@ type Tpl = [RegExp, (m: RegExpMatchArray, t: (s: string) => string) => string];
 /** sentences assembled by the mission generator */
 export const TEMPLATES: Record<DictLang, Tpl[]> = {
   ja: [
+    [/^(🚇|🚌) (?:Subway|Bus) to (.+) \((\d+) min, (₩[\d,]+)\)$/, (m, t) => `${m[1]} ${t(m[2])}へ${m[1] === '🚇' ? '地下鉄' : 'バス'}で（${m[3]}分、${m[4]}）`],
+    [/^(.+): meal, (\d+) min(?: \((₩[\d,]+)\))?$/, (m, t) => `${t(m[1])}：食事、${m[2]}分${m[3] ? `（${m[3]}）` : ''}`],
+    [/^(.+): (\d+) min(?: \((₩[\d,]+)\))?$/, (m, t) => `${t(m[1])}：${m[2]}分${m[3] ? `（${m[3]}）` : ''}`],
+    [/^(.+) opens at ([\d:]+) – waiting (\d+) min\.$/, (m, t) => `${t(m[1])}は${m[2]}に開きます――${m[3]}分待ち。`],
+    [/^🥵 Heat at (.+): outdoor sightseeing in the afternoon heat \(energy −(\d+)\)\.$/, (m, t) => `🥵 ${t(m[1])}で暑さ：午後の炎天下で屋外観光（体力 −${m[2]}）。`],
+    [/^🌧️ Downpour at (.+) and no umbrella – soaked \(energy −(\d+)\)\.$/, (m, t) => `🌧️ ${t(m[1])}で土砂降り、傘がなくてずぶ濡れ（体力 −${m[2]}）。`],
+    [/^✨ Night view from (.+)!$/, (m, t) => `✨ ${t(m[1])}からの夜景！`],
+    [/^(.+) is CLOSED on (\w+)! The trip was wasted\.$/, (m, t) => `${t(m[1])}は${t(m[2])}休み！無駄足になりました。`],
+    [/^🌀 Typhoon warning: (.+) is closed \/ unsafe \(outdoor\)\. Trip wasted\.$/, (m, t) => `🌀 台風警報：${t(m[1])}は閉鎖／危険（屋外）。無駄足になりました。`],
+    [/^Very late lunch at (.+) – you were starving by then \(energy −(\d+)\)\.$/, (m, t) => `${t(m[1])}でかなり遅い昼食――もうお腹ぺこぺこでした（体力 −${m[2]}）。`],
+    [/^Too late for (.+) \(last entry ([\d:]+)\)\.$/, (m, t) => `${t(m[1])}には遅すぎます（最終入場 ${m[2]}）。`],
+    [/^(?:start at|leave the) (.+)$/, (m, t) => `${t(m[1])}から出発`],
+    [/^Paid (₩[\d,]+) for (₩[\d,]+) \((.+)\)$/, (m) => `${m[2]}の支払いに${m[1]}を出した（${m[3]}）`],
+    [/^(\S+) → ([^.]+)\. (.+)$/, (m, t) => `${m[1]} → ${t(m[2])}。${t(m[3])}`],
+    [/^(.+?) → (.+)$/, (m, t) => `${t(m[1])} → ${t(m[2])}`],
     [/^Order at (.+)$/, (m, t) => `${t(m[1])}で注文する`],
     [/^How do you get to (.+)\?$/, (m, t) => `${t(m[1])}へはどう行きますか？`],
     [/^Taxi to (.+)$/, (m, t) => `${t(m[1])}までタクシー`],
@@ -57,6 +72,21 @@ export const TEMPLATES: Record<DictLang, Tpl[]> = {
     [/^(\d+) nights? \/ (\d+) days? · (\d+) places$/, (m) => `${m[1]}泊${m[2]}日 · ${m[3]}か所`],
   ],
   zh: [
+    [/^(🚇|🚌) (?:Subway|Bus) to (.+) \((\d+) min, (₩[\d,]+)\)$/, (m, t) => `${m[1]} ${m[1] === '🚇' ? '坐地铁' : '坐公交'}去${t(m[2])}（${m[3]}分钟，${m[4]}）`],
+    [/^(.+): meal, (\d+) min(?: \((₩[\d,]+)\))?$/, (m, t) => `${t(m[1])}：用餐，${m[2]}分钟${m[3] ? `（${m[3]}）` : ''}`],
+    [/^(.+): (\d+) min(?: \((₩[\d,]+)\))?$/, (m, t) => `${t(m[1])}：${m[2]}分钟${m[3] ? `（${m[3]}）` : ''}`],
+    [/^(.+) opens at ([\d:]+) – waiting (\d+) min\.$/, (m, t) => `${t(m[1])}${m[2]}开门——等了${m[3]}分钟。`],
+    [/^🥵 Heat at (.+): outdoor sightseeing in the afternoon heat \(energy −(\d+)\)\.$/, (m, t) => `🥵 ${t(m[1])}太热：下午顶着高温在户外观光（体力 −${m[2]}）。`],
+    [/^🌧️ Downpour at (.+) and no umbrella – soaked \(energy −(\d+)\)\.$/, (m, t) => `🌧️ ${t(m[1])}下起大雨，没带伞——全身湿透（体力 −${m[2]}）。`],
+    [/^✨ Night view from (.+)!$/, (m, t) => `✨ ${t(m[1])}的夜景！`],
+    [/^(.+) is CLOSED on (\w+)! The trip was wasted\.$/, (m, t) => `${t(m[1])}${t(m[2])}闭馆！白跑一趟。`],
+    [/^🌀 Typhoon warning: (.+) is closed \/ unsafe \(outdoor\)\. Trip wasted\.$/, (m, t) => `🌀 台风预警：${t(m[1])}关闭/不安全（户外）。白跑一趟。`],
+    [/^Very late lunch at (.+) – you were starving by then \(energy −(\d+)\)\.$/, (m, t) => `在${t(m[1])}吃了很晚的午饭——那时你已经饿坏了（体力 −${m[2]}）。`],
+    [/^Too late for (.+) \(last entry ([\d:]+)\)\.$/, (m, t) => `去${t(m[1])}太晚了（最晚入场 ${m[2]}）。`],
+    [/^(?:start at|leave the) (.+)$/, (m, t) => `从${t(m[1])}出发`],
+    [/^Paid (₩[\d,]+) for (₩[\d,]+) \((.+)\)$/, (m) => `${m[2]}的账单付了${m[1]}（${m[3]}）`],
+    [/^(\S+) → ([^.]+)\. (.+)$/, (m, t) => `${m[1]} → ${t(m[2])}。${t(m[3])}`],
+    [/^(.+?) → (.+)$/, (m, t) => `${t(m[1])} → ${t(m[2])}`],
     [/^Order at (.+)$/, (m, t) => `在${t(m[1])}点餐`],
     [/^How do you get to (.+)\?$/, (m, t) => `怎么去${t(m[1])}？`],
     [/^Taxi to (.+)$/, (m, t) => `打车去${t(m[1])}`],
@@ -87,6 +117,21 @@ export const TEMPLATES: Record<DictLang, Tpl[]> = {
     [/^(\d+) nights? \/ (\d+) days? · (\d+) places$/, (m) => `${m[2]}天${m[1]}晚 · ${m[3]}个地点`],
   ],
   es: [
+    [/^(🚇|🚌) (?:Subway|Bus) to (.+) \((\d+) min, (₩[\d,]+)\)$/, (m, t) => `${m[1]} ${m[1] === '🚇' ? 'Metro' : 'Autobús'} a ${t(m[2])} (${m[3]} min, ${m[4]})`],
+    [/^(.+): meal, (\d+) min(?: \((₩[\d,]+)\))?$/, (m, t) => `${t(m[1])}: comida, ${m[2]} min${m[3] ? ` (${m[3]})` : ''}`],
+    [/^(.+): (\d+) min(?: \((₩[\d,]+)\))?$/, (m, t) => `${t(m[1])}: ${m[2]} min${m[3] ? ` (${m[3]})` : ''}`],
+    [/^(.+) opens at ([\d:]+) – waiting (\d+) min\.$/, (m, t) => `${t(m[1])} abre a las ${m[2]}: esperas ${m[3]} min.`],
+    [/^🥵 Heat at (.+): outdoor sightseeing in the afternoon heat \(energy −(\d+)\)\.$/, (m, t) => `🥵 Calor en ${t(m[1])}: turismo al aire libre con el calor de la tarde (energía −${m[2]}).`],
+    [/^🌧️ Downpour at (.+) and no umbrella – soaked \(energy −(\d+)\)\.$/, (m, t) => `🌧️ Chaparrón en ${t(m[1])} y sin paraguas: empapado (energía −${m[2]}).`],
+    [/^✨ Night view from (.+)!$/, (m, t) => `✨ ¡Vistas nocturnas desde ${t(m[1])}!`],
+    [/^(.+) is CLOSED on (\w+)! The trip was wasted\.$/, (m, t) => `¡${t(m[1])} CIERRA los ${t(m[2])}! El viaje fue en vano.`],
+    [/^🌀 Typhoon warning: (.+) is closed \/ unsafe \(outdoor\)\. Trip wasted\.$/, (m, t) => `🌀 Alerta de tifón: ${t(m[1])} está cerrado o no es seguro (exterior). Viaje en vano.`],
+    [/^Very late lunch at (.+) – you were starving by then \(energy −(\d+)\)\.$/, (m, t) => `Comida muy tardía en ${t(m[1])}: para entonces estabas muerto de hambre (energía −${m[2]}).`],
+    [/^Too late for (.+) \(last entry ([\d:]+)\)\.$/, (m, t) => `Demasiado tarde para ${t(m[1])} (última entrada ${m[2]}).`],
+    [/^(?:start at|leave the) (.+)$/, (m, t) => `salida desde ${t(m[1])}`],
+    [/^Paid (₩[\d,]+) for (₩[\d,]+) \((.+)\)$/, (m) => `Pagué ${m[1]} por ${m[2]} (${m[3]})`],
+    [/^(\S+) → ([^.]+)\. (.+)$/, (m, t) => `${m[1]} → ${t(m[2])}. ${t(m[3])}`],
+    [/^(.+?) → (.+)$/, (m, t) => `${t(m[1])} → ${t(m[2])}`],
     [/^Order at (.+)$/, (m, t) => `Pedir en ${t(m[1])}`],
     [/^How do you get to (.+)\?$/, (m, t) => `¿Cómo llegas a ${t(m[1])}?`],
     [/^Taxi to (.+)$/, (m, t) => `Taxi a ${t(m[1])}`],
@@ -156,6 +201,7 @@ function simPhrase(s: string, lang: DictLang): string | undefined {
   if ((m = s.match(/^Set destination by its Korean address: (.+)$/))) return fill(P.address, m[1]);
   if ((m = s.match(/^(.+?) ×(\d+)$/))) { const r = lookupCached(m[1], lang); if (r !== undefined) return `${r} ×${m[2]}`; }
   if ((m = s.match(/^(.+?) · ([\u3131-\uD79D].*)$/))) { const r = lookupCached(m[1], lang); if (r !== undefined) return `${r} · ${m[2]}`; }
+  if ((m = s.match(/^(\d+)h (\d+)m$/))) return localDuration(`${m[1]} h ${m[2]} min`, lang);
   return localDuration(s, lang);
 }
 
@@ -190,7 +236,7 @@ function lookup(s: string, lang: DictLang): string | undefined {
     const out = f(m, (x) => {
       const t = x.trim();
       // names may stay the same in a language (Spanish keeps romanised names) – what matters is that we know them
-      const r = /^[\d:]+$/.test(t) ? t : lookupCached(t, lang);
+      const r = !/[A-Za-z]/.test(t) ? t : lookupCached(t, lang);
       if (r === undefined) {
         ok = false;
         return x;
