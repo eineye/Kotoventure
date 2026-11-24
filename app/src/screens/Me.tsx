@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { UpdateCheck } from '../update';
 import { Linking, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { Text } from '../ui/Text';
 import { MONTH_NAMES, PARTY_TYPES, tr } from '@kotoventure/shared';
@@ -103,6 +104,7 @@ export function Me() {
         </P>
       </Panel>
 
+      <UpdateCheck lang={lang} />
       <Btn kind="ghost" label={L.resetAll} onPress={() => resetProgress()} />
       <Btn kind="danger" label={L.signOut} onPress={() => signOut()} />
       <P dim style={{ textAlign: 'center', fontSize: 12 }}>

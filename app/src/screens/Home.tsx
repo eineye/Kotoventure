@@ -11,6 +11,7 @@ import { Chip, H, P, Stars } from '../ui/kit';
 import { C, R, shadow } from '../ui/theme';
 import { Guidebook } from './Guidebook';
 import { Me } from './Me';
+import { UpdateBanner } from '../update';
 
 export type Tab = 'missions' | 'guide' | 'me';
 
@@ -19,6 +20,7 @@ export function Home({ tab, setTab, openCourse, openPlanner }: { tab: Tab; setTa
   const L = t(profile?.lang);
   return (
     <View style={{ flex: 1, backgroundColor: C.paper }}>
+      <UpdateBanner lang={profile?.lang} />
       <View style={{ flex: 1 }}>
         {tab === 'missions' && <Missions openCourse={openCourse} openPlanner={openPlanner} />}
         {tab === 'guide' && <Guidebook />}
