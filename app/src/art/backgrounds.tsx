@@ -252,7 +252,7 @@ const nSeoulTower = (x: number, y: number, s = 1, lit = false) => (
   </G>
 );
 
-const BG: Record<BackgroundId, React.ReactNode> = {
+const BG: Partial<Record<BackgroundId, React.ReactNode>> = {
   airport: (
     <G>
       {day}
@@ -862,6 +862,34 @@ const BG: Record<BackgroundId, React.ReactNode> = {
 const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   airport: require('../../assets/bg/airport.webp'),
   palace: require('../../assets/bg/palace.webp'),
+  port: require('../../assets/bg/port.webp'),
+  subway: require('../../assets/bg/subway.webp'),
+  street: require('../../assets/bg/street.webp'),
+  dmz: require('../../assets/bg/dmz.webp'),
+  songdo: require('../../assets/bg/songdo.webp'),
+  stage: require('../../assets/bg/stage.webp'),
+  hanok: require('../../assets/bg/hanok.webp'),
+  tower: require('../../assets/bg/tower.webp'),
+  market: require('../../assets/bg/market.webp'),
+  cafe: require('../../assets/bg/cafe.webp'),
+  noraebang: require('../../assets/bg/noraebang.webp'),
+  pharmacy: require('../../assets/bg/pharmacy.webp'),
+  hospital: require('../../assets/bg/hospital.webp'),
+  shop: require('../../assets/bg/shop.webp'),
+  restaurant: require('../../assets/bg/restaurant.webp'),
+  river: require('../../assets/bg/river.webp'),
+  village: require('../../assets/bg/village.webp'),
+  beach: require('../../assets/bg/beach.webp'),
+  tombs: require('../../assets/bg/tombs.webp'),
+  jjimjilbang: require('../../assets/bg/jjimjilbang.webp'),
+  pension: require('../../assets/bg/pension.webp'),
+  kitchen: require('../../assets/bg/kitchen.webp'),
+  coast: require('../../assets/bg/coast.webp'),
+  storm: require('../../assets/bg/storm.webp'),
+  'night-beach': require('../../assets/bg/night-beach.webp'),
+  temple: require('../../assets/bg/temple.webp'),
+  mountain: require('../../assets/bg/mountain.webp'),
+  volcano: require('../../assets/bg/volcano.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {
