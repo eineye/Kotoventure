@@ -41,7 +41,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     food: { place: ['망원시장 분식', 'Mangwon Market snack stall'], text: 'Mangwon Market is cheap and local: croquettes, tteokbokki and fried chicken by the cup.', dishes: [['떡볶이', 'Tteokbokki', 4000, 0, 2], ['컵닭강정', 'Sweet fried chicken cup', 4000, 0, 1], ['고로케', 'Croquette', 1500]] },
     food2: { place: ['홍대 치킨집', 'Hongdae fried-chicken pub'], text: 'Night in Hongdae: chimaek (chicken + beer) is the classic.', dishes: [['후라이드치킨', 'Fried chicken', 20000], ['양념치킨', 'Sweet-spicy chicken', 21000, 0, 1], ['치즈볼', 'Cheese balls', 6000]] },
     stops: [
-      { key: 'mangwon', ko: '망원시장', en: 'Mangwon Market', kind: 'market', text: 'A covered local market loved by young Seoulites – everything costs a few thousand won.' },
+      { key: 'mangwon', bg: 'mangwon', ko: '망원시장', en: 'Mangwon Market', kind: 'market', text: 'A covered local market loved by young Seoulites – everything costs a few thousand won.' },
       { key: 'yeonnam', ko: '연트럴파크', en: 'Gyeongui Line Forest Park (Yeonnam)', kind: 'park', text: 'An old railway turned into a long green park lined with cafés – nicknamed "Yeon-tral Park".' },
       { key: 'hongdae', ko: '홍대 걷고싶은거리', en: 'Hongdae street', kind: 'night', text: 'Buskers, dance crews and street stalls fill the walking street every evening.' },
     ],
@@ -55,7 +55,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     food: { place: ['명동 칼국수', 'Myeongdong kalguksu house'], text: 'A legendary noodle shop in Myeongdong: kalguksu with dumplings and very garlicky kimchi.', dishes: [['칼국수', 'Knife-cut noodle soup', 11000], ['만두', 'Dumplings', 11000], ['비빔국수', 'Spicy mixed noodles', 11000, 0, 2]] },
     food2: { place: ['성수 퓨전 레스토랑', 'Seongsu fusion bistro'], kind: 'fusion', after: 'seongsu', text: 'In an old factory turned bistro: Korean flavours meet Western dishes – rosé tteokbokki, bulgogi pizza, kimchi fried rice with cheese.', dishes: [['로제 떡볶이', 'Rosé tteokbokki (creamy)', 16000, 0, 1], ['불고기 피자', 'Bulgogi pizza', 22000], ['김치 치즈 볶음밥', 'Kimchi fried rice with cheese', 15000, 0, 1]], tip: 'Fusion places in Seongsu are popular – join the waiting list on the tablet at the door.' },
     stops: [
-      { key: 'color', ko: '퍼스널컬러 진단', en: 'Personal-colour studio', kind: 'workshop', text: 'A consultant drapes coloured fabrics under your face to find your "season" – spring warm? winter cool?', phrase: ['예약했어요', 'Ye-ya-kae-sseo-yo', 'I have a reservation'] },
+      { key: 'color', bg: 'kbeauty', ko: '퍼스널컬러 진단', en: 'Personal-colour studio', kind: 'workshop', text: 'A consultant drapes coloured fabrics under your face to find your "season" – spring warm? winter cool?', phrase: ['예약했어요', 'Ye-ya-kae-sseo-yo', 'I have a reservation'] },
       { key: 'myeongdong', ko: '명동', en: 'Myeongdong', kind: 'street', text: 'Dozens of cosmetics shops hand out free samples; many offer instant tax-free refunds.' },
       { key: 'seongsu', ko: '성수동', en: 'Seongsu-dong', kind: 'street', text: 'Old factories turned into cafés and brand pop-up stores – Seoul\'s "Brooklyn".', bus: { no: '2016', color: 'green', stops: ['성수역 Seongsu Stn.', '뚝섬역 Ttukseom Stn.', '서울숲 Seoul Forest'] } },
     ],
@@ -80,7 +80,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     hub: 'GMP', go: 'Subway Line 9 express towards Sports Complex, then Line 2 to Jamsil', days: 2, nights: 1, diff: 1, fit: [4, 5, 5, 5], budget: 350000, season: 'summer', stay: 'hotel',
     food: { place: ['잠실 한식당', 'Jamsil Korean restaurant'], text: 'A busy Korean restaurant near Lotte World Tower – families share big pots of stew.', dishes: [['부대찌개', 'Army stew', 11000, 2, 1], ['불고기', 'Bulgogi', 15000], ['비빔밥', 'Bibimbap', 10000]] },
     stops: [
-      { key: 'sky', ko: '서울스카이', en: 'Seoul Sky (Lotte World Tower)', kind: 'night', text: 'A 555 m tower with a glass-floor observatory on the 118th floor.', ticket: { adult: 31000, youth: 28000, child: 28000, senior: 28000, open: '10:30', last: '21:00', note: 'Glass floor – not for the faint-hearted!' } },
+      { key: 'sky', bg: 'lotteworld', ko: '서울스카이', en: 'Seoul Sky (Lotte World Tower)', kind: 'night', text: 'A 555 m tower with a glass-floor observatory on the 118th floor.', ticket: { adult: 31000, youth: 28000, child: 28000, senior: 28000, open: '10:30', last: '21:00', note: 'Glass floor – not for the faint-hearted!' } },
       { key: 'lake', ko: '석촌호수', en: 'Seokchon Lake', kind: 'park', text: 'A lake walk under the tower – famous for cherry blossoms in April.' },
       { key: 'banpo', ko: '반포 한강공원', en: 'Banpo Hangang Park', kind: 'river', text: 'The Moonlight Rainbow Fountain sprays water from the bridge with music on spring–autumn evenings.' },
     ],
@@ -107,8 +107,8 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     hub: 'GMP', go: 'Subway Line 5 to Gwanghwamun', days: 2, nights: 1, diff: 1, fit: [4, 5, 5, 4], budget: 300000, season: 'autumn', stay: 'hanok',
     food: { place: ['인사동 한정식', 'Insadong hanjeongsik'], text: 'A royal-style course meal: dozens of small dishes arrive one after another.', dishes: [['한정식 코스', 'Korean table-d\'hôte course', 35000, 2], ['비빔밥', 'Bibimbap', 13000], ['떡갈비', 'Grilled short-rib patty', 18000]] },
     stops: [
-      { key: 'hanbok', ko: '한복 대여점', en: 'Hanbok rental shop', kind: 'workshop', text: 'Choose a jeogori jacket and a full chima skirt; staff braid your hair and add a norigae ornament.' },
-      { key: 'insadong', ko: '인사동 찻집', en: 'Insadong tea house', kind: 'workshop', text: 'A master shows how to warm the cups, pour three times and hold the cup with two hands.', phrase: ['차 맛있어요', 'Cha ma-si-sseo-yo', 'The tea is delicious'] },
+      { key: 'hanbok', bg: 'hanbokroom', ko: '한복 대여점', en: 'Hanbok rental shop', kind: 'workshop', text: 'Choose a jeogori jacket and a full chima skirt; staff braid your hair and add a norigae ornament.' },
+      { key: 'insadong', bg: 'hanbokroom', ko: '인사동 찻집', en: 'Insadong tea house', kind: 'workshop', text: 'A master shows how to warm the cups, pour three times and hold the cup with two hands.', phrase: ['차 맛있어요', 'Cha ma-si-sseo-yo', 'The tea is delicious'] },
       { key: 'ikseon', ko: '익선동', en: 'Ikseon-dong', kind: 'village', text: 'A maze of 1920s hanok now full of tiny cafés, bakeries and photo studios.' },
     ],
   },

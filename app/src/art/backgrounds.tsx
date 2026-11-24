@@ -905,6 +905,11 @@ const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   templestay: require('../../assets/bg/templestay.webp'),
   citywall: require('../../assets/bg/citywall.webp'),
   kpop: require('../../assets/bg/kpop.webp'),
+  lotteworld: require('../../assets/bg/lotteworld.webp'),
+  hanbokroom: require('../../assets/bg/hanbokroom.webp'),
+  mangwon: require('../../assets/bg/mangwon.webp'),
+  kbeauty: require('../../assets/bg/kbeauty.webp'),
+  museum: require('../../assets/bg/museum.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {

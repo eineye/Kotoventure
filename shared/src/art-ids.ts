@@ -24,7 +24,7 @@ export const PROP_IDS = [
 export const BACKGROUND_IDS = [
   'airport', 'port', 'subway', 'street', 'restaurant', 'noraebang', 'pharmacy', 'hospital', 'palace', 'hanok',
   'cafe', 'tower', 'river', 'market', 'village', 'beach', 'night-beach', 'jjimjilbang', 'tombs', 'temple',
-  'mountain', 'volcano', 'coast', 'storm', 'pension', 'stage', 'kitchen', 'shop', 'dmz', 'songdo', 'ulsanbawi', 'geomun', 'nogodan', 'igidae', 'bukchon', 'hanbike', 'railbike', 'paraglide', 'mudflat', 'bukhansan', 'pocha', 'towernight', 'templestay', 'citywall', 'kpop',
+  'mountain', 'volcano', 'coast', 'storm', 'pension', 'stage', 'kitchen', 'shop', 'dmz', 'songdo', 'ulsanbawi', 'geomun', 'nogodan', 'igidae', 'bukchon', 'hanbike', 'railbike', 'paraglide', 'mudflat', 'bukhansan', 'pocha', 'towernight', 'templestay', 'citywall', 'kpop', 'lotteworld', 'hanbokroom', 'mangwon', 'kbeauty', 'museum',
 ] as const;
 
 export type PropId = (typeof PROP_IDS)[number];
