@@ -118,6 +118,47 @@ export const TEMPLATES: Record<DictLang, Tpl[]> = {
   ],
 };
 
+/** UI sentences from the practice simulations; captured names (often Korean + English) are kept as they are. */
+const SIM_PHRASES: Record<DictLang, Record<string, string>> = {
+  ja: { reallife: '· 実際は約', photos: '実際の写真を見る：', ordered: '注文：', bought: '購入：', said: '言ったこと：', dest: '目的地：{0}――どのバスに乗る？', stopmap: '停留所の路線図によると、{0}番バスは{1}に止まります。バスの色で路線の種類がわかります。', here: '{0}番バスが来ました！前のドアから乗りましょう。', arriving: '{0}に到着。後ろのドアから降りましょう。', gettingoff: '{0}で降車', found: '到着案内板で{0}番バスを見つけた', address: '韓国語の住所で目的地を設定：{0}' },
+  zh: { reallife: '· 实际约', photos: '查看实景照片：', ordered: '已点：', bought: '已购买：', said: '说了：', dest: '目的地：{0}——坐哪路公交？', stopmap: '站牌上的线路图显示{0}路公交停靠{1}。公交的颜色代表线路类型。', here: '{0}路公交来了！从前门上车。', arriving: '即将到达{0}。请从后门下车。', gettingoff: '在{0}下车', found: '在到站信息屏上找到了{0}路公交', address: '用韩文地址设置目的地：{0}' },
+  es: { reallife: '· en la vida real ~', photos: 'Ver fotos reales: ', ordered: 'Pedido: ', bought: 'Comprado: ', said: 'Dijiste: ', dest: 'Destino: {0}. ¿Qué autobús tomas?', stopmap: 'El mapa de la parada muestra que el autobús {0} para en {1}. El color del autobús indica el tipo de línea.', here: '¡Llega el autobús {0}! Sube por la puerta delantera.', arriving: 'Llegando a {0}. Baja por la puerta trasera.', gettingoff: 'Bajando en {0}', found: 'Encontré el autobús {0} en el panel de llegadas', address: 'Destino fijado con la dirección coreana: {0}' },
+};
+const fill = (t: string, ...a: string[]) => t.replace(/\{(\d)\}/g, (_, i) => a[Number(i)]);
+/** durations like "1 h 30 min", "~50 min", "overnight" in the local units */
+const UNITS: Record<DictLang, { h: string; min: string; night: string; s: string }> = {
+  ja: { h: '時間', min: '分', night: '泊', s: '秒' },
+  zh: { h: '小时', min: '分钟', night: '过夜', s: '秒' },
+  es: { h: ' h', min: ' min', night: 'noche', s: ' s' },
+};
+function localDuration(s: string, lang: DictLang): string | undefined {
+  const rest = s.replace(/\d+\s*(h|min)\b|overnight|[~·\s]|[^\p{L}\p{N}]/gu, '');
+  if (/[A-Za-z]/.test(rest)) return undefined;
+  const u = UNITS[lang];
+  return s.replace(/(\d+)\s*h\s+(?=\d)/g, lang === 'es' ? '$1 h ' : `$1${u.h}`).replace(/(\d+)\s*h\b/g, `$1${u.h}`).replace(/(\d+)\s*min\b/g, `$1${u.min}`).replace(/overnight/g, u.night);
+}
+function simPhrase(s: string, lang: DictLang): string | undefined {
+  const P = SIM_PHRASES[lang];
+  const tk = (x: string) => lookupCached(x.trim(), lang) ?? x;
+  let m: RegExpMatchArray | null;
+  if ((m = s.match(/^See real photos: (.+)$/))) return P.photos + m[1];
+  if ((m = s.match(/^· real life ~ ([^·]+?)(\s*·\s*₩[\d,]+)?$/))) return P.reallife + (localDuration(m[1], lang) ?? m[1]) + (m[2] ?? '');
+  if ((m = s.match(/^Ordered: (.+?) – (₩[\d,]+)$/))) return P.ordered + m[1].split(', ').map((it) => it.replace(/^(.+?) ×(\d+)$/, (_, n, q) => `${tk(n)} ×${q}`)).join(', ') + ' – ' + m[2];
+  if ((m = s.match(/^Bought (\d+)× (.+)$/))) return `${P.bought}${tk(m[2])} ×${m[1]}`;
+  if ((m = s.match(/^Bought (.+)$/))) return P.bought + tk(m[1]);
+  if ((m = s.match(/^Said: (.+)$/))) return P.said + m[1];
+  if ((m = s.match(/^Destination: (.+) – which bus do you take\?$/))) return fill(P.dest, m[1]);
+  if ((m = s.match(/^The stop sign map shows bus (\S+) stops at (.+)\. Bus colours tell you the route type\.$/))) return fill(P.stopmap, m[1], m[2]);
+  if ((m = s.match(/^Bus (\S+) is here! Board at the front door\.$/))) return fill(P.here, m[1]);
+  if ((m = s.match(/^Arriving at (.+)\. Get off at the back door\.$/))) return fill(P.arriving, m[1]);
+  if ((m = s.match(/^Getting off at (.+)$/))) return fill(P.gettingoff, m[1]);
+  if ((m = s.match(/^Found bus (\S+) on the arrival board$/))) return fill(P.found, m[1]);
+  if ((m = s.match(/^Set destination by its Korean address: (.+)$/))) return fill(P.address, m[1]);
+  if ((m = s.match(/^(.+?) ×(\d+)$/))) { const r = lookupCached(m[1], lang); if (r !== undefined) return `${r} ×${m[2]}`; }
+  if ((m = s.match(/^(.+?) · ([\u3131-\uD79D].*)$/))) { const r = lookupCached(m[1], lang); if (r !== undefined) return `${r} · ${m[2]}`; }
+  return localDuration(s, lang);
+}
+
 const caches: Record<string, Map<string, string>> = {};
 /** strings that had no translation (dev tooling reads this to find gaps) */
 export const MISSING: Record<string, Set<string>> = { ja: new Set(), zh: new Set(), es: new Set() };
@@ -139,6 +180,8 @@ function lookup(s: string, lang: DictLang): string | undefined {
     let i = 0;
     return hit.replace(/#/g, () => nums[i++] ?? '#');
   }
+  const sp = simPhrase(s, lang);
+  if (sp !== undefined) return sp;
   // a template applies only when all its parts translate (never half-translated sentences)
   for (const [re, f] of TEMPLATES[lang]) {
     const m = s.match(re);
