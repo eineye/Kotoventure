@@ -248,7 +248,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'YNY', go: 'Bus from Yangyang Airport to Sokcho, then city bus 7 to Seorak-dong', days: 2, nights: 1, diff: 3, fit: [5, 4, 5, 2], budget: 280000, season: 'autumn', stay: 'resort', health: 'sprain',
     food: { place: ['속초 대포항 횟집', 'Daepo Port seafood restaurant'], text: 'Fresh raw fish and deep-fried prawns at the harbour.', dishes: [['모둠회', 'Mixed sashimi', 50000, 2], ['새우튀김', 'Fried prawns', 15000], ['오징어순대', 'Stuffed squid', 15000]] },
     stops: [
-      { key: 'ulsanbawi', ko: '울산바위', en: 'Ulsanbawi Rock', kind: 'mountain', text: 'Six granite peaks; the last 30 minutes are steep steel stairs. Allow 4 hours round trip.', bus: { no: '7', color: 'green', stops: ['속초 시내 Sokcho', '물치 Mulchi', '설악동 Seorak-dong', '설악산 소공원 Seoraksan Park'] } },
+      { key: 'ulsanbawi', bg: 'ulsanbawi', ko: '울산바위', en: 'Ulsanbawi Rock', kind: 'mountain', text: 'Six granite peaks; the last 30 minutes are steep steel stairs. Allow 4 hours round trip.', bus: { no: '7', color: 'green', stops: ['속초 시내 Sokcho', '물치 Mulchi', '설악동 Seorak-dong', '설악산 소공원 Seoraksan Park'] } },
       { key: 'cable', ko: '권금성 케이블카', en: 'Gwongeumseong Cable Car', kind: 'mountain', text: 'A 5-minute ride to a rocky fortress ridge with views to the sea.', ticket: { adult: 15000, open: '08:00', last: '17:00' } },
       { key: 'sinheungsa', ko: '신흥사', en: 'Sinheungsa Temple', kind: 'temple', text: 'A giant bronze Buddha at the foot of the mountain.' },
     ],
@@ -314,7 +314,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['구례 산채정식', 'Gurye mountain-herb restaurant'], text: 'Twenty kinds of wild mountain greens with rice and doenjang stew.', dishes: [['산채정식', 'Mountain-herb set', 15000, 2], ['산채비빔밥', 'Mountain-herb bibimbap', 11000], ['흑돼지구이', 'Black pork BBQ', 16000, 2]] },
     stops: [
       { key: 'hwaeomsa', ko: '화엄사', en: 'Hwaeomsa Temple', kind: 'temple', text: 'A temple founded in 544 with one of Korea\'s largest wooden halls.' },
-      { key: 'nogodan', ko: '노고단', en: 'Nogodan Peak', kind: 'mountain', text: 'From Seongsamjae pass a 1.5-hour trail leads to the summit – the last part needs an online reservation.' },
+      { key: 'nogodan', bg: 'nogodan', ko: '노고단', en: 'Nogodan Peak', kind: 'mountain', text: 'From Seongsamjae pass a 1.5-hour trail leads to the summit – the last part needs an online reservation.' },
       { key: 'sansuyu', ko: '구례 산수유마을', en: 'Sansuyu Village', kind: 'village', text: 'In March the whole valley turns yellow with cornelian-cherry blossoms.' },
     ],
   },
@@ -389,7 +389,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'BUSAN-PORT', exit: 'PUS', go: 'Subway Line 1 from Busan Station, then bus 27 to Igidae', days: 2, nights: 1, diff: 2, fit: [5, 5, 5, 3], budget: 250000, season: 'spring', stay: 'jjimjilbang', health: 'sprain',
     food: { place: ['부산 밀면집', 'Busan milmyeon house'], text: 'Busan\'s cold wheat noodles – created by refugees during the Korean War.', dishes: [['물밀면', 'Cold milmyeon in broth', 9000], ['비빔밀면', 'Spicy milmyeon', 9000, 0, 2], ['왕만두', 'Big dumplings', 6000]] },
     stops: [
-      { key: 'igidae', ko: '이기대 해안산책로', en: 'Igidae Coastal Walk', kind: 'mountain', text: 'A 4.7 km cliff trail with views of Gwangan Bridge, ending at the glass Oryukdo Skywalk.' },
+      { key: 'igidae', bg: 'igidae', ko: '이기대 해안산책로', en: 'Igidae Coastal Walk', kind: 'mountain', text: 'A 4.7 km cliff trail with views of Gwangan Bridge, ending at the glass Oryukdo Skywalk.' },
       { key: 'taejongdae', ko: '태종대', en: 'Taejongdae', kind: 'park', text: 'Pine-covered cliffs and a lighthouse at the southern tip of Yeongdo.' },
       { key: 'songdo', ko: '송도해상케이블카', en: 'Songdo Marine Cable Car', kind: 'beach', text: 'Korea\'s first beach, with a cable car flying over the sea.', ticket: { adult: 17000, youth: 12000, child: 12000, senior: 12000, open: '09:00', last: '21:00' } },
     ],
@@ -416,7 +416,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'CJU', go: 'Express bus 101 from Jeju Airport toward the east', days: 2, nights: 1, diff: 2, fit: [5, 5, 5, 4], budget: 260000, season: 'spring', stay: 'pension',
     food: { place: ['제주 고기국수집', 'Jeju pork-noodle house'], text: 'Thick noodles in a rich pork-bone broth with sliced pork – Jeju comfort food.', dishes: [['고기국수', 'Pork noodle soup', 9000], ['비빔국수', 'Spicy noodles', 9000, 0, 2], ['돔베고기', 'Sliced boiled pork', 25000]] },
     stops: [
-      { key: 'geomun', ko: '거문오름', en: 'Geomun Oreum', kind: 'mountain', text: 'A UNESCO volcanic cone – visits need a reservation and a guide, and are closed on Tuesdays.', ticket: { adult: 2000, open: '09:00', last: '13:00', note: 'Reservation required. No hiking poles or umbrellas.' } },
+      { key: 'geomun', bg: 'geomun', ko: '거문오름', en: 'Geomun Oreum', kind: 'mountain', text: 'A UNESCO volcanic cone – visits need a reservation and a guide, and are closed on Tuesdays.', ticket: { adult: 2000, open: '09:00', last: '13:00', note: 'Reservation required. No hiking poles or umbrellas.' } },
       { key: 'saryeoni', ko: '사려니숲길', en: 'Saryeoni Forest Path', kind: 'park', text: 'A 10 km path through cedar forest – cool even in summer.' },
       { key: 'horse', ko: '승마 체험', en: 'Jeju pony ride', kind: 'farm', text: 'Jeju ponies were once the island\'s pride – a guided 30-minute trail ride.' },
     ],

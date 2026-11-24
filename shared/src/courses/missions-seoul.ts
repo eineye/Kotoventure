@@ -29,7 +29,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'gbg', ko: '경복궁', en: 'Gyeongbokgung Palace', kind: 'palace', text: 'Built in 1395, the main royal palace. The guard-changing ceremony at Gwanghwamun is at 10:00 and 14:00. Closed on Tuesdays.', ticket: { adult: 3000, open: '09:00', last: '17:00', hanbok: true, note: 'Free in hanbok. Closed Tuesdays.' } },
       { key: 'huwon', ko: '창덕궁 후원', en: 'Changdeokgung Secret Garden', kind: 'palace', text: 'A UNESCO World Heritage palace with a royal garden you can only enter on a guided tour – book ahead!', ticket: { adult: 8000, open: '10:00', last: '16:00', note: 'Guided tours only – reserve online.' } },
-      { key: 'bukchon', ko: '북촌 한옥마을', en: 'Bukchon Hanok Village', kind: 'village', text: 'Hundreds of tiled-roof hanok where people still live. Tourist visits are limited to 10:00–17:00 in the red zone.' },
+      { key: 'bukchon', bg: 'bukchon', ko: '북촌 한옥마을', en: 'Bukchon Hanok Village', kind: 'village', text: 'Hundreds of tiled-roof hanok where people still live. Tourist visits are limited to 10:00–17:00 in the red zone.' },
     ],
     tips: { couple: 'Rent matching hanbok – palace entry is free!', group: 'Book the Secret Garden tour for everyone in advance.' },
   },
