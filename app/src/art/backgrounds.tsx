@@ -882,6 +882,10 @@ const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   beach: require('../../assets/bg/beach.webp'),
   tombs: require('../../assets/bg/tombs.webp'),
   jjimjilbang: require('../../assets/bg/jjimjilbang.webp'),
+  pension: require('../../assets/bg/pension.webp'),
+  kitchen: require('../../assets/bg/kitchen.webp'),
+  coast: require('../../assets/bg/coast.webp'),
+  storm: require('../../assets/bg/storm.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {
