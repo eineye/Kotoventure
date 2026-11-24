@@ -1,4 +1,5 @@
 import React from 'react';
+import { Image, type ImageSourcePropType } from 'react-native';
 import Svg, { Circle, Defs, Ellipse, G, Line, LinearGradient, Path, RadialGradient, Rect, Stop, Text as T } from 'react-native-svg';
 import type { BackgroundId } from '@kotoventure/shared';
 
@@ -854,7 +855,18 @@ const BG: Record<BackgroundId, React.ReactNode> = {
   ),
 };
 
+/**
+ * Painted illustrations that replace the vector art for some scenes
+ * (1280 px wide WebP, ~80 KB each; shown with "cover" so any frame size works).
+ */
+const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
+  airport: require('../../assets/bg/airport.webp'),
+  palace: require('../../assets/bg/palace.webp'),
+};
+
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {
+  const painted = (PAINTED as Record<string, ImageSourcePropType | undefined>)[id];
+  if (painted) return <Image source={painted} style={{ width, height }} resizeMode="cover" accessibilityIgnoresInvertColors />;
   const art = (BG as Record<string, React.ReactNode>)[id] ?? BG.street;
   return (
     <Svg width={width} height={height} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice">
