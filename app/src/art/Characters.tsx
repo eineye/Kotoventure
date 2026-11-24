@@ -254,32 +254,49 @@ export function Traveller({ a, size = 100, wave = false, flip = false }: { a: Av
   );
 }
 
-/** Party illustration for the onboarding selection and gameplay scenes. */
-export function PartyArt({ party, lead, size = 150 }: { party: PartyType; lead: AvatarDef; size?: number }) {
+/**
+ * Party illustration for the onboarding selection and gameplay scenes.
+ * One figure per traveller for solo (1), couple (2) and friends (3), side by side.
+ * Only a group overlaps: two rows squeezed into the footprint of three people,
+ * so `size` (the width of three travellers) is the most room any party takes.
+ */
+const SLOT = 64; // horizontal room per traveller in the 100×140 sprite box
+const MAX_W = SLOT * 2 + 100; // three side by side
+export function PartyArt({ party, lead, size = 150, align = 'center' }: { party: PartyType; lead: AvatarDef; size?: number; align?: 'center' | 'left' }) {
   const others = AVATARS.filter((x) => x.id !== lead.id);
-  const fig = (a: AvatarDef, x: number, s: number, key: string, flip = false) => (
-    <G key={key} transform={`translate(${x},${140 - s * 1.4}) scale(${s / 100})`}>
+  const fig = (a: AvatarDef, x: number, s: number, key: string, flip = false, y = 0) => (
+    <G key={key} transform={`translate(${x},${140 - s * 1.4 - y}) scale(${s / 100})`}>
       <TravellerG a={a} flip={flip} />
     </G>
   );
+  const n = party === 'solo' ? 1 : party === 'couple' ? 2 : 3;
+  const w = SLOT * (n - 1) + 100;
   let body: ReactNode[] = [];
-  if (party === 'solo') body = [fig(lead, 50, 100, 'l')];
-  if (party === 'couple') body = [fig(lead, 22, 92, 'l'), fig(others[0], 96, 92, 'o', true), <PixelHeart key="h" x={88} y={10} />];
-  if (party === 'friends') body = [fig(others[1], 0, 80, 'a'), fig(others[2], 120, 80, 'b', true), fig(lead, 54, 92, 'l')];
-  if (party === 'group')
+  if (party === 'solo') body = [fig(lead, 0, 100, 'l')];
+  if (party === 'couple') body = [fig(lead, 0, 100, 'l'), fig(others[0], SLOT, 100, 'o', true), <PixelHeart key="h" x={SLOT / 2 + 39} y={2} />];
+  if (party === 'friends') body = [fig(others[1], 0, 100, 'a'), fig(lead, SLOT, 100, 'l'), fig(others[2], SLOT * 2, 100, 'b', true)];
+  if (party === 'group') {
+    // front row of three (a bit smaller) with a raised back row peeking out between them:
+    // six people squeezed into the footprint of three
+    const fs = 86;
+    const bs = 74;
+    const back = (a: AvatarDef, cx: number, key: string, flip = false) => fig(a, cx - bs / 2, bs, key, flip, 30);
     body = [
       <G key="flag">
-        <Path d="M18 20 L18 120" stroke="#5A3A24" strokeWidth="3" />
-        <Path d="M18 20 L50 28 L18 38 Z" fill="#F2C14E" stroke="#2A1614" strokeWidth="1.5" />
+        <Path d="M10 4 L10 92" stroke="#5A3A24" strokeWidth="3" />
+        <Path d="M10 4 L38 11 L10 19 Z" fill="#F2C14E" stroke="#2A1614" strokeWidth="1.5" />
       </G>,
-      fig(others[0], -4, 70, 'a'),
-      fig(others[1], 40, 70, 'b'),
-      fig(others[2], 84, 70, 'c'),
-      fig(others[3], 128, 70, 'd', true),
-      fig(lead, 62, 86, 'l'),
+      back(others[3], fs / 2 + SLOT / 2, 'b1'),
+      back(others[4], fs / 2 + SLOT * 1.5, 'b2', true),
+      back(others[1], fs / 2 + SLOT * 2.3, 'b3', true),
+      fig(others[0], 0, fs, 'f1'),
+      fig(lead, SLOT, fs, 'l'),
+      fig(others[2], SLOT * 2, fs, 'f3', true),
     ];
+  }
+  const h = (size * 140) / MAX_W;
   return (
-    <Svg width={size} height={size * 0.7} viewBox="0 0 200 140">
+    <Svg width={size} height={h} viewBox={`0 0 ${w} 140`} preserveAspectRatio={align === 'left' ? 'xMinYMax meet' : 'xMidYMax meet'}>
       {body}
     </Svg>
   );

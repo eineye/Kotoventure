@@ -388,7 +388,7 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
       <View style={{ height: sceneH, overflow: 'hidden' }}>
         <Background id={scene.bg} width={width} height={sceneH} />
         <View style={{ position: 'absolute', left: 4, bottom: -4 }}>
-          <PartyArt party={party} lead={avatar} size={Math.min(170, width * 0.42, sceneH * 0.8)} />
+          <PartyArt party={party} lead={avatar} align="left" size={Math.min(190, width * 0.48, sceneH * 1.1)} />
         </View>
         {speaker && (
           <View style={{ position: 'absolute', right: 12, bottom: 12, backgroundColor: '#FFFFFFE6', borderRadius: 999, padding: 4, ...shadow }}>
