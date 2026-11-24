@@ -308,7 +308,7 @@ const BANK: Record<Kind, Q[]> = {
   ],
 };
 const KIND_BG: Record<Kind, string> = {
-  palace: 'palace', temple: 'temple', market: 'market', mountain: 'mountain', beach: 'beach', museum: 'street', street: 'street', village: 'village',
+  palace: 'palace', temple: 'temple', market: 'market', mountain: 'mountain', beach: 'beach', museum: 'museum', street: 'street', village: 'village',
   night: 'tower', park: 'river', island: 'coast', workshop: 'kitchen', river: 'river', memorial: 'tombs', cave: 'mountain', farm: 'village',
 };
 
@@ -529,7 +529,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
       const lsteps: Step[] = [say(`Evening of day ${dayOf(i)}. You check into your ${st.en}.`)];
       if (st.checkin) lsteps.push(simulate('checkin', 'lodging', `${st.en[0].toUpperCase()}${st.en.slice(1)} self check-in`, 'Read the host\'s message, open the digital door lock, find your room and remember the house rules.', { code: String(1000 + (hash(def.id) % 9000)), room: `${2 + (hash(def.id) % 3)}0${1 + (hash(def.id + 'r') % 3)}`, checkout: '11:00' }));
       lsteps.push(st.q(), learn(st.card));
-      scenes.push({ id: `${def.id}-l`, day: dayOf(i), est: { items: [est(20, 'move', `To your ${st.en}`, `${st.ko}까지 이동`, 1500), est(0, 'stay', `${st.en[0].toUpperCase()}${st.en.slice(1)}${STAY_COST[def.stay][1] ? ' (per person)' : ''}`, `${st.ko}${STAY_COST[def.stay][1] ? ' (1인)' : ''}`, STAY_COST[def.stay][0], STAY_COST[def.stay][1])] }, bg: def.stay === 'temple' ? 'temple' : def.stay === 'jjimjilbang' ? 'jjimjilbang' : def.stay === 'hanok' ? 'hanok' : def.stay === 'pension' ? 'pension' : 'street', title: { en: `Night at the ${st.en}`, ko: `${st.ko}에서 하룻밤` }, location: { en: st.en, ko: st.ko }, steps: lsteps });
+      scenes.push({ id: `${def.id}-l`, day: dayOf(i), est: { items: [est(20, 'move', `To your ${st.en}`, `${st.ko}까지 이동`, 1500), est(0, 'stay', `${st.en[0].toUpperCase()}${st.en.slice(1)}${STAY_COST[def.stay][1] ? ' (per person)' : ''}`, `${st.ko}${STAY_COST[def.stay][1] ? ' (1인)' : ''}`, STAY_COST[def.stay][0], STAY_COST[def.stay][1])] }, bg: def.stay === 'temple' ? 'templestay' : def.stay === 'jjimjilbang' ? 'jjimjilbang' : def.stay === 'hanok' ? 'hanbokroom' : def.stay === 'pension' ? 'pension' : 'street', title: { en: `Night at the ${st.en}`, ko: `${st.ko}에서 하룻밤` }, location: { en: st.en, ko: st.ko }, steps: lsteps });
     }
   });
 

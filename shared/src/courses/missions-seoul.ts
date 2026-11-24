@@ -15,7 +15,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     food2: { place: ['을지로 노가리 골목', 'Euljiro nogari alley'], text: 'In "Hipjiro" old printing shops became bars. Locals sit on plastic stools with dried pollack and cold beer.', dishes: [['노가리', 'Dried pollack snack', 5000], ['골뱅이무침', 'Spicy whelk salad', 18000, 0, 2], ['계란말이', 'Rolled omelette', 9000]] },
     stops: [
       { key: 'market', ko: '광장시장', en: 'Gwangjang Market', kind: 'market', text: 'Rows of ajumma cooks shout "Come and sit!" – you squeeze onto a bench at a busy counter.', phrase: ['여기 앉으세요!', 'Yeo-gi an-jeu-se-yo!', 'Sit here!'] },
-      { key: 'euljiro', ko: '을지로 골목', en: 'Euljiro alleys', kind: 'night', text: 'Neon signs, metal workshops and hidden bars with no signboards – the trendy "Hipjiro".' },
+      { key: 'euljiro', bg: 'pocha', ko: '을지로 골목', en: 'Euljiro alleys', kind: 'night', text: 'Neon signs, metal workshops and hidden bars with no signboards – the trendy "Hipjiro".' },
       { key: 'ddp', ko: '동대문디자인플라자', en: 'Dongdaemun Design Plaza (DDP)', kind: 'street', text: 'Zaha Hadid\'s silver spaceship glows at night; fashion malls around it stay open until dawn.' },
     ],
     extra: 'cashpay', tips: { solo: 'Market counters are perfect for eating alone.', friends: 'Order several dishes and share – that\'s the market way.' },
@@ -29,7 +29,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'gbg', ko: '경복궁', en: 'Gyeongbokgung Palace', kind: 'palace', text: 'Built in 1395, the main royal palace. The guard-changing ceremony at Gwanghwamun is at 10:00 and 14:00. Closed on Tuesdays.', ticket: { adult: 3000, open: '09:00', last: '17:00', hanbok: true, note: 'Free in hanbok. Closed Tuesdays.' } },
       { key: 'huwon', ko: '창덕궁 후원', en: 'Changdeokgung Secret Garden', kind: 'palace', text: 'A UNESCO World Heritage palace with a royal garden you can only enter on a guided tour – book ahead!', ticket: { adult: 8000, open: '10:00', last: '16:00', note: 'Guided tours only – reserve online.' } },
-      { key: 'bukchon', ko: '북촌 한옥마을', en: 'Bukchon Hanok Village', kind: 'village', text: 'Hundreds of tiled-roof hanok where people still live. Tourist visits are limited to 10:00–17:00 in the red zone.' },
+      { key: 'bukchon', bg: 'bukchon', ko: '북촌 한옥마을', en: 'Bukchon Hanok Village', kind: 'village', text: 'Hundreds of tiled-roof hanok where people still live. Tourist visits are limited to 10:00–17:00 in the red zone.' },
     ],
     tips: { couple: 'Rent matching hanbok – palace entry is free!', group: 'Book the Secret Garden tour for everyone in advance.' },
   },
@@ -41,7 +41,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     food: { place: ['망원시장 분식', 'Mangwon Market snack stall'], text: 'Mangwon Market is cheap and local: croquettes, tteokbokki and fried chicken by the cup.', dishes: [['떡볶이', 'Tteokbokki', 4000, 0, 2], ['컵닭강정', 'Sweet fried chicken cup', 4000, 0, 1], ['고로케', 'Croquette', 1500]] },
     food2: { place: ['홍대 치킨집', 'Hongdae fried-chicken pub'], text: 'Night in Hongdae: chimaek (chicken + beer) is the classic.', dishes: [['후라이드치킨', 'Fried chicken', 20000], ['양념치킨', 'Sweet-spicy chicken', 21000, 0, 1], ['치즈볼', 'Cheese balls', 6000]] },
     stops: [
-      { key: 'mangwon', ko: '망원시장', en: 'Mangwon Market', kind: 'market', text: 'A covered local market loved by young Seoulites – everything costs a few thousand won.' },
+      { key: 'mangwon', bg: 'mangwon', ko: '망원시장', en: 'Mangwon Market', kind: 'market', text: 'A covered local market loved by young Seoulites – everything costs a few thousand won.' },
       { key: 'yeonnam', ko: '연트럴파크', en: 'Gyeongui Line Forest Park (Yeonnam)', kind: 'park', text: 'An old railway turned into a long green park lined with cafés – nicknamed "Yeon-tral Park".' },
       { key: 'hongdae', ko: '홍대 걷고싶은거리', en: 'Hongdae street', kind: 'night', text: 'Buskers, dance crews and street stalls fill the walking street every evening.' },
     ],
@@ -55,7 +55,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     food: { place: ['명동 칼국수', 'Myeongdong kalguksu house'], text: 'A legendary noodle shop in Myeongdong: kalguksu with dumplings and very garlicky kimchi.', dishes: [['칼국수', 'Knife-cut noodle soup', 11000], ['만두', 'Dumplings', 11000], ['비빔국수', 'Spicy mixed noodles', 11000, 0, 2]] },
     food2: { place: ['성수 퓨전 레스토랑', 'Seongsu fusion bistro'], kind: 'fusion', after: 'seongsu', text: 'In an old factory turned bistro: Korean flavours meet Western dishes – rosé tteokbokki, bulgogi pizza, kimchi fried rice with cheese.', dishes: [['로제 떡볶이', 'Rosé tteokbokki (creamy)', 16000, 0, 1], ['불고기 피자', 'Bulgogi pizza', 22000], ['김치 치즈 볶음밥', 'Kimchi fried rice with cheese', 15000, 0, 1]], tip: 'Fusion places in Seongsu are popular – join the waiting list on the tablet at the door.' },
     stops: [
-      { key: 'color', ko: '퍼스널컬러 진단', en: 'Personal-colour studio', kind: 'workshop', text: 'A consultant drapes coloured fabrics under your face to find your "season" – spring warm? winter cool?', phrase: ['예약했어요', 'Ye-ya-kae-sseo-yo', 'I have a reservation'] },
+      { key: 'color', bg: 'kbeauty', ko: '퍼스널컬러 진단', en: 'Personal-colour studio', kind: 'workshop', text: 'A consultant drapes coloured fabrics under your face to find your "season" – spring warm? winter cool?', phrase: ['예약했어요', 'Ye-ya-kae-sseo-yo', 'I have a reservation'] },
       { key: 'myeongdong', ko: '명동', en: 'Myeongdong', kind: 'street', text: 'Dozens of cosmetics shops hand out free samples; many offer instant tax-free refunds.' },
       { key: 'seongsu', ko: '성수동', en: 'Seongsu-dong', kind: 'street', text: 'Old factories turned into cafés and brand pop-up stores – Seoul\'s "Brooklyn".', bus: { no: '2016', color: 'green', stops: ['성수역 Seongsu Stn.', '뚝섬역 Ttukseom Stn.', '서울숲 Seoul Forest'] } },
     ],
@@ -68,8 +68,8 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     hub: 'GMP', go: 'Subway to Bukhansan Ui station (Ui-Sinseol line), then walk to the trailhead', days: 2, nights: 1, diff: 3, fit: [5, 4, 5, 2], budget: 220000, season: 'autumn', stay: 'motel', health: 'sprain',
     food: { place: ['북한산 입구 파전집', 'Trailhead pajeon house'], text: 'After the hike, hikers in neon jackets gather for seafood pancakes and makgeolli.', dishes: [['해물파전', 'Seafood pancake', 16000], ['도토리묵', 'Acorn jelly salad', 12000], ['잔치국수', 'Banquet noodles', 7000]] },
     stops: [
-      { key: 'trail', ko: '백운대 탐방로', en: 'Baegundae trail', kind: 'mountain', text: 'Steep granite steps with steel cables near the top. Weekend trails are busy with friendly Korean hikers.' },
-      { key: 'summit', ko: '백운대 정상', en: 'Baegundae summit', kind: 'mountain', text: 'At 836 m the whole city spreads below you – on clear days you can see the Yellow Sea.' },
+      { key: 'trail', bg: 'bukhansan', ko: '백운대 탐방로', en: 'Baegundae trail', kind: 'mountain', text: 'Steep granite steps with steel cables near the top. Weekend trails are busy with friendly Korean hikers.' },
+      { key: 'summit', bg: 'bukhansan', ko: '백운대 정상', en: 'Baegundae summit', kind: 'mountain', text: 'At 836 m the whole city spreads below you – on clear days you can see the Yellow Sea.' },
       { key: 'temple', ko: '도선사', en: 'Doseonsa Temple', kind: 'temple', text: 'A mountain temple from the 9th century, with a giant stone Buddha carved by hand.' },
     ],
   },
@@ -80,7 +80,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     hub: 'GMP', go: 'Subway Line 9 express towards Sports Complex, then Line 2 to Jamsil', days: 2, nights: 1, diff: 1, fit: [4, 5, 5, 5], budget: 350000, season: 'summer', stay: 'hotel',
     food: { place: ['잠실 한식당', 'Jamsil Korean restaurant'], text: 'A busy Korean restaurant near Lotte World Tower – families share big pots of stew.', dishes: [['부대찌개', 'Army stew', 11000, 2, 1], ['불고기', 'Bulgogi', 15000], ['비빔밥', 'Bibimbap', 10000]] },
     stops: [
-      { key: 'sky', ko: '서울스카이', en: 'Seoul Sky (Lotte World Tower)', kind: 'night', text: 'A 555 m tower with a glass-floor observatory on the 118th floor.', ticket: { adult: 31000, youth: 28000, child: 28000, senior: 28000, open: '10:30', last: '21:00', note: 'Glass floor – not for the faint-hearted!' } },
+      { key: 'sky', bg: 'lotteworld', ko: '서울스카이', en: 'Seoul Sky (Lotte World Tower)', kind: 'night', text: 'A 555 m tower with a glass-floor observatory on the 118th floor.', ticket: { adult: 31000, youth: 28000, child: 28000, senior: 28000, open: '10:30', last: '21:00', note: 'Glass floor – not for the faint-hearted!' } },
       { key: 'lake', ko: '석촌호수', en: 'Seokchon Lake', kind: 'park', text: 'A lake walk under the tower – famous for cherry blossoms in April.' },
       { key: 'banpo', ko: '반포 한강공원', en: 'Banpo Hangang Park', kind: 'river', text: 'The Moonlight Rainbow Fountain sprays water from the bridge with music on spring–autumn evenings.' },
     ],
@@ -107,8 +107,8 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     hub: 'GMP', go: 'Subway Line 5 to Gwanghwamun', days: 2, nights: 1, diff: 1, fit: [4, 5, 5, 4], budget: 300000, season: 'autumn', stay: 'hanok',
     food: { place: ['인사동 한정식', 'Insadong hanjeongsik'], text: 'A royal-style course meal: dozens of small dishes arrive one after another.', dishes: [['한정식 코스', 'Korean table-d\'hôte course', 35000, 2], ['비빔밥', 'Bibimbap', 13000], ['떡갈비', 'Grilled short-rib patty', 18000]] },
     stops: [
-      { key: 'hanbok', ko: '한복 대여점', en: 'Hanbok rental shop', kind: 'workshop', text: 'Choose a jeogori jacket and a full chima skirt; staff braid your hair and add a norigae ornament.' },
-      { key: 'insadong', ko: '인사동 찻집', en: 'Insadong tea house', kind: 'workshop', text: 'A master shows how to warm the cups, pour three times and hold the cup with two hands.', phrase: ['차 맛있어요', 'Cha ma-si-sseo-yo', 'The tea is delicious'] },
+      { key: 'hanbok', bg: 'hanbokroom', ko: '한복 대여점', en: 'Hanbok rental shop', kind: 'workshop', text: 'Choose a jeogori jacket and a full chima skirt; staff braid your hair and add a norigae ornament.' },
+      { key: 'insadong', bg: 'hanbokroom', ko: '인사동 찻집', en: 'Insadong tea house', kind: 'workshop', text: 'A master shows how to warm the cups, pour three times and hold the cup with two hands.', phrase: ['차 맛있어요', 'Cha ma-si-sseo-yo', 'The tea is delicious'] },
       { key: 'ikseon', ko: '익선동', en: 'Ikseon-dong', kind: 'village', text: 'A maze of 1920s hanok now full of tiny cafés, bakeries and photo studios.' },
     ],
   },
@@ -119,7 +119,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     hub: 'ICN', go: 'Airport limousine bus to COEX', days: 2, nights: 1, diff: 1, fit: [5, 4, 5, 3], budget: 350000, season: 'summer', stay: 'hotel',
     food: { place: ['강남 분식집', 'Gangnam snack bar'], text: 'Trainees and fans fuel up on gimbap and ramyeon between practice sessions.', dishes: [['김밥', 'Gimbap', 4000], ['라볶이', 'Ramen tteokbokki', 7000, 0, 2], ['돈가스', 'Pork cutlet', 10000]] },
     stops: [
-      { key: 'kstar', ko: 'K스타로드', en: 'K-Star Road (Apgujeong)', kind: 'street', text: 'Colourful bear statues ("GangnamDol") for each idol group line the street near the old agency buildings.' },
+      { key: 'kstar', bg: 'kpop', ko: 'K스타로드', en: 'K-Star Road (Apgujeong)', kind: 'street', text: 'Colourful bear statues ("GangnamDol") for each idol group line the street near the old agency buildings.' },
       { key: 'coex', ko: '코엑스 별마당도서관', en: 'COEX & Starfield Library', kind: 'museum', text: 'A 13 m wall of books inside a mall, and the famous 3D "wave" screen outside.' },
       { key: 'busking', ko: '홍대 버스킹', en: 'Hongdae busking', kind: 'night', text: 'Dance crews cover the latest choreography – crowds film and cheer.' },
     ],
@@ -132,8 +132,8 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     hub: 'GMP', go: 'Subway Line 9 to Yeouido', days: 2, nights: 1, diff: 2, fit: [5, 5, 5, 3], budget: 200000, season: 'spring', stay: 'guesthouse', health: 'heat',
     food: { place: ['여의도 편의점 & 라면', 'Riverside convenience store'], text: 'The Han River classic: instant ramyeon cooked by a machine in the convenience store.', dishes: [['한강라면', 'Machine-cooked ramyeon', 4000, 0, 1], ['김밥', 'Gimbap', 3500], ['치킨', 'Fried chicken (delivery)', 20000]] },
     stops: [
-      { key: 'ttareungyi', ko: '따릉이 대여소', en: 'Ttareungyi bike station', kind: 'park', text: 'Seoul\'s green public bikes: rent with an app for ₩1,000/hour.' },
-      { key: 'yeouido', ko: '여의도 한강공원', en: 'Yeouido Hangang Park', kind: 'river', text: 'A huge riverside park – in spring, cherry trees line the road behind the National Assembly.' },
+      { key: 'ttareungyi', bg: 'hanbike', ko: '따릉이 대여소', en: 'Ttareungyi bike station', kind: 'park', text: 'Seoul\'s green public bikes: rent with an app for ₩1,000/hour.' },
+      { key: 'yeouido', bg: 'hanbike', ko: '여의도 한강공원', en: 'Yeouido Hangang Park', kind: 'river', text: 'A huge riverside park – in spring, cherry trees line the road behind the National Assembly.' },
       { key: 'nodeul', ko: '노들섬', en: 'Nodeul Island', kind: 'river', text: 'A small island under Hangang Bridge with lawns, music halls and the best sunset view over the river.' },
     ],
   },
@@ -145,7 +145,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     food: { place: ['명동 야시장', 'Myeongdong night stalls'], text: 'From 17:00 food carts fill Myeongdong: lobster tails, egg bread, tornado potatoes.', dishes: [['계란빵', 'Egg bread', 3000], ['회오리감자', 'Tornado potato', 5000], ['닭꼬치', 'Chicken skewer', 5000, 0, 1]] },
     stops: [
       { key: 'hanokvillage', ko: '남산골 한옥마을', en: 'Namsangol Hanok Village', kind: 'village', text: 'Five restored noble houses and a time capsule buried for Seoul\'s 600th anniversary. Free entry.' },
-      { key: 'tower', ko: 'N서울타워', en: 'N Seoul Tower', kind: 'night', text: 'The tower on Namsan (243 m) – love locks on the fence and the city glittering below.', bus: { no: '01A', color: 'yellow', stops: ['명동역 Myeongdong Stn.', '남산케이블카 Cable Car', '국립극장 National Theater', '남산서울타워 N Seoul Tower'] } },
+      { key: 'tower', bg: 'towernight', ko: 'N서울타워', en: 'N Seoul Tower', kind: 'night', text: 'The tower on Namsan (243 m) – love locks on the fence and the city glittering below.', bus: { no: '01A', color: 'yellow', stops: ['명동역 Myeongdong Stn.', '남산케이블카 Cable Car', '국립극장 National Theater', '남산서울타워 N Seoul Tower'] } },
       { key: 'myeongdong', ko: '명동 야시장', en: 'Myeongdong night market', kind: 'market', text: 'Hundreds of stalls and shoppers – watch your bag and keep small notes ready.' },
     ],
   },
@@ -156,9 +156,9 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     hub: 'ICN', go: 'AREX to Seoul Station, then Line 1 to Jonggak', days: 2, nights: 1, diff: 2, fit: [5, 4, 3, 3], budget: 220000, season: 'spring', stay: 'temple',
     food: { place: ['사찰음식 식당', 'Temple-food restaurant'], text: 'Temple food uses no meat and no pungent vegetables like garlic and onion – yet it\'s full of flavour.', dishes: [['사찰정식', 'Temple set meal', 18000], ['산채비빔밥', 'Mountain-herb bibimbap', 13000], ['연잎밥', 'Rice in lotus leaf', 15000]] },
     stops: [
-      { key: 'jogyesa', ko: '조계사', en: 'Jogyesa Temple', kind: 'temple', text: 'The head temple of Korean Buddhism, under a 500-year-old tree. In spring thousands of lanterns hang overhead.' },
+      { key: 'jogyesa', bg: 'templestay', ko: '조계사', en: 'Jogyesa Temple', kind: 'temple', text: 'The head temple of Korean Buddhism, under a 500-year-old tree. In spring thousands of lanterns hang overhead.' },
       { key: 'lantern', ko: '연등 만들기', en: 'Lotus-lantern workshop', kind: 'workshop', text: 'Fold pink paper petals one by one onto a frame – it takes patience!' },
-      { key: 'bongeunsa', ko: '봉은사', en: 'Bongeunsa Temple', kind: 'temple', text: 'A 1,200-year-old temple facing the COEX towers – at 4 am the big drum and bell wake the monks.' },
+      { key: 'bongeunsa', bg: 'templestay', ko: '봉은사', en: 'Bongeunsa Temple', kind: 'temple', text: 'A 1,200-year-old temple facing the COEX towers – at 4 am the big drum and bell wake the monks.' },
     ],
   },
   {
@@ -171,7 +171,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'mapo', ko: '마포 갈매기살 골목', en: 'Mapo galbi alley', kind: 'street', text: 'Smoke, sizzling grills and office workers toasting after work.' },
       { key: 'noryangjin', ko: '노량진 수산시장', en: 'Noryangjin Fish Market', kind: 'market', text: 'Tanks full of crabs, octopus and fish – ask the price per kg before choosing.' },
-      { key: 'pocha', ko: '종로 포장마차', en: 'Jongno pojangmacha', kind: 'night', text: 'Orange-tented street bars with plastic stools – udon, odeng and soju until late.' },
+      { key: 'pocha', bg: 'pocha', ko: '종로 포장마차', en: 'Jongno pojangmacha', kind: 'night', text: 'Orange-tented street bars with plastic stools – udon, odeng and soju until late.' },
     ],
   },
   {
@@ -182,7 +182,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     food: { place: ['서촌 토속촌', 'Seochon samgyetang house'], text: 'Whole young chicken stuffed with rice and ginseng, served bubbling – a hiker\'s favourite.', dishes: [['삼계탕', 'Ginseng chicken soup', 20000], ['전기구이 통닭', 'Rotisserie chicken', 18000], ['인삼주', 'Ginseng liquor shot', 3000]] },
     stops: [
       { key: 'inwangsan', ko: '인왕산', en: 'Inwangsan', kind: 'mountain', text: 'A granite peak with shamanic shrines and a sunset view over Gyeongbokgung.' },
-      { key: 'bugaksan', ko: '북악산 성곽길', en: 'Bugaksan wall trail', kind: 'mountain', text: 'Once closed for security, now open – steep stone steps along the wall behind the old Blue House.' },
+      { key: 'bugaksan', bg: 'citywall', ko: '북악산 성곽길', en: 'Bugaksan wall trail', kind: 'mountain', text: 'Once closed for security, now open – steep stone steps along the wall behind the old Blue House.' },
       { key: 'ihwa', ko: '이화 벽화마을', en: 'Ihwa Mural Village', kind: 'village', text: 'Hillside alleys with painted stairs and murals – residents ask visitors to keep quiet.' },
     ],
   },

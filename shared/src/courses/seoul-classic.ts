@@ -215,7 +215,7 @@ export const seoulClassic: Course = {
       ],
     },
     {
-      id: 'sc-8', day: 4, bg: 'hanok', requires: ['visit:bukchon'],
+      id: 'sc-8', day: 4, bg: 'bukchon', requires: ['visit:bukchon'],
       title: { en: 'Bukchon Hanok Village', ko: '북촌 한옥마을' },
       location: { en: 'Bukchon, Jongno', ko: '북촌, 종로' },
       steps: [
