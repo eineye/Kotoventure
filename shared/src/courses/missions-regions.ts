@@ -327,7 +327,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'cable', ko: '여수 해상케이블카', en: 'Yeosu Maritime Cable Car', kind: 'night', text: 'Cabins swing over the sea between Dolsando and the city – choose a glass-floor "crystal cabin".', ticket: { adult: 17000, youth: 12000, child: 12000, senior: 12000, open: '09:30', last: '21:30' } },
       { key: 'odongdo', ko: '오동도', en: 'Odongdo Island', kind: 'island', text: 'A camellia island linked by a 768 m causeway; red flowers bloom in winter.' },
-      { key: 'pocha', ko: '낭만포차', en: 'Romantic pojangmacha street', kind: 'night', text: 'Tent bars along the harbour with the lit bridges behind.' },
+      { key: 'pocha', bg: 'pocha', ko: '낭만포차', en: 'Romantic pojangmacha street', kind: 'night', text: 'Tent bars along the harbour with the lit bridges behind.' },
     ],
     extra: 'taxi',
   },
@@ -403,7 +403,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['해인사 산채식당', 'Haeinsa mountain-herb restaurant'], text: 'Mountain vegetables, mushrooms and doenjang – simple temple-village food.', dishes: [['산채정식', 'Mountain-herb set', 15000, 2], ['송이버섯전골', 'Pine-mushroom hot pot', 40000, 2], ['도토리묵밥', 'Acorn-jelly rice', 10000]] },
     stops: [
       { key: 'tripitaka', ko: '해인사 장경판전', en: 'Janggyeong Panjeon (Tripitaka hall)', kind: 'temple', text: 'Ingenious halls keep the 81,258 blocks dry without any modern equipment – a UNESCO World Heritage site.' },
-      { key: 'templestay', ko: '템플스테이', en: 'Temple stay programme', kind: 'workshop', text: 'Learn the 108 bows, meditate and share a silent monastic meal.' },
+      { key: 'templestay', bg: 'templestay', ko: '템플스테이', en: 'Temple stay programme', kind: 'workshop', text: 'Learn the 108 bows, meditate and share a silent monastic meal.' },
       { key: 'gayasan', ko: '가야산 소리길', en: 'Gayasan Sorigil trail', kind: 'mountain', text: 'A gentle valley trail along a stream – "the path of sounds".' },
     ],
   },
