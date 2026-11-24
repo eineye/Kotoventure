@@ -895,6 +895,11 @@ const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   nogodan: require('../../assets/bg/nogodan.webp'),
   igidae: require('../../assets/bg/igidae.webp'),
   bukchon: require('../../assets/bg/bukchon.webp'),
+  hanbike: require('../../assets/bg/hanbike.webp'),
+  railbike: require('../../assets/bg/railbike.webp'),
+  paraglide: require('../../assets/bg/paraglide.webp'),
+  mudflat: require('../../assets/bg/mudflat.webp'),
+  bukhansan: require('../../assets/bg/bukhansan.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {

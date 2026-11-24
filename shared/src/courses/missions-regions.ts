@@ -52,7 +52,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'ICN', go: 'AREX to Seoul, then ITX-Cheongchun train to Gapyeong', days: 2, nights: 1, diff: 2, fit: [4, 5, 5, 4], budget: 320000, season: 'summer', stay: 'pension',
     food: { place: ['가평 닭갈비집', 'Gapyeong dakgalbi house'], text: 'Spicy chicken stir-fried on a giant iron pan; finish with fried rice in the leftovers.', dishes: [['닭갈비', 'Spicy stir-fried chicken', 15000, 2, 2], ['막국수', 'Buckwheat noodles', 9000], ['볶음밥', 'Fried rice (in the pan)', 3000]] },
     stops: [
-      { key: 'railbike', ko: '가평 레일바이크', en: 'Gapyeong Rail Bike', kind: 'park', text: 'A four-seat pedal car on a disused railway along the river.', ticket: { adult: 40000, youth: 40000, child: 40000, senior: 40000, open: '09:00', last: '17:00', note: 'Price per bike (2–4 people).' } },
+      { key: 'railbike', bg: 'railbike', ko: '가평 레일바이크', en: 'Gapyeong Rail Bike', kind: 'park', text: 'A four-seat pedal car on a disused railway along the river.', ticket: { adult: 40000, youth: 40000, child: 40000, senior: 40000, open: '09:00', last: '17:00', note: 'Price per bike (2–4 people).' } },
       { key: 'nami', ko: '남이섬', en: 'Nami Island', kind: 'island', text: 'Tree-lined avenues made famous by a K-drama; arrive by ferry or by zip-wire.', ticket: { adult: 16000, youth: 13000, child: 10000, senior: 13000, open: '08:00', last: '21:00', note: 'Includes the ferry.' } },
       { key: 'garden', ko: '아침고요수목원', en: 'Garden of Morning Calm', kind: 'park', text: 'A mountain garden – in winter it glows with a huge light festival.' },
     ],
@@ -79,7 +79,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'ICN', go: 'Free airport maglev/bus to Yongyu, then the bus over the bridge to Muuido', days: 2, nights: 1, diff: 2, fit: [5, 5, 5, 3], budget: 200000, season: 'summer', stay: 'pension', health: 'heat',
     food: { place: ['무의도 조개구이', 'Muuido grilled-shellfish place'], text: 'Grill clams, scallops and prawns on charcoal right by the sea.', dishes: [['조개구이', 'Grilled shellfish platter', 25000, 2], ['해물칼국수', 'Seafood noodle soup', 11000], ['새우구이', 'Grilled prawns', 30000]] },
     stops: [
-      { key: 'silmido', ko: '실미도 갯길', en: 'Silmido tidal path', kind: 'island', text: 'At low tide a path appears across the mud flats. When the tide turns, the sea comes back fast – check the time!', tip: 'Tide tables are posted at the entrance. Come back at least an hour before high tide.' },
+      { key: 'silmido', bg: 'mudflat', ko: '실미도 갯길', en: 'Silmido tidal path', kind: 'island', text: 'At low tide a path appears across the mud flats. When the tide turns, the sea comes back fast – check the time!', tip: 'Tide tables are posted at the entrance. Come back at least an hour before high tide.' },
       { key: 'hanagae', ko: '하나개 해수욕장', en: 'Hanagae Beach', kind: 'beach', text: 'A wide sandy beach with a sea-deck trail around the cliffs.' },
       { key: 'horyonggok', ko: '호룡곡산', en: 'Horyonggoksan', kind: 'mountain', text: 'A short hill hike with views over the airport runways and islands.' },
     ],
@@ -183,7 +183,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'CJJ', go: 'Bus from Cheongju to Danyang', days: 2, nights: 1, diff: 3, fit: [4, 5, 5, 3], budget: 330000, season: 'autumn', stay: 'pension', health: 'sprain',
     food: { place: ['단양 마늘정식', 'Danyang garlic restaurant'], text: 'Danyang garlic is famous – garlic bibimbap, garlic tteokgalbi and garlic sweets.', dishes: [['마늘정식', 'Garlic set meal', 18000, 2], ['마늘떡갈비', 'Garlic short-rib patty', 16000], ['쏘가리매운탕', 'Spicy mandarin-fish stew', 50000, 2, 2]] },
     stops: [
-      { key: 'paraglide', ko: '양방산 패러글라이딩', en: 'Yangbangsan paragliding', kind: 'mountain', text: 'A tandem pilot runs with you off the launch pad – 10 minutes of silence above the river.', ticket: { adult: 120000, youth: 120000, child: 120000, senior: 120000, open: '09:00', last: '16:00', note: 'Tandem flight with an instructor. Weather permitting.' } },
+      { key: 'paraglide', bg: 'paraglide', ko: '양방산 패러글라이딩', en: 'Yangbangsan paragliding', kind: 'mountain', text: 'A tandem pilot runs with you off the launch pad – 10 minutes of silence above the river.', ticket: { adult: 120000, youth: 120000, child: 120000, senior: 120000, open: '09:00', last: '16:00', note: 'Tandem flight with an instructor. Weather permitting.' } },
       { key: 'skywalk', ko: '만천하스카이워크', en: 'Mancheonha Skywalk', kind: 'night', text: 'A glass-floored lookout 80 m above the river.', ticket: { adult: 3000, open: '09:00', last: '17:00' } },
       { key: 'gosu', ko: '고수동굴', en: 'Gosu Cave', kind: 'cave', text: 'A 1.7 km limestone cave with stalactites, narrow stairs and dripping water.', ticket: { adult: 11000, open: '09:00', last: '17:30' } },
     ],

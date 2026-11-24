@@ -68,8 +68,8 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     hub: 'GMP', go: 'Subway to Bukhansan Ui station (Ui-Sinseol line), then walk to the trailhead', days: 2, nights: 1, diff: 3, fit: [5, 4, 5, 2], budget: 220000, season: 'autumn', stay: 'motel', health: 'sprain',
     food: { place: ['북한산 입구 파전집', 'Trailhead pajeon house'], text: 'After the hike, hikers in neon jackets gather for seafood pancakes and makgeolli.', dishes: [['해물파전', 'Seafood pancake', 16000], ['도토리묵', 'Acorn jelly salad', 12000], ['잔치국수', 'Banquet noodles', 7000]] },
     stops: [
-      { key: 'trail', ko: '백운대 탐방로', en: 'Baegundae trail', kind: 'mountain', text: 'Steep granite steps with steel cables near the top. Weekend trails are busy with friendly Korean hikers.' },
-      { key: 'summit', ko: '백운대 정상', en: 'Baegundae summit', kind: 'mountain', text: 'At 836 m the whole city spreads below you – on clear days you can see the Yellow Sea.' },
+      { key: 'trail', bg: 'bukhansan', ko: '백운대 탐방로', en: 'Baegundae trail', kind: 'mountain', text: 'Steep granite steps with steel cables near the top. Weekend trails are busy with friendly Korean hikers.' },
+      { key: 'summit', bg: 'bukhansan', ko: '백운대 정상', en: 'Baegundae summit', kind: 'mountain', text: 'At 836 m the whole city spreads below you – on clear days you can see the Yellow Sea.' },
       { key: 'temple', ko: '도선사', en: 'Doseonsa Temple', kind: 'temple', text: 'A mountain temple from the 9th century, with a giant stone Buddha carved by hand.' },
     ],
   },
@@ -132,8 +132,8 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     hub: 'GMP', go: 'Subway Line 9 to Yeouido', days: 2, nights: 1, diff: 2, fit: [5, 5, 5, 3], budget: 200000, season: 'spring', stay: 'guesthouse', health: 'heat',
     food: { place: ['여의도 편의점 & 라면', 'Riverside convenience store'], text: 'The Han River classic: instant ramyeon cooked by a machine in the convenience store.', dishes: [['한강라면', 'Machine-cooked ramyeon', 4000, 0, 1], ['김밥', 'Gimbap', 3500], ['치킨', 'Fried chicken (delivery)', 20000]] },
     stops: [
-      { key: 'ttareungyi', ko: '따릉이 대여소', en: 'Ttareungyi bike station', kind: 'park', text: 'Seoul\'s green public bikes: rent with an app for ₩1,000/hour.' },
-      { key: 'yeouido', ko: '여의도 한강공원', en: 'Yeouido Hangang Park', kind: 'river', text: 'A huge riverside park – in spring, cherry trees line the road behind the National Assembly.' },
+      { key: 'ttareungyi', bg: 'hanbike', ko: '따릉이 대여소', en: 'Ttareungyi bike station', kind: 'park', text: 'Seoul\'s green public bikes: rent with an app for ₩1,000/hour.' },
+      { key: 'yeouido', bg: 'hanbike', ko: '여의도 한강공원', en: 'Yeouido Hangang Park', kind: 'river', text: 'A huge riverside park – in spring, cherry trees line the road behind the National Assembly.' },
       { key: 'nodeul', ko: '노들섬', en: 'Nodeul Island', kind: 'river', text: 'A small island under Hangang Bridge with lawns, music halls and the best sunset view over the river.' },
     ],
   },
