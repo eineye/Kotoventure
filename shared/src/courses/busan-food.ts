@@ -1,5 +1,5 @@
 import type { Course } from '../types';
-import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
+import { ask, event, learn, M, no, ok, P, say, simulate, talk } from '../dsl';
 
 const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
 
@@ -45,7 +45,8 @@ export const busanFood: Course = {
           ok('My passport and entry approval – same as at an airport', 'Yes. Ports are international borders too.', { manner: 3 }, 'passport'),
           no('Only my ferry ticket', 'The ticket is not an ID. Immigration needs your passport.', { energy: -10 }),
         ], 'tr-ferry'),
-        event('weather', 'Typhoon season note', 'It\'s late summer. The captain says yesterday\'s sailing was cancelled for strong winds – typhoons often reach the south coast in August–September.', undefined, 'typhoon'),
+        event('weather', 'Typhoon season note', 'It\'s late summer. The captain says yesterday\'s sailing was cancelled for strong winds – typhoons often reach the south coast in August–September.', undefined, 'typhoon', { months: M.typhoon }),
+        event('weather', 'Ferry weather note', 'The captain says sailings are cancelled in strong wind – check the forecast before any ferry day.', undefined, 'typhoon', { months: M.noTyphoon }),
         ask('weather', 'Your return flight is in 4 days and a typhoon is forecast for the weekend. What do you do?', [
           ok('Watch the forecast & phone alerts and keep a buffer in my plans', 'Good. Flights and ferries are cancelled during typhoons.', { energy: 5 }, 'typhoon'),
           no('Ignore it, typhoons never reach Korea', 'They do – mostly Jeju and the south coast in Aug–Sep.', { energy: -5 }),
@@ -158,8 +159,9 @@ export const busanFood: Course = {
           ok('Keep voices low and stay on the marked tour route', 'Residents appreciate it.', { manner: 5 }, 'quiet'),
           no('Play music on a speaker', 'Sound carries in the tiny alleys and people live here. Keep it quiet and residents will greet you warmly.', { manner: -8 }),
         ], 'et-quiet'),
-        event('weather', 'Steep hill + heat', 'Climbing in 33 °C humid heat drains your energy fast.', { energy: -10 }, 'heatwave'),
-        learn('we-heat'),
+        event('weather', 'Steep hill + heat', 'Climbing in 33 °C humid heat drains your energy fast.', { energy: -10 }, 'heatwave', { months: M.hot }),
+        learn('we-heat', { months: M.hot }),
+        event('weather', 'Steep hill', 'The steep stairs and slopes drain your energy fast – take breaks and drink water.', { energy: -8 }, undefined, { months: M.notHot }),
       ],
     },
     {

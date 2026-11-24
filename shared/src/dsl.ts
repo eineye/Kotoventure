@@ -4,7 +4,10 @@
  */
 import type { ChoiceOption, Effects, PartyType, Phrase, Speaker, Step, TopicId } from './types';
 
-type Opt = { parties?: PartyType[]; ifFlags?: string[]; unlessFlags?: string[]; chance?: number };
+type Opt = { parties?: PartyType[]; ifFlags?: string[]; unlessFlags?: string[]; chance?: number; months?: number[] };
+
+/** travel months for season-specific steps (a step with `months` only shows when the player travels in one of them) */
+export const M = { spring: [3, 4, 5], summer: [6, 7, 8], autumn: [9, 10, 11], winter: [12, 1, 2], hot: [6, 7, 8, 9], notHot: [10, 11, 12, 1, 2, 3, 4, 5], swim: [7, 8], noSwim: [9, 10, 11, 12, 1, 2, 3, 4, 5, 6], mild: [3, 4, 5, 9, 10, 11], warmHalf: [5, 6, 7, 8, 9], coldHalf: [10, 11, 12, 1, 2, 3, 4], typhoon: [7, 8, 9], noTyphoon: [10, 11, 12, 1, 2, 3, 4, 5, 6] };
 
 export const say = (text: string, opt: Opt = {}): Step => ({ type: 'narration', text: { en: text }, ...opt });
 

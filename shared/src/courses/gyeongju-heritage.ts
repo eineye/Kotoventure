@@ -1,5 +1,5 @@
 import type { Course } from '../types';
-import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
+import { ask, event, learn, M, no, ok, P, say, simulate, talk } from '../dsl';
 
 const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
 
@@ -49,11 +49,22 @@ export const gyeongjuHeritage: Course = {
           no('A taxi all the way', 'Possible, but expensive and slower in traffic.', { money: -75000 }, 'taxi'),
         ], 'tr-arex'),
         simulate('train', 'transport', 'KTX map & ticket machine', 'At Seoul Station, find Gyeongju on the KTX map, then buy a ticket for your whole party at the self-service machine. Your hanok check-in is at 13:00 – arrive in time!', { from: 'seoul', to: 'singyeongju', arriveBy: '13:00' }, 'tr-ktx'),
-        event('weather', 'Autumn in Gyeongju', 'It\'s late October – clear blue skies and ginkgo trees turning gold. But mornings are chilly (8 °C) and afternoons warm (22 °C).', undefined, 'autumn'),
+        event('weather', 'Autumn in Gyeongju', 'It\'s late October – clear blue skies and ginkgo trees turning gold. But mornings are chilly (8 °C) and afternoons warm (22 °C).', undefined, 'autumn', { months: M.autumn }),
+        event('weather', 'Spring in Gyeongju', 'It\'s April – cherry blossoms line Bomun Lake. Mornings are chilly (7 °C) and afternoons warm (20 °C).', undefined, 'spring', { months: M.spring }),
+        event('weather', 'Summer in Gyeongju', 'It\'s 32 °C and humid – the tomb parks have little shade.', undefined, 'summer', { months: M.summer }),
+        event('weather', 'Winter in Gyeongju', 'It\'s −3 °C in the morning with a dry, icy wind – but the sky is clear and the sites are quiet.', undefined, 'winter', { months: M.winter }),
+        ask('weather', 'How do you pack for a hot day of walking between the sites?', [
+          ok('Light clothes, a hat, sunscreen and a water bottle', 'Good – refill at convenience stores along the way.', { energy: 5 }, 'heatwave'),
+          no('Jeans and a heavy jacket', 'You are drenched in sweat by noon.', { energy: -10 }),
+        ], 'we-heat', { months: M.summer }),
+        ask('weather', 'How do you pack for a freezing day of walking between the sites?', [
+          ok('A padded coat, gloves, a hat and heat packs', 'Warm all day – heat packs from the convenience store are a lifesaver.', { energy: 5 }, 'winter'),
+          no('Only a hoodie', 'You are shivering within an hour.', { energy: -10 }),
+        ], 'we-cold', { months: M.winter }),
         ask('weather', 'How do you pack for a day like this?', [
           ok('Layers: T-shirt + light jacket', 'Perfect. Big day–night temperature gaps are typical in spring and autumn.', { energy: 5 }, 'autumn'),
           no('Only shorts and a tank top', 'You shiver at sunset.', { energy: -10 }),
-        ], 'we-seasons'),
+        ], 'we-seasons', { months: M.mild }),
         say('From Singyeongju Station, city buses (or a taxi) take you to the historic centre in about 30 minutes. You take a taxi – and the driver speaks only Korean.'),
         simulate('phrase', 'transport', 'Taxi Korean', 'Build the taxi sentences from the word tiles and listen to the pronunciation.', {
           phrases: [

@@ -1,5 +1,5 @@
 import type { Course } from '../types';
-import { ask, event, learn, no, ok, P, say, simulate, talk } from '../dsl';
+import { ask, event, learn, M, no, ok, P, say, simulate, talk } from '../dsl';
 
 const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
 
@@ -141,7 +141,11 @@ export const jejuAdventure: Course = {
         ask('weather', 'The sun is blazing and there\'s no shade along the coast.', [
           ok('Sunscreen, hat, lots of water and a break in a café at the hottest hour', 'Your skin thanks you.', { energy: 8, money: -6000 }, 'heatwave'),
           no('Push on until 2 pm without water', 'Heat exhaustion: headache and nausea.', { energy: -20 }),
-        ], 'we-heat'),
+        ], 'we-heat', { months: M.warmHalf }),
+        ask('weather', 'A strong, cold sea wind blows along the coast and there is no shelter.', [
+          ok('A windproof jacket, gloves and a warm drink break in a café', 'Much better – Jeju\'s coastal wind is famous.', { energy: 8, money: -6000 }, 'winter'),
+          no('Keep riding in a T-shirt', 'You are frozen and exhausted.', { energy: -15 }),
+        ], 'we-cold', { months: M.coldHalf }),
       ],
     },
     {
