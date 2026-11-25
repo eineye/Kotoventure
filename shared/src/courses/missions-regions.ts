@@ -454,8 +454,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'CJU', go: 'City bus from Jeju Airport to the 4·3 Peace Park', days: 2, nights: 1, diff: 1, fit: [5, 4, 3, 4], budget: 220000, season: 'autumn', stay: 'pension',
     food: { place: ['성읍 토속음식점', 'Seongeup local restaurant'], text: 'Buckwheat dishes and pheasant noodles in a thatched house.', dishes: [['꿩메밀국수', 'Pheasant buckwheat noodles', 11000], ['빙떡', 'Buckwheat radish roll', 6000], ['몸국', 'Seaweed pork soup (momguk)', 10000]] },
     stops: [
-      { key: '43', ko: '제주4·3평화공원', en: 'Jeju 4·3 Peace Park', kind: 'memorial', text: 'From 1947 to 1954 tens of thousands of islanders were killed. The memorial hall tells their stories.' },
-      { key: 'seongeup', bg: 'folkvillage', ko: '성읍민속마을', en: 'Seongeup Folk Village', kind: 'village', text: 'Thatched stone houses with "jeongnang" – three wooden bars instead of a gate that show if someone is home.' },
+      { key: '43', bg: 'jeju43', ko: '제주4·3평화공원', en: 'Jeju 4·3 Peace Park', kind: 'memorial', text: 'From 1947 to 1954 tens of thousands of islanders were killed. The memorial hall tells their stories.' },
+      { key: 'seongeup', bg: 'jeju43', ko: '성읍민속마을', en: 'Seongeup Folk Village', kind: 'village', text: 'Thatched stone houses with "jeongnang" – three wooden bars instead of a gate that show if someone is home.' },
       { key: 'stonepark', ko: '제주돌문화공원', en: 'Jeju Stone Park', kind: 'museum', text: 'Myths of Jeju\'s creator goddess and hundreds of dol hareubang statues.', ticket: { adult: 5000, open: '09:00', last: '17:00' } },
     ],
   },
@@ -466,7 +466,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'CJU', go: 'Express bus 202 from Jeju Airport along the west coast', days: 2, nights: 1, diff: 1, fit: [4, 5, 5, 5], budget: 270000, season: 'spring', stay: 'resort',
     food: { place: ['한림 보말칼국수', 'Hallim conch-noodle house'], text: 'Noodles in a green broth made from tiny sea snails (bomal).', dishes: [['보말칼국수', 'Sea-snail noodle soup', 11000], ['전복김밥', 'Abalone gimbap', 7000], ['흑돼지돈가스', 'Black-pork cutlet', 13000]] },
     stops: [
-      { key: 'hyeopjae', ko: '협재해수욕장', en: 'Hyeopjae Beach', kind: 'beach', text: 'White sand, emerald water and Biyangdo island floating offshore.' },
+      { key: 'hyeopjae', bg: 'jejuwest', ko: '협재해수욕장', en: 'Hyeopjae Beach', kind: 'beach', text: 'White sand, emerald water and Biyangdo island floating offshore.' },
       { key: 'hallim', ko: '한림공원', en: 'Hallim Park', kind: 'park', text: 'Palm avenues, lava caves and seasonal flower gardens.', ticket: { adult: 15000, youth: 10000, child: 9000, senior: 10000, open: '08:30', last: '17:30' } },
       { key: 'sanbang', ko: '산방산·용머리해안', en: 'Sanbangsan & Yongmeori Coast', kind: 'mountain', text: 'A bell-shaped mountain with a cave temple; below, layered rock cliffs shaped like a dragon\'s head – closed at high tide.', ticket: { adult: 2000, open: '09:00', last: '17:00', note: 'Yongmeori coast closes at high tide or in strong wind.' } },
     ],

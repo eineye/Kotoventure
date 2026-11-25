@@ -28,7 +28,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     food: { place: ['삼청동 수제비', 'Samcheong-dong sujebi house'], text: 'A famous little restaurant serves hand-torn noodle soup – there\'s always a queue.', dishes: [['수제비', 'Hand-torn noodle soup', 10000], ['감자전', 'Potato pancake', 12000], ['보리밥', 'Barley rice set', 11000]] },
     stops: [
       { key: 'gbg', ko: '경복궁', en: 'Gyeongbokgung Palace', kind: 'palace', text: 'Built in 1395, the main royal palace. The guard-changing ceremony at Gwanghwamun is at 10:00 and 14:00. Closed on Tuesdays.', ticket: { adult: 3000, open: '09:00', last: '17:00', hanbok: true, note: 'Free in hanbok. Closed Tuesdays.' } },
-      { key: 'huwon', ko: '창덕궁 후원', en: 'Changdeokgung Secret Garden', kind: 'palace', text: 'A UNESCO World Heritage palace with a royal garden you can only enter on a guided tour – book ahead!', ticket: { adult: 8000, open: '10:00', last: '16:00', note: 'Guided tours only – reserve online.' } },
+      { key: 'huwon', bg: 'royalpalaces', ko: '창덕궁 후원', en: 'Changdeokgung Secret Garden', kind: 'palace', text: 'A UNESCO World Heritage palace with a royal garden you can only enter on a guided tour – book ahead!', ticket: { adult: 8000, open: '10:00', last: '16:00', note: 'Guided tours only – reserve online.' } },
       { key: 'bukchon', bg: 'bukchon', ko: '북촌 한옥마을', en: 'Bukchon Hanok Village', kind: 'village', text: 'Hundreds of tiled-roof hanok where people still live. Tourist visits are limited to 10:00–17:00 in the red zone.' },
     ],
     tips: { couple: 'Rent matching hanbok – palace entry is free!', group: 'Book the Secret Garden tour for everyone in advance.' },
@@ -193,8 +193,8 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     hub: 'GMP', go: 'Subway Line 5 to Jongno 3-ga', days: 2, nights: 1, diff: 1, fit: [4, 5, 3, 5], budget: 220000, season: 'winter', stay: 'hotel',
     food: { place: ['종로 설렁탕', 'Jongno seolleongtang house'], text: 'A 100-year-old restaurant serving milky ox-bone soup – add salt and green onions yourself.', dishes: [['설렁탕', 'Ox-bone soup', 13000], ['수육', 'Boiled beef slices', 30000], ['도가니탕', 'Ox-knee soup', 16000]] },
     stops: [
-      { key: 'jongmyo', ko: '종묘', en: 'Jongmyo Shrine', kind: 'palace', text: 'The 101 m main hall holds the spirit tablets of Joseon kings; the royal ancestral ritual is UNESCO intangible heritage. Closed Tuesdays.', ticket: { adult: 1000, open: '09:00', last: '17:00', note: 'Weekdays: guided tours. Closed Tuesdays.' } },
-      { key: 'deoksugung', ko: '덕수궁', en: 'Deoksugung Palace', kind: 'palace', text: 'Wooden halls next to a Western-style stone palace; the guard ceremony at Daehanmun is spectacular.', ticket: { adult: 1000, open: '09:00', last: '20:00', hanbok: true } },
+      { key: 'jongmyo', bg: 'royalpalaces', ko: '종묘', en: 'Jongmyo Shrine', kind: 'palace', text: 'The 101 m main hall holds the spirit tablets of Joseon kings; the royal ancestral ritual is UNESCO intangible heritage. Closed Tuesdays.', ticket: { adult: 1000, open: '09:00', last: '17:00', note: 'Weekdays: guided tours. Closed Tuesdays.' } },
+      { key: 'deoksugung', bg: 'royalpalaces', ko: '덕수궁', en: 'Deoksugung Palace', kind: 'palace', text: 'Wooden halls next to a Western-style stone palace; the guard ceremony at Daehanmun is spectacular.', ticket: { adult: 1000, open: '09:00', last: '20:00', hanbok: true } },
       { key: 'jeongdong', ko: '정동길', en: 'Jeongdong-gil', kind: 'street', text: 'A romantic stone-wall road with early modern churches and embassies.' },
     ],
     extra: 'taxi',
