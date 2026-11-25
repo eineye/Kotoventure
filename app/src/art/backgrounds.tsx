@@ -925,6 +925,11 @@ const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   westsunset: require('../../assets/bg/westsunset.webp'),
   surf: require('../../assets/bg/surf.webp'),
   gaetbae: require('../../assets/bg/gaetbae.webp'),
+  bakery: require('../../assets/bg/bakery.webp'),
+  transit: require('../../assets/bg/transit.webp'),
+  ganghwa: require('../../assets/bg/ganghwa.webp'),
+  jikji: require('../../assets/bg/jikji.webp'),
+  baekje: require('../../assets/bg/baekje.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {

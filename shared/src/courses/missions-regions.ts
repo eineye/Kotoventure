@@ -105,7 +105,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'ICN', go: 'Bus via Gimpo to Ganghwa terminal', days: 2, nights: 1, diff: 1, fit: [4, 4, 3, 5], budget: 210000, season: 'autumn', stay: 'pension',
     food: { place: ['강화 젓국갈비', 'Ganghwa jeotguk-galbi house'], text: 'A local stew of pork ribs in shrimp-salt broth, and Ganghwa\'s purple sweet potatoes.', dishes: [['젓국갈비', 'Pork-rib shrimp-salt stew', 13000, 2], ['밴댕이회', 'Sliced shad sashimi', 20000], ['순무김치', 'Turnip kimchi set', 9000]] },
     stops: [
-      { key: 'dolmen', ko: '강화 고인돌', en: 'Ganghwa Dolmen', kind: 'memorial', text: 'A giant table-shaped Bronze Age tomb – part of a UNESCO World Heritage site.' },
+      { key: 'dolmen', bg: 'ganghwa', ko: '강화 고인돌', en: 'Ganghwa Dolmen', kind: 'memorial', text: 'A giant table-shaped Bronze Age tomb – part of a UNESCO World Heritage site.' },
       { key: 'jeondeungsa', ko: '전등사', en: 'Jeondeungsa Temple', kind: 'temple', text: 'One of Korea\'s oldest temples, inside a fortress said to be built by the sons of the mythical founder Dangun.' },
       { key: 'observatory', ko: '강화 평화전망대', en: 'Ganghwa Peace Observatory', kind: 'memorial', text: 'Binoculars show villages in North Korea only 2–3 km across the water.', ticket: { adult: 2500, open: '09:00', last: '17:30', note: 'Bring your passport – military checkpoint.' } },
     ],
@@ -142,7 +142,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'ICN', go: 'Check transit rules, then the bus from the airport to Eurwangni', days: 2, nights: 1, diff: 1, fit: [5, 5, 4, 3], budget: 180000, season: 'summer', stay: 'jjimjilbang',
     food: { place: ['을왕리 칼국수', 'Eurwangni seafood noodles'], text: 'A huge pot of clam noodle soup – the beach\'s classic.', dishes: [['바지락칼국수', 'Clam noodle soup', 11000, 2], ['해물파전', 'Seafood pancake', 16000], ['조개찜', 'Steamed clams', 40000]] },
     stops: [
-      { key: 'transit', ko: '환승 투어 데스크', en: 'Transit tour desk', kind: 'workshop', text: 'Transit passengers can join free short tours – your passport, visa rules and connecting time are checked first.' },
+      { key: 'transit', bg: 'transit', ko: '환승 투어 데스크', en: 'Transit tour desk', kind: 'workshop', text: 'Transit passengers can join free short tours – your passport, visa rules and connecting time are checked first.' },
       { key: 'culture', ko: '한국전통문화센터', en: 'Korean Traditional Culture Center (airport)', kind: 'workshop', text: 'Make a traditional bookmark or fan, and watch a royal procession inside the terminal.' },
       { key: 'eurwangni', bg: 'westsunset', ko: '을왕리 해수욕장', en: 'Eurwangni Beach', kind: 'beach', text: 'The closest beach to the airport – famous for sunsets and seafood.' },
     ],
@@ -158,7 +158,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['대전 칼국수집', 'Daejeon kalguksu house'], text: 'Daejeon has more kalguksu shops per person than anywhere – try it with spicy duruchigi.', dishes: [['칼국수', 'Knife-cut noodle soup', 8000], ['두부두루치기', 'Spicy tofu stir-fry', 15000, 2, 2], ['수육', 'Boiled pork', 20000]] },
     food2: { place: ['성심당 빵집', 'Sungsimdang bakery'], text: 'Since 1956 – its fried "soboro" bread is a Daejeon legend.', dishes: [['튀김소보로', 'Fried soboro bread', 1700], ['부추빵', 'Chive bread', 2000], ['딸기시루', 'Strawberry layer cake', 49000]] },
     stops: [
-      { key: 'sungsimdang', ko: '성심당 본점', en: 'Sungsimdang main store', kind: 'market', text: 'The queue snakes around the block – it moves fast. Grab a tray and tongs.' },
+      { key: 'sungsimdang', bg: 'bakery', ko: '성심당 본점', en: 'Sungsimdang main store', kind: 'market', text: 'The queue snakes around the block – it moves fast. Grab a tray and tongs.' },
       { key: 'jungang', ko: '대전 중앙시장', en: 'Daejeon Jungang Market', kind: 'market', text: 'One of the largest traditional markets in central Korea.' },
       { key: 'hanbat', ko: '한밭수목원', en: 'Hanbat Arboretum', kind: 'park', text: 'A huge free city arboretum next to the science park.' },
     ],
@@ -171,8 +171,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'CJJ', go: 'Bus from Cheongju Airport to Gongju', days: 3, nights: 2, diff: 2, fit: [4, 4, 3, 5], budget: 300000, season: 'summer', stay: 'hanok',
     food: { place: ['부여 연잎밥집', 'Buyeo lotus-leaf rice house'], text: 'Rice with nuts steamed in a lotus leaf – Buyeo\'s speciality.', dishes: [['연잎밥정식', 'Lotus-leaf rice set', 16000], ['메밀묵', 'Buckwheat jelly', 10000], ['우렁쌈밥', 'Snail wrap rice', 14000]] },
     stops: [
-      { key: 'gongsanseong', ko: '공산성', en: 'Gongsanseong Fortress', kind: 'palace', text: 'A 2.6 km fortress wall on a hill above the Geum River – flags of Baekje fly on top.', ticket: { adult: 1200, open: '09:00', last: '17:30' } },
-      { key: 'tombs', ko: '무령왕릉', en: 'Tomb of King Muryeong', kind: 'memorial', text: 'The only Baekje royal tomb whose owner is known – 4,600 treasures were found here in 1971.', ticket: { adult: 1500, open: '09:00', last: '17:30' } },
+      { key: 'gongsanseong', bg: 'baekje', ko: '공산성', en: 'Gongsanseong Fortress', kind: 'palace', text: 'A 2.6 km fortress wall on a hill above the Geum River – flags of Baekje fly on top.', ticket: { adult: 1200, open: '09:00', last: '17:30' } },
+      { key: 'tombs', bg: 'baekje', ko: '무령왕릉', en: 'Tomb of King Muryeong', kind: 'memorial', text: 'The only Baekje royal tomb whose owner is known – 4,600 treasures were found here in 1971.', ticket: { adult: 1500, open: '09:00', last: '17:30' } },
       { key: 'gungnamji', ko: '궁남지', en: 'Gungnamji Pond', kind: 'park', text: 'Korea\'s oldest man-made pond – in July it is covered with lotus flowers.' },
     ],
   },
@@ -196,7 +196,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['청주 삼겹살거리', 'Cheongju pork-belly street'], text: 'Cheongju claims the soy-dipped pork belly ("seogwa" style) – grilled on a tilted pan.', dishes: [['간장삼겹살', 'Soy-dipped pork belly', 15000, 2], ['김치찌개', 'Kimchi stew', 8000, 0, 1], ['냉면', 'Cold noodles', 8000]] },
     stops: [
       { key: 'cheongnamdae', ko: '청남대', en: 'Cheongnamdae', kind: 'park', text: 'The former presidential villa on a lake, now a park with statues of every president.', ticket: { adult: 6000, open: '09:00', last: '16:30' } },
-      { key: 'jikji', ko: '청주고인쇄박물관', en: 'Cheongju Early Printing Museum', kind: 'museum', text: 'Jikji (1377) is the oldest surviving book printed with movable metal type – 78 years before Gutenberg.' },
+      { key: 'jikji', bg: 'jikji', ko: '청주고인쇄박물관', en: 'Cheongju Early Printing Museum', kind: 'museum', text: 'Jikji (1377) is the oldest surviving book printed with movable metal type – 78 years before Gutenberg.' },
       { key: 'suamgol', ko: '수암골', en: 'Suamgol Mural Village', kind: 'village', text: 'A hillside village with murals and cafés overlooking the city.' },
     ],
     extra: 'crosswalk',
