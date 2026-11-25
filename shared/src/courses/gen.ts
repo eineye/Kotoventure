@@ -102,12 +102,12 @@ export interface MissionDef {
 export type HubId = 'ICN' | 'GMP' | 'CJU' | 'PUS' | 'TAE' | 'CJJ' | 'YNY' | 'MWX' | 'RSU' | 'INCHEON-PORT' | 'BUSAN-PORT' | 'JEJU-PORT';
 export const HUBS: Record<HubId, { kind: 'airport' | 'port'; ko: string; en: string; bg: string }> = {
   ICN: { kind: 'airport', ko: '인천국제공항', en: 'Incheon International Airport', bg: 'airport' },
-  GMP: { kind: 'airport', ko: '김포국제공항', en: 'Gimpo International Airport', bg: 'airport' },
-  CJU: { kind: 'airport', ko: '제주국제공항', en: 'Jeju International Airport', bg: 'airport' },
-  PUS: { kind: 'airport', ko: '김해국제공항', en: 'Gimhae International Airport', bg: 'airport' },
+  GMP: { kind: 'airport', ko: '김포국제공항', en: 'Gimpo International Airport', bg: 'airport-gmp' },
+  CJU: { kind: 'airport', ko: '제주국제공항', en: 'Jeju International Airport', bg: 'airport-cju' },
+  PUS: { kind: 'airport', ko: '김해국제공항', en: 'Gimhae International Airport', bg: 'airport-pus' },
   TAE: { kind: 'airport', ko: '대구국제공항', en: 'Daegu International Airport', bg: 'airport' },
-  CJJ: { kind: 'airport', ko: '청주국제공항', en: 'Cheongju International Airport', bg: 'airport' },
-  YNY: { kind: 'airport', ko: '양양국제공항', en: 'Yangyang International Airport', bg: 'airport' },
+  CJJ: { kind: 'airport', ko: '청주국제공항', en: 'Cheongju International Airport', bg: 'airport-cjj' },
+  YNY: { kind: 'airport', ko: '양양국제공항', en: 'Yangyang International Airport', bg: 'airport-yny' },
   MWX: { kind: 'airport', ko: '무안국제공항', en: 'Muan International Airport', bg: 'airport' },
   RSU: { kind: 'airport', ko: '여수공항', en: 'Yeosu Airport', bg: 'airport' },
   'INCHEON-PORT': { kind: 'port', ko: '인천항 국제여객터미널', en: 'Incheon Port International Ferry Terminal', bg: 'port' },

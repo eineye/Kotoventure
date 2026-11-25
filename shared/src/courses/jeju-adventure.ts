@@ -34,7 +34,7 @@ export const jejuAdventure: Course = {
   sortOrder: 4,
   scenes: [
     {
-      id: 'jj-1', day: 1, bg: 'airport',
+      id: 'jj-1', day: 1, bg: 'airport-cju',
       title: { en: 'Jeju Airport & rental car', ko: '제주공항 & 렌터카' },
       location: { en: 'Jeju International Airport', ko: '제주국제공항' },
       steps: [
@@ -220,7 +220,7 @@ export const jejuAdventure: Course = {
       ],
     },
     {
-      id: 'jj-8', day: 5, bg: 'airport',
+      id: 'jj-8', day: 5, bg: 'airport-cju',
       title: { en: 'Fly home from Jeju', ko: '제주공항 출국' },
       location: { en: 'Jeju International Airport', ko: '제주국제공항' },
       steps: [

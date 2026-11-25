@@ -236,7 +236,7 @@ export const busanFood: Course = {
       ],
     },
     {
-      id: 'bf-9', day: 4, bg: 'airport',
+      id: 'bf-9', day: 4, bg: 'airport-pus',
       title: { en: 'Fly home from Gimhae', ko: '김해공항 출국' },
       location: { en: 'Gimhae International Airport', ko: '김해국제공항' },
       steps: [
