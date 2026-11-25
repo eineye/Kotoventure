@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Modal, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
+import { Linking, Modal, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 import Svg, { Circle, G, Path, Rect, Text as SvgText } from 'react-native-svg';
 import { tr, type Course } from '@kotoventure/shared';
 import { Text } from './Text';
@@ -8,7 +8,7 @@ import { C, R, shadow } from './theme';
 /** colours for the days of a trip (cycled) */
 const DAY_COLORS = ['#D9484F', '#2D6CDF', '#2F855A', '#B7791F', '#6B46C1'];
 
-type Stop = { n: number; day: number; label: string; kind: 'start' | 'food' | 'stay' | 'health' | 'end' | 'spot'; optional: boolean };
+type Stop = { n: number; day: number; label: string; ko: string; kind: 'start' | 'food' | 'stay' | 'health' | 'end' | 'spot'; optional: boolean };
 
 const KIND_ICON: Record<Stop['kind'], string> = { start: '✈', food: '🍜', stay: '🛏', health: '💊', end: '🏁', spot: '' };
 
@@ -99,6 +99,7 @@ function useStops(course: Course, lang: string): Stop[] {
       n: i + 1,
       day: s.day,
       label: tr(s.location, lang) || tr(s.title, lang),
+      ko: (s.location?.ko || s.title.ko || '').replace(/^[^\p{L}\p{N}]+/u, '').trim(),
       kind: kindOf(String(s.bg), i, last, s.title.en ?? ''),
       optional: !!s.requires?.length,
     }));
@@ -121,6 +122,17 @@ function Legend({ course, lang }: { course: Course; lang: string }) {
   );
 }
 
+/** generic stops ("hotel", "nearby pharmacy") have no single place to search */
+const GENERIC = /^(호텔|게스트하우스|모텔|펜션|리조트|찜질방|한옥스테이|템플스테이|근처 약국|근처|숙소)$/;
+const searchable = (s: Stop) => !!s.ko && !GENERIC.test(s.ko.trim());
+
+/** Open the place in Naver Map or KakaoMap (app if installed, otherwise the web map). */
+function openMap(which: 'naver' | 'kakao', place: string) {
+  const q = encodeURIComponent(place);
+  const url = which === 'naver' ? `https://map.naver.com/p/search/${q}` : `https://map.kakao.com/link/search/${q}`;
+  Linking.openURL(url).catch(() => {});
+}
+
 /** Route map card: tap to open a full-screen, zoomable view. */
 export function RouteMap({ course, lang }: { course: Course; lang: string }) {
   const { width, height } = useWindowDimensions();
@@ -139,7 +151,7 @@ export function RouteMap({ course, lang }: { course: Course; lang: string }) {
         </View>
       </Pressable>
       <Legend course={course} lang={lang} />
-      <Text style={{ fontSize: 10, color: C.inkSoft, marginTop: 2 }}>{ko ? '* 간단한 경로도예요 (실제 거리·방향과 다를 수 있어요).' : '* Simplified route map – not to scale.'}</Text>
+      <Text style={{ fontSize: 10, color: C.inkSoft, marginTop: 2 }}>{ko ? '* 간단한 경로도예요 (실제 거리·방향과 다를 수 있어요). 크게 보기에서 장소별 N·K 지도로 길찾기를 열 수 있어요.' : '* Simplified route map – not to scale. Open it to find each place in Naver Map or KakaoMap.'}</Text>
 
       <Modal visible={open} animationType="slide" onRequestClose={() => setOpen(false)}>
         <View style={{ flex: 1, backgroundColor: C.paper }}>
@@ -171,11 +183,23 @@ export function RouteMap({ course, lang }: { course: Course; lang: string }) {
             </View>
             <View style={{ padding: 8, gap: 4, marginTop: 6, minHeight: height * 0.2 }}>
               {stops.map((s) => (
-                <Text key={s.n} style={{ fontSize: 13, color: C.ink }}>
-                  <Text style={{ fontWeight: '900' }}>{s.n}.</Text> {KIND_ICON[s.kind] ? KIND_ICON[s.kind] + ' ' : ''}
-                  {s.label}
-                  {s.optional ? <Text style={{ color: C.orange, fontSize: 11 }}> · {ko ? '일정에 넣으면' : 'if you plan it'}</Text> : null}
-                </Text>
+                <View key={s.n} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 3, borderBottomWidth: 1, borderBottomColor: C.line }}>
+                  <Text style={{ flex: 1, fontSize: 13, color: C.ink }}>
+                    <Text style={{ fontWeight: '900' }}>{s.n}.</Text> {KIND_ICON[s.kind] ? KIND_ICON[s.kind] + ' ' : ''}
+                    {s.label}
+                    {s.optional ? <Text style={{ color: C.orange, fontSize: 11 }}> · {ko ? '일정에 넣으면' : 'if you plan it'}</Text> : null}
+                  </Text>
+                  {searchable(s) && (
+                    <>
+                      <Pressable testID={`map-naver-${s.n}`} onPress={() => openMap('naver', s.ko)} accessibilityRole="link" accessibilityLabel={`Naver Map: ${s.ko}`} style={{ backgroundColor: '#03C75A', borderRadius: 6, paddingHorizontal: 7, paddingVertical: 4 }}>
+                        <Text style={{ color: '#FFF', fontWeight: '900', fontSize: 11 }}>N {ko ? '지도' : 'Map'}</Text>
+                      </Pressable>
+                      <Pressable testID={`map-kakao-${s.n}`} onPress={() => openMap('kakao', s.ko)} accessibilityRole="link" accessibilityLabel={`KakaoMap: ${s.ko}`} style={{ backgroundColor: '#FEE500', borderRadius: 6, paddingHorizontal: 7, paddingVertical: 4 }}>
+                        <Text style={{ color: '#3A1D1D', fontWeight: '900', fontSize: 11 }}>K {ko ? '지도' : 'Map'}</Text>
+                      </Pressable>
+                    </>
+                  )}
+                </View>
               ))}
             </View>
           </ScrollView>

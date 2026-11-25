@@ -9,6 +9,7 @@ import { t } from '../i18n';
 import { Btn, H, P, Panel, TopicChip, won } from '../ui/kit';
 import { CardPopup } from '../ui/CardPopup';
 import { C, R } from '../ui/theme';
+import { ChecklistPanel, buildChecklist, reviewItems } from '../ui/Checklist';
 
 /** Shown when a course is finished: score, grade, what was learned per topic, phrases, checklist. */
 export function Result({ id, onHome, onReplay }: { id: string; onHome: () => void; onReplay: () => void }) {
@@ -156,21 +157,11 @@ export function Result({ id, onHome, onReplay }: { id: string; onHome: () => voi
         </Panel>
       )}
 
-      <Panel>
-        <H size={17}>✅ {L.checklist}</H>
-        {[
-          'Passport + entry approval (K-ETA/visa if needed) + travel insurance',
-          'T-money / visitor card · some cash in ₩10,000 notes',
-          'Naver Map or KakaoMap + Kakao T / Uber installed',
-          '220 V plug adapter (Type C/F)',
-          'Save 112 · 119 · 1330 in your phone',
-          'Check the season: heat, monsoon, typhoon, fine dust, cold wave',
-        ].map((x) => (
-          <P key={x} style={{ marginTop: 6 }}>
-            ☐ {x}
-          </P>
-        ))}
-      </Panel>
+      <ChecklistPanel
+        title={`${tr(course.title, lang)} – ${ko ? '여행 준비' : 'trip checklist'}`}
+        lang={lang}
+        list={buildChecklist({ lang, month: profile?.month, party, review: reviewItems(content.courses, [p], lang), course })}
+      />
 
       <Panel style={{ gap: 8 }}>
         <H size={17}>🇰🇷 {ko ? '실제 여행에서 도움 받기' : 'Help on your real trip'}</H>

@@ -11,9 +11,10 @@ import { Chip, H, P, Stars } from '../ui/kit';
 import { C, R, shadow } from '../ui/theme';
 import { Guidebook } from './Guidebook';
 import { Me } from './Me';
+import { Kit } from './Kit';
 import { UpdateBanner } from '../update';
 
-export type Tab = 'missions' | 'guide' | 'me';
+export type Tab = 'missions' | 'guide' | 'kit' | 'me';
 
 export function Home({ tab, setTab, openCourse, openPlanner }: { tab: Tab; setTab: (t: Tab) => void; openCourse: (id: string) => void; openPlanner: () => void }) {
   const { profile } = useStore();
@@ -24,6 +25,7 @@ export function Home({ tab, setTab, openCourse, openPlanner }: { tab: Tab; setTa
       <View style={{ flex: 1 }}>
         {tab === 'missions' && <Missions openCourse={openCourse} openPlanner={openPlanner} />}
         {tab === 'guide' && <Guidebook />}
+        {tab === 'kit' && <Kit />}
         {tab === 'me' && <Me />}
       </View>
       <View style={{ flexDirection: 'row', backgroundColor: '#FFF', borderTopWidth: 1, borderTopColor: C.line, paddingBottom: 6 }}>
@@ -31,6 +33,7 @@ export function Home({ tab, setTab, openCourse, openPlanner }: { tab: Tab; setTa
           [
             ['missions', '🗺️', L.home],
             ['guide', '📖', L.guidebook],
+            ['kit', '🎒', profile?.lang === 'ko' ? '여행 키트' : 'Travel kit'],
             ['me', '🧳', L.me],
           ] as const
         ).map(([id, icon, label]) => (
