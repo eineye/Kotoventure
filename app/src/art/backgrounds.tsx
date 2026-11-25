@@ -938,6 +938,10 @@ const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   royalpalaces: require('../../assets/bg/royalpalaces.webp'),
   jejuwest: require('../../assets/bg/jejuwest.webp'),
   jeju43: require('../../assets/bg/jeju43.webp'),
+  'airport-cjj': require('../../assets/bg/airport-cjj.webp'),
+  'airport-yny': require('../../assets/bg/airport-yny.webp'),
+  'airport-cju': require('../../assets/bg/airport-cju.webp'),
+  'airport-pus': require('../../assets/bg/airport-pus.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {

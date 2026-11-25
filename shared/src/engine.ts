@@ -180,7 +180,7 @@ export function validateBundle(b: ContentBundle, known?: { props?: Set<string>; 
         }
         if (st.type === 'event') checkProp(ws, st.prop);
       });
-      if (i === 0 && !['airport', 'port'].includes(sc.bg)) issues.push({ level: 'warn', where: w, msg: 'first scene should be the airport/port' });
+      if (i === 0 && !(sc.bg === 'port' || sc.bg.startsWith('airport'))) issues.push({ level: 'warn', where: w, msg: 'first scene should be the airport/port' });
     });
   }
   const used = new Set(

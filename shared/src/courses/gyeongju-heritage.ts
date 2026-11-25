@@ -221,7 +221,7 @@ export const gyeongjuHeritage: Course = {
       ],
     },
     {
-      id: 'gj-8', day: 4, bg: 'airport',
+      id: 'gj-8', day: 4, bg: 'airport-pus',
       title: { en: 'Back to Gimhae', ko: '김해공항 귀국' },
       location: { en: 'Gimhae International Airport', ko: '김해국제공항' },
       steps: [
