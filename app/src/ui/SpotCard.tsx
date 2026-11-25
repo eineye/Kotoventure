@@ -1,5 +1,5 @@
-import { Linking, Pressable, View } from 'react-native';
-import { SPOT_FEATURES, SPOT_KINDS, tr, type Spot } from '@kotoventure/shared';
+import { Alert, Linking, Platform, Pressable, View } from 'react-native';
+import { SPOT_FEATURES, SPOT_KINDS, tr, type Course, type Spot } from '@kotoventure/shared';
 import { useStore } from '../data/store';
 import { Text } from './Text';
 import { C, R } from './theme';
@@ -11,8 +11,8 @@ const openMap = (which: 'naver' | 'kakao', q: string) =>
  * A recommended place. Editorial picks show "Kachi's pick"; paid partner listings
  * are always labelled "Partner" so travellers can tell them apart.
  */
-export function SpotCard({ spot, lang, compact }: { spot: Spot; lang: string; compact?: boolean }) {
-  const { savedSpots, toggleSpot } = useStore();
+export function SpotCard({ spot, lang, compact, course }: { spot: Spot; lang: string; compact?: boolean; course?: Course }) {
+  const { savedSpots, toggleSpot, routeSpots, setRouteSpot, progress } = useStore();
   const ko = lang === 'ko';
   const kind = SPOT_KINDS.find((k) => k.id === spot.kind);
   const saved = savedSpots.includes(spot.id);
@@ -69,6 +69,48 @@ export function SpotCard({ spot, lang, compact }: { spot: Spot; lang: string; co
           </Text>
         )}
       </View>
+      {course && <AddToRoute spot={spot} course={course} lang={lang} routeDay={routeSpots[course.id]?.find((r) => r.spotId === spot.id)?.day} inProgress={!!progress[course.id] && !progress[course.id].completedAt && progress[course.id].sceneIndex > 0} onSet={(d) => setRouteSpot(course.id, spot.id, d)} />}
+    </View>
+  );
+}
+
+/** "Add to my route": choose the day; the pick becomes a scene of the mission (time & cost included). */
+function AddToRoute({ spot, course, lang, routeDay, inProgress, onSet }: { spot: Spot; course: Course; lang: string; routeDay?: number; inProgress: boolean; onSet: (day: number) => void }) {
+  const ko = lang === 'ko';
+  const days = Array.from({ length: course.days }, (_, i) => i + 1);
+  const set = (d: number) => {
+    const go = () => onSet(d);
+    if (!inProgress) return go();
+    const msg = ko ? '진행 중인 미션은 일정이 바뀌면 처음부터 다시 시작해요. 계속할까요?' : 'Changing the route restarts the mission in progress. Continue?';
+    if (Platform.OS === 'web') {
+      if (typeof window !== 'undefined' && window.confirm(msg)) go();
+      return;
+    }
+    Alert.alert(ko ? '일정 변경' : 'Change route', msg, [
+      { text: ko ? '아니오' : 'No', style: 'cancel' },
+      { text: ko ? '예' : 'Yes', onPress: go },
+    ]);
+  };
+  return (
+    <View style={{ borderTopWidth: 1, borderTopColor: C.line, paddingTop: 8, gap: 6 }}>
+      {routeDay ? (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Text style={{ flex: 1, color: C.green, fontWeight: '900', fontSize: 13 }}>✓ {ko ? `${routeDay}일차 일정에 넣었어요` : `Added to day ${routeDay}`}</Text>
+          <Pressable testID={`spot-remove-${spot.id}`} onPress={() => set(0)} accessibilityRole="button" style={{ borderWidth: 1.5, borderColor: C.line, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 }}>
+            <Text style={{ fontSize: 12, fontWeight: '800', color: C.inkSoft }}>{ko ? '빼기' : 'Remove'}</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          <Text style={{ fontSize: 12, fontWeight: '900', color: C.ink }}>➕ {ko ? '내 일정에 넣기' : 'Add to my route'}</Text>
+          {days.map((d) => (
+            <Pressable key={d} testID={`spot-add-${spot.id}-${d}`} onPress={() => set(d)} accessibilityRole="button" style={{ backgroundColor: C.blue, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 }}>
+              <Text style={{ color: '#FFF', fontWeight: '900', fontSize: 12 }}>{ko ? `${d}일차` : `Day ${d}`}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+      <Text style={{ fontSize: 10, color: C.inkSoft }}>{ko ? '넣으면 그날 일정에 방문 장면이 추가되고 이동·방문 시간과 비용이 계산돼요.' : 'Adds a visit to that day – travel time, visit time and cost are included.'}</Text>
     </View>
   );
 }

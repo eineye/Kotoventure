@@ -27,6 +27,7 @@ type Tpl = [RegExp, (m: RegExpMatchArray, t: (s: string) => string) => string];
 /** sentences assembled by the mission generator */
 export const TEMPLATES: Record<DictLang, Tpl[]> = {
   ja: [
+    [/^To (?!your )(.+)$/, (m, t) => `${t(m[1])}へ移動`],
     [/^(🚇|🚌) (?:Subway|Bus) to (.+) \((\d+) min, (₩[\d,]+)\)$/, (m, t) => `${m[1]} ${t(m[2])}へ${m[1] === '🚇' ? '地下鉄' : 'バス'}で（${m[3]}分、${m[4]}）`],
     [/^(.+): meal, (\d+) min(?: \((₩[\d,]+)\))?$/, (m, t) => `${t(m[1])}：食事、${m[2]}分${m[3] ? `（${m[3]}）` : ''}`],
     [/^(.+): (\d+) min(?: \((₩[\d,]+)\))?$/, (m, t) => `${t(m[1])}：${m[2]}分${m[3] ? `（${m[3]}）` : ''}`],
@@ -72,6 +73,7 @@ export const TEMPLATES: Record<DictLang, Tpl[]> = {
     [/^(\d+) nights? \/ (\d+) days? · (\d+) places$/, (m) => `${m[1]}泊${m[2]}日 · ${m[3]}か所`],
   ],
   zh: [
+    [/^To (?!your )(.+)$/, (m, t) => `前往${t(m[1])}`],
     [/^(🚇|🚌) (?:Subway|Bus) to (.+) \((\d+) min, (₩[\d,]+)\)$/, (m, t) => `${m[1]} ${m[1] === '🚇' ? '坐地铁' : '坐公交'}去${t(m[2])}（${m[3]}分钟，${m[4]}）`],
     [/^(.+): meal, (\d+) min(?: \((₩[\d,]+)\))?$/, (m, t) => `${t(m[1])}：用餐，${m[2]}分钟${m[3] ? `（${m[3]}）` : ''}`],
     [/^(.+): (\d+) min(?: \((₩[\d,]+)\))?$/, (m, t) => `${t(m[1])}：${m[2]}分钟${m[3] ? `（${m[3]}）` : ''}`],
@@ -117,6 +119,7 @@ export const TEMPLATES: Record<DictLang, Tpl[]> = {
     [/^(\d+) nights? \/ (\d+) days? · (\d+) places$/, (m) => `${m[2]}天${m[1]}晚 · ${m[3]}个地点`],
   ],
   es: [
+    [/^To (?!your )(.+)$/, (m, t) => `Ir a ${t(m[1])}`],
     [/^(🚇|🚌) (?:Subway|Bus) to (.+) \((\d+) min, (₩[\d,]+)\)$/, (m, t) => `${m[1]} ${m[1] === '🚇' ? 'Metro' : 'Autobús'} a ${t(m[2])} (${m[3]} min, ${m[4]})`],
     [/^(.+): meal, (\d+) min(?: \((₩[\d,]+)\))?$/, (m, t) => `${t(m[1])}: comida, ${m[2]} min${m[3] ? ` (${m[3]})` : ''}`],
     [/^(.+): (\d+) min(?: \((₩[\d,]+)\))?$/, (m, t) => `${t(m[1])}: ${m[2]} min${m[3] ? ` (${m[3]})` : ''}`],

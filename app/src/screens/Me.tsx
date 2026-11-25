@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { UpdateCheck } from '../update';
-import { Linking, Pressable, ScrollView, TextInput, View } from 'react-native';
+import { Linking, Platform, Pressable, ScrollView, TextInput, View } from 'react-native';
+import { confirmExit } from '../ui/exit';
 import { Text } from '../ui/Text';
 import { MONTH_NAMES, PARTY_TYPES, tr } from '@kotoventure/shared';
 import { AVATARS, Traveller, avatarById } from '../art/Characters';
@@ -107,6 +108,7 @@ export function Me() {
       <UpdateCheck lang={lang} />
       <Btn kind="ghost" label={L.resetAll} onPress={() => resetProgress()} />
       <Btn kind="danger" label={L.signOut} onPress={() => signOut()} />
+      {Platform.OS === 'android' && <Btn testID="exit-app" kind="ghost" label={lang === 'ko' ? '앱 종료' : 'Exit app'} onPress={() => confirmExit(lang)} />}
       <P dim style={{ textAlign: 'center', fontSize: 12 }}>
         Kotoventure – Korea Touring Game Adventure v1.0.0{'\n'}
         {lang === 'ko' ? '빌드' : 'Build'} {process.env.EXPO_PUBLIC_BUILD_ID || 'dev'}
