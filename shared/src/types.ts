@@ -315,6 +315,8 @@ export interface ContentBundle {
   courses: Course[];
   products: Product[];
   config: AppConfig;
+  /** recommended restaurants, cafés, shops and places (see spots.ts) */
+  spots?: import('./spots').Spot[];
 }
 
 /** player state while playing a course */

@@ -7,6 +7,7 @@ import {
   type Course,
   type KnowledgeCard,
   type Product,
+  type Spot,
 } from '@kotoventure/shared';
 
 export interface MemberProgress {
@@ -50,6 +51,8 @@ export interface Repo {
   saveCourse(c: Course, previousId?: string): Promise<void>;
   deleteCourse(id: string): Promise<void>;
   saveConfig(cfg: AppConfig): Promise<void>;
+  saveSpot(s: Spot): Promise<void>;
+  deleteSpot(id: string): Promise<void>;
   listMembers(): Promise<Member[]>;
   updateMember(id: string, patch: { role: string; is_banned: boolean; memo: string | null }): Promise<void>;
   deleteMember(id: string): Promise<void>;
@@ -88,13 +91,14 @@ class SupabaseRepo implements Repo {
   }
 
   async loadContent(): Promise<ContentBundle> {
-    const [cats, cards, courses, scenes, products, config] = await Promise.all([
+    const [cats, cards, courses, scenes, products, config, spots] = await Promise.all([
       this.db.from('categories').select('*').order('sort_order'),
       this.db.from('cards').select('*').order('id'),
       this.db.from('courses').select('*').order('sort_order'),
       this.db.from('scenes').select('*').order('sort_order'),
       this.db.from('products').select('*').order('id'),
       this.db.from('app_config').select('*').eq('key', 'main').maybeSingle(),
+      this.db.from('spots').select('data'),
     ]);
     const sc = this.ok<any[]>(scenes);
     return {
@@ -113,6 +117,7 @@ class SupabaseRepo implements Repo {
         scenes: sc.filter((s) => s.course_id === r.id).map((s) => ({ id: s.id, day: s.day, title: s.title, location: s.location, bg: s.bg, steps: s.steps })),
       })),
       config: (config.data?.value as AppConfig) ?? SEED_BUNDLE.config,
+      spots: spots.error ? [] : (spots.data ?? []).map((r: any) => r.data as Spot),
     };
   }
 
@@ -164,6 +169,12 @@ class SupabaseRepo implements Repo {
   }
   async saveConfig(cfg: AppConfig) {
     this.ok(await this.db.from('app_config').upsert({ key: 'main', value: cfg }));
+  }
+  async saveSpot(s: Spot) {
+    this.ok(await this.db.from('spots').upsert({ id: s.id, status: s.status, area: s.area, sponsored: s.sponsored, data: s }));
+  }
+  async deleteSpot(id: string) {
+    this.ok(await this.db.from('spots').delete().eq('id', id));
   }
   async listMembers(): Promise<Member[]> {
     const [profiles, ents, prog] = await Promise.all([
@@ -251,7 +262,10 @@ class DemoRepo implements Repo {
     }
   }
   private bundle() {
-    return this.get<ContentBundle>(LS.bundle, () => clone(SEED_BUNDLE));
+    const b = this.get<ContentBundle>(LS.bundle, () => clone(SEED_BUNDLE));
+    // bundles saved before spots existed get the starter picks
+    if (!b.spots) b.spots = clone(SEED_BUNDLE.spots ?? []);
+    return b;
   }
   private mutate(fn: (b: ContentBundle) => void) {
     const b = this.bundle();
@@ -314,6 +328,12 @@ class DemoRepo implements Repo {
   }
   async saveConfig(cfg: AppConfig) {
     this.mutate((b) => (b.config = cfg));
+  }
+  async saveSpot(s: Spot) {
+    this.mutate((b) => this.upsertBy((b.spots ??= []), s));
+  }
+  async deleteSpot(id: string) {
+    this.mutate((b) => (b.spots = (b.spots ?? []).filter((x) => x.id !== id)));
   }
   async listMembers() {
     return this.members();

@@ -29,7 +29,9 @@ import {
   type RunStats,
   type SimStep,
   type Step,
+  spotsForScene,
 } from '@kotoventure/shared';
+import { SpotCard } from '../ui/SpotCard';
 import { Background } from '../art/backgrounds';
 import { PartyArt, SpeakerPortrait, avatarById, speakerLabel } from '../art/Characters';
 import { Prop, hasProp } from '../art/props';
@@ -438,6 +440,12 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
                 <Text style={{ color: C.inkSoft, fontSize: 11, marginTop: 2 }}>{lang === 'ko' ? '* 예상 시간·비용 (일행 기준, 실제와 다를 수 있어요)' : '* Estimated time & cost for your party – real trips vary'}</Text>
               </View>
             ) : null}
+            {spotsForScene(content.spots, scene.id).map((sp) => (
+              <View key={sp.id} style={{ marginTop: 12 }}>
+                <Text style={{ fontSize: 12, fontWeight: '900', color: C.inkSoft, marginBottom: 4 }}>📍 {lang === 'ko' ? '근처 추천' : 'Nearby'}</Text>
+                <SpotCard spot={sp} lang={lang} compact />
+              </View>
+            ))}
             {sceneIdx === 0 && (
               <View style={{ marginTop: 14, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <Text style={{ fontSize: 22 }}>{course.entry.kind === 'airport' ? '✈️' : '⛴️'}</Text>

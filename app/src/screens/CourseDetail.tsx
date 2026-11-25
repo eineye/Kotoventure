@@ -1,6 +1,7 @@
 import { Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 import { Text } from '../ui/Text';
-import { PARTY_TYPES, TOPICS, courseEstimate, courseTopics, dur, tr } from '@kotoventure/shared';
+import { PARTY_TYPES, TOPICS, courseEstimate, courseTopics, dur, spotsForCourse, tr } from '@kotoventure/shared';
+import { SpotCard } from '../ui/SpotCard';
 import { Background } from '../art/backgrounds';
 import { useStore } from '../data/store';
 import { t } from '../i18n';
@@ -78,6 +79,18 @@ export function CourseDetail({ id, onBack, onPlay, onEdit }: { id: string; onBac
               ))}
             </View>
           </Panel>
+
+          {(() => {
+            const picks = spotsForCourse(content.spots, c).slice(0, 3);
+            return picks.length ? (
+              <Panel style={{ marginTop: 14, gap: 8 }}>
+                <H size={17}>🐦 {lang === 'ko' ? '카치가 추천하는 숨은 곳' : "Kachi's hidden picks"}</H>
+                {picks.map((s) => (
+                  <SpotCard key={s.id} spot={s} lang={lang} compact />
+                ))}
+              </Panel>
+            ) : null;
+          })()}
 
           <Panel style={{ marginTop: 14 }}>
             <H size={17}>🗺️ {L.route}</H>

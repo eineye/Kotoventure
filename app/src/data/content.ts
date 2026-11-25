@@ -35,13 +35,14 @@ const toCourse = (r: any, scenes: any[]): Course => ({
 
 async function fetchRemote(): Promise<ContentBundle> {
   const db = supabase!;
-  const [cats, cards, courses, scenes, products, config] = await Promise.all([
+  const [cats, cards, courses, scenes, products, config, spots] = await Promise.all([
     db.from('categories').select('*').order('sort_order'),
     db.from('cards').select('*'),
     db.from('courses').select('*').order('sort_order'),
     db.from('scenes').select('*'),
     db.from('products').select('*'),
     db.from('app_config').select('*').eq('key', 'main').maybeSingle(),
+    db.from('spots').select('data').eq('status', 'published'),
   ]);
   const err = cats.error || cards.error || courses.error || scenes.error || products.error;
   if (err) throw err;
@@ -62,6 +63,8 @@ async function fetchRemote(): Promise<ContentBundle> {
       isActive: p.is_active,
     })),
     config: config.data?.value ?? SEED_BUNDLE.config,
+    // older databases have no spots table yet → keep the bundled picks
+    spots: spots.error ? undefined : (spots.data ?? []).map((r: any) => r.data),
   };
 }
 
@@ -78,7 +81,8 @@ export function mergeWithBundled(remote: ContentBundle): ContentBundle {
   for (const local of SEED_BUNDLE.courses) if (!courses.some((c) => c.id === local.id)) courses.push(local);
   const cards = [...remote.cards];
   for (const card of SEED_BUNDLE.cards) if (!cards.some((c) => c.id === card.id)) cards.push(card);
-  return { ...remote, courses: courses.sort((a, b) => a.sortOrder - b.sortOrder), cards };
+  const spots = remote.spots && remote.spots.length ? remote.spots : SEED_BUNDLE.spots;
+  return { ...remote, courses: courses.sort((a, b) => a.sortOrder - b.sortOrder), cards, spots };
 }
 
 /**

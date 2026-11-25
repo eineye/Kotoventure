@@ -10,6 +10,7 @@ import { Courses } from './pages/Courses';
 import { Cards } from './pages/Cards';
 import { Products } from './pages/Products';
 import { Settings } from './pages/Settings';
+import { Spots } from './pages/Spots';
 
 interface Ctx {
   content: ContentBundle;
@@ -25,6 +26,7 @@ const PAGES = [
   ['members', '👥 회원관리'],
   ['courses', '🗺️ 미션·코스'],
   ['cards', '📖 지식카드'],
+  ['spots', '🐦 추천 장소'],
   ['categories', '🏷️ 미션 분류'],
   ['products', '💳 상품·인앱'],
   ['settings', '⚙️ 앱 설정'],
@@ -130,6 +132,7 @@ export function App() {
           {page === 'members' && <Members />}
           {page === 'courses' && <Courses />}
           {page === 'cards' && <Cards />}
+          {page === 'spots' && <Spots />}
           {page === 'categories' && <Categories />}
           {page === 'products' && <Products />}
           {page === 'settings' && <Settings />}

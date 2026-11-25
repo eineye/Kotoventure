@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Linking, Modal, Pressable, ScrollView, View } from 'react-native';
 import * as Speech from 'expo-speech';
 import { tr } from '@kotoventure/shared';
+import { SpotCard } from '../ui/SpotCard';
 import { Text } from '../ui/Text';
 import { useStore } from '../data/store';
 import { CardPopup } from '../ui/CardPopup';
@@ -28,7 +29,7 @@ const ESSENTIALS = [
  * and a personal checklist. All data is on the phone, so it works offline.
  */
 export function Kit() {
-  const { content, profile, progress } = useStore();
+  const { content, profile, progress, savedSpots } = useStore();
   const lang = profile?.lang ?? 'en';
   const ko = lang === 'ko';
   const [show, setShow] = useState<string[] | null>(null);
@@ -76,6 +77,20 @@ export function Kit() {
           ))}
         </View>
       </Panel>
+
+      {(() => {
+        const saved = (content.spots ?? []).filter((x) => savedSpots.includes(x.id) && x.status === 'published');
+        return (
+          <Panel style={{ gap: 8 }}>
+            <H size={17}>♥ {ko ? '가 보고 싶은 곳' : 'Places I want to visit'}</H>
+            {saved.length === 0 ? (
+              <P dim>{ko ? '코스 화면의 카치 추천에서 ♡를 누르면 여기에 모여요.' : "Tap ♡ on Kachi's picks in a mission to save places here."}</P>
+            ) : (
+              saved.map((x) => <SpotCard key={x.id} spot={x} lang={lang} />)
+            )}
+          </Panel>
+        );
+      })()}
 
       <ChecklistPanel title={ko ? '나의 한국 여행 준비' : 'My Korea trip checklist'} lang={lang} list={list} />
 
