@@ -6,6 +6,7 @@ import { useStore } from '../data/store';
 import { t } from '../i18n';
 import { Btn, H, P, Panel, Stars, TopicChip, won } from '../ui/kit';
 import { C, R } from '../ui/theme';
+import { RouteMap } from '../ui/RouteMap';
 
 export function CourseDetail({ id, onBack, onPlay, onEdit }: { id: string; onBack: () => void; onPlay: (restart: boolean) => void; onEdit?: () => void }) {
   const { content, profile, progress, isUnlocked, productFor, purchase } = useStore();
@@ -80,6 +81,7 @@ export function CourseDetail({ id, onBack, onPlay, onEdit }: { id: string; onBac
 
           <Panel style={{ marginTop: 14 }}>
             <H size={17}>🗺️ {L.route}</H>
+            <RouteMap course={c} lang={lang} />
             {days.map((d) => (
               <View key={d} style={{ marginTop: 10 }}>
                 <Text style={{ fontWeight: '900', color: C.red }}>
