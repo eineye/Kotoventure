@@ -3,6 +3,7 @@ import type { AppConfig } from '@kotoventure/shared';
 import { useContent } from '../App';
 import { repo } from '../repo';
 import { Field, LText, Num } from '../ui';
+import { SeedUpload } from './SeedUpload';
 
 export function Settings() {
   const { content, act } = useContent();
@@ -16,6 +17,8 @@ export function Settings() {
         <h2>앱 설정</h2>
         <button onClick={() => act('설정 저장', () => repo.saveConfig(cfg))}>저장</button>
       </div>
+
+      <SeedUpload />
 
       <h3>📢 홈 화면 공지</h3>
       <p className="dim">기상 특보, 이벤트, 신규 미션 안내 등을 앱 홈 상단에 표시합니다.</p>
