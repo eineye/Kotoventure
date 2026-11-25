@@ -910,6 +910,11 @@ const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   mangwon: require('../../assets/bg/mangwon.webp'),
   kbeauty: require('../../assets/bg/kbeauty.webp'),
   museum: require('../../assets/bg/museum.webp'),
+  hallyeo: require('../../assets/bg/hallyeo.webp'),
+  haenyeo: require('../../assets/bg/haenyeo.webp'),
+  jejufood: require('../../assets/bg/jejufood.webp'),
+  haeinsa: require('../../assets/bg/haeinsa.webp'),
+  hahoe: require('../../assets/bg/hahoe.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {

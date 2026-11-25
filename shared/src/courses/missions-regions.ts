@@ -326,7 +326,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['여수 게장백반', 'Yeosu crab-set restaurant'], text: 'Soy-marinated raw crab ("rice thief") with unlimited refills in many places.', dishes: [['게장백반', 'Marinated crab set', 15000, 2], ['갈치조림', 'Braised hairtail', 35000, 2, 1], ['서대회', 'Spicy sole salad', 18000, 0, 2]] },
     stops: [
       { key: 'cable', ko: '여수 해상케이블카', en: 'Yeosu Maritime Cable Car', kind: 'night', text: 'Cabins swing over the sea between Dolsando and the city – choose a glass-floor "crystal cabin".', ticket: { adult: 17000, youth: 12000, child: 12000, senior: 12000, open: '09:30', last: '21:30' } },
-      { key: 'odongdo', ko: '오동도', en: 'Odongdo Island', kind: 'island', text: 'A camellia island linked by a 768 m causeway; red flowers bloom in winter.' },
+      { key: 'odongdo', bg: 'hallyeo', ko: '오동도', en: 'Odongdo Island', kind: 'island', text: 'A camellia island linked by a 768 m causeway; red flowers bloom in winter.' },
       { key: 'pocha', bg: 'pocha', ko: '낭만포차', en: 'Romantic pojangmacha street', kind: 'night', text: 'Tent bars along the harbour with the lit bridges behind.' },
     ],
     extra: 'taxi',
@@ -366,7 +366,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['충무김밥집', 'Chungmu gimbap shop'], text: 'Plain rice rolls with spicy squid and radish kimchi on the side – made to last on fishing boats.', dishes: [['충무김밥', 'Chungmu gimbap', 10000, 0, 1], ['멍게비빔밥', 'Sea-squirt bibimbap', 15000], ['굴국밥', 'Oyster rice soup', 11000]] },
     stops: [
       { key: 'dongpirang', ko: '동피랑 벽화마을', en: 'Dongpirang Mural Village', kind: 'village', text: 'A hillside village saved from demolition by murals – views over the harbour.' },
-      { key: 'cable', ko: '한려수도 조망 케이블카', en: 'Hallyeosu cable car', kind: 'mountain', text: 'A 2 km cable car up Mireuksan – on clear days you see dozens of islands.', ticket: { adult: 17000, youth: 13000, child: 13000, senior: 13000, open: '09:30', last: '17:00' } },
+      { key: 'cable', bg: 'hallyeo', ko: '한려수도 조망 케이블카', en: 'Hallyeosu cable car', kind: 'mountain', text: 'A 2 km cable car up Mireuksan – on clear days you see dozens of islands.', ticket: { adult: 17000, youth: 13000, child: 13000, senior: 13000, open: '09:30', last: '17:00' } },
       { key: 'sebyeonggwan', ko: '삼도수군통제영', en: 'Samdo Naval Command', kind: 'palace', text: 'HQ of the Joseon navy – Admiral Yi defeated the Japanese fleet nearby in 1592. He\'s on the ₩100 coin!', ticket: { adult: 3000, open: '09:00', last: '17:30' } },
     ],
   },
@@ -377,8 +377,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'TAE', go: 'Bus from Daegu to Andong, then city bus 246 to Hahoe', days: 2, nights: 1, diff: 1, fit: [4, 5, 3, 5], budget: 240000, season: 'autumn', stay: 'hanok',
     food: { place: ['안동 찜닭골목', 'Andong jjimdak alley'], text: 'Braised chicken with glass noodles in a sweet soy sauce – an Andong invention.', dishes: [['안동찜닭', 'Andong braised chicken', 30000, 0, 1], ['헛제삿밥', 'Mock ancestral-rite rice', 11000], ['간고등어', 'Salted mackerel', 13000]] },
     stops: [
-      { key: 'hahoe', ko: '하회마을', en: 'Hahoe Folk Village', kind: 'village', text: 'Thatched and tiled houses where families still live; Queen Elizabeth II visited in 1999.', ticket: { adult: 5000, open: '09:00', last: '18:00' }, bus: { no: '246', color: 'blue', stops: ['안동역 Andong Stn.', '병산 Byeongsan', '하회 입구 Hahoe Gate', '하회마을 Hahoe Village'] } },
-      { key: 'talchum', ko: '하회별신굿탈놀이', en: 'Hahoe mask dance', kind: 'workshop', text: 'A satirical mask dance mocking nobles and monks – a UNESCO intangible heritage.' },
+      { key: 'hahoe', bg: 'hahoe', ko: '하회마을', en: 'Hahoe Folk Village', kind: 'village', text: 'Thatched and tiled houses where families still live; Queen Elizabeth II visited in 1999.', ticket: { adult: 5000, open: '09:00', last: '18:00' }, bus: { no: '246', color: 'blue', stops: ['안동역 Andong Stn.', '병산 Byeongsan', '하회 입구 Hahoe Gate', '하회마을 Hahoe Village'] } },
+      { key: 'talchum', bg: 'hahoe', ko: '하회별신굿탈놀이', en: 'Hahoe mask dance', kind: 'workshop', text: 'A satirical mask dance mocking nobles and monks – a UNESCO intangible heritage.' },
       { key: 'byeongsan', ko: '병산서원', en: 'Byeongsan Seowon', kind: 'village', text: 'A Confucian academy with a 7-bay pavilion facing cliffs and the river.' },
     ],
   },
@@ -402,8 +402,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'TAE', go: 'Bus from Daegu Seobu terminal to Haeinsa', days: 2, nights: 1, diff: 2, fit: [5, 4, 3, 3], budget: 200000, season: 'winter', stay: 'temple',
     food: { place: ['해인사 산채식당', 'Haeinsa mountain-herb restaurant'], text: 'Mountain vegetables, mushrooms and doenjang – simple temple-village food.', dishes: [['산채정식', 'Mountain-herb set', 15000, 2], ['송이버섯전골', 'Pine-mushroom hot pot', 40000, 2], ['도토리묵밥', 'Acorn-jelly rice', 10000]] },
     stops: [
-      { key: 'tripitaka', ko: '해인사 장경판전', en: 'Janggyeong Panjeon (Tripitaka hall)', kind: 'temple', text: 'Ingenious halls keep the 81,258 blocks dry without any modern equipment – a UNESCO World Heritage site.' },
-      { key: 'templestay', bg: 'templestay', ko: '템플스테이', en: 'Temple stay programme', kind: 'workshop', text: 'Learn the 108 bows, meditate and share a silent monastic meal.' },
+      { key: 'tripitaka', bg: 'haeinsa', ko: '해인사 장경판전', en: 'Janggyeong Panjeon (Tripitaka hall)', kind: 'temple', text: 'Ingenious halls keep the 81,258 blocks dry without any modern equipment – a UNESCO World Heritage site.' },
+      { key: 'templestay', bg: 'haeinsa', ko: '템플스테이', en: 'Temple stay programme', kind: 'workshop', text: 'Learn the 108 bows, meditate and share a silent monastic meal.' },
       { key: 'gayasan', ko: '가야산 소리길', en: 'Gayasan Sorigil trail', kind: 'mountain', text: 'A gentle valley trail along a stream – "the path of sounds".' },
     ],
   },
@@ -443,7 +443,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['해녀의 집', 'Haenyeo kitchen'], text: 'The divers serve what they caught this morning – sea urchin, conch and abalone porridge.', dishes: [['전복죽', 'Abalone porridge', 15000], ['성게미역국', 'Sea-urchin seaweed soup', 15000], ['해산물모둠', 'Seafood platter', 40000, 2]] },
     stops: [
       { key: 'museum', ko: '해녀박물관', en: 'Haenyeo Museum', kind: 'museum', text: 'The story of the haenyeo (UNESCO intangible heritage) – some still dive in their 80s.', ticket: { adult: 1100, open: '09:00', last: '17:00' } },
-      { key: 'dive', ko: '해녀 물질 체험', en: 'Haenyeo diving class', kind: 'workshop', text: 'With wetsuit and weights you practise holding your breath and the "sumbisori" whistle.', ticket: { adult: 50000, youth: 50000, child: 50000, senior: 50000, open: '10:00', last: '15:00', note: 'Instructor included. Weather permitting.' } },
+      { key: 'dive', bg: 'haenyeo', ko: '해녀 물질 체험', en: 'Haenyeo diving class', kind: 'workshop', text: 'With wetsuit and weights you practise holding your breath and the "sumbisori" whistle.', ticket: { adult: 50000, youth: 50000, child: 50000, senior: 50000, open: '10:00', last: '15:00', note: 'Instructor included. Weather permitting.' } },
       { key: 'osulloc', ko: '오설록 티뮤지엄', en: 'O\'sulloc Tea Museum', kind: 'farm', text: 'Green-tea fields and a famous green-tea ice cream.' },
     ],
   },

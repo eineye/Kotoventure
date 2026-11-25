@@ -200,7 +200,7 @@ export const jejuAdventure: Course = {
       ],
     },
     {
-      id: 'jj-7', day: 4, bg: 'restaurant',
+      id: 'jj-7', day: 4, bg: 'jejufood',
       title: { en: 'Black pork BBQ', ko: '흑돼지 구이' },
       location: { en: 'Jeju City black-pork street', ko: '제주 흑돼지거리' },
       steps: [
