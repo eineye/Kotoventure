@@ -500,7 +500,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
     for (const { m: f, k } of mealAt(i)) {
       if (k > 0) {
         scenes.push({
-          id: `${def.id}-f${k + 1}`, day: dayOf(i), bg: 'restaurant', photo: { ko: f.dishes.slice(0, 2).map((d) => d[0]).join(' '), en: f.dishes.slice(0, 2).map((d) => d[1]).join(' ') }, est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] },
+          id: `${def.id}-f${k + 1}`, day: dayOf(i), bg: def.area === 'jeju' ? 'jejufood' : 'restaurant', photo: { ko: f.dishes.slice(0, 2).map((d) => d[0]).join(' '), en: f.dishes.slice(0, 2).map((d) => d[1]).join(' ') }, est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] },
           steps: [
             say(f.text),
             menuSim(`${def.id}-food${k + 1}`, f),
@@ -518,7 +518,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
       ];
       if (f.tip) fsteps.push(talk('local', f.tip));
       fsteps.push(pick(mealQuiz(RESTAURANTS[`${def.id}-food`].kind ?? 'korean'), def.id + 'food')());
-      scenes.push({ id: `${def.id}-f1`, day: dayOf(i), bg: 'restaurant', photo: { ko: f.dishes.slice(0, 2).map((d) => d[0]).join(' '), en: f.dishes.slice(0, 2).map((d) => d[1]).join(' ') }, est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] }, steps: fsteps });
+      scenes.push({ id: `${def.id}-f1`, day: dayOf(i), bg: def.area === 'jeju' ? 'jejufood' : 'restaurant', photo: { ko: f.dishes.slice(0, 2).map((d) => d[0]).join(' '), en: f.dishes.slice(0, 2).map((d) => d[1]).join(' ') }, est: { items: [est(10, 'walk', 'Walk to the restaurant', '식당까지 도보')] }, title: tl(f.time, f.place[1], f.place[0]), location: { en: f.place[1], ko: f.place[0] }, steps: fsteps });
     }
     // 4 · lodging after the first day's places (player-made trips: after every day that has a night)
     const lastOfDay = Math.max(...def.stops.map((_, j) => j).filter((j) => dayOf(j) === dayOf(i)));
