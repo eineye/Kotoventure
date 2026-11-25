@@ -288,7 +288,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['전주 비빔밥집', 'Jeonju bibimbap house'], text: 'Rice cooked in beef broth, 30 toppings and a raw egg yolk in a brass bowl.', dishes: [['전주비빔밥', 'Jeonju bibimbap', 15000], ['육회비빔밥', 'Beef tartare bibimbap', 18000], ['황포묵', 'Yellow mung-bean jelly', 10000]] },
     food2: { place: ['콩나물국밥집', 'Bean-sprout soup house'], text: 'Jeonju\'s hangover breakfast: bean-sprout rice soup with a soft-boiled egg and moju (sweet rice wine).', dishes: [['콩나물국밥', 'Bean-sprout rice soup', 9000], ['모주', 'Moju (sweet herbal wine)', 2000], ['오징어 사리', 'Extra squid', 3000]] },
     stops: [
-      { key: 'hanok', ko: '전주 한옥마을', en: 'Jeonju Hanok Village', kind: 'village', text: '700 hanok in one neighbourhood, with Gyeonggijeon shrine holding the portrait of King Taejo.', ticket: { adult: 3000, open: '09:00', last: '18:00', hanbok: true, note: 'Gyeonggijeon shrine – free in hanbok.' } },
+      { key: 'hanok', bg: 'jeonju', ko: '전주 한옥마을', en: 'Jeonju Hanok Village', kind: 'village', text: '700 hanok in one neighbourhood, with Gyeonggijeon shrine holding the portrait of King Taejo.', ticket: { adult: 3000, open: '09:00', last: '18:00', hanbok: true, note: 'Gyeonggijeon shrine – free in hanbok.' } },
       { key: 'omokdae', ko: '오목대', en: 'Omokdae', kind: 'park', text: 'A hill pavilion with a view over the sea of tiled roofs.' },
       { key: 'nambu', ko: '남부시장 야시장', en: 'Nambu Market night market', kind: 'market', text: 'On Friday and Saturday nights, food stalls and young chefs fill the old market.' },
     ],
@@ -302,7 +302,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['벌교 꼬막정식', 'Beolgyo cockle restaurant'], text: 'Cockles from the mud flats: boiled, seasoned and mixed into bibimbap.', dishes: [['꼬막정식', 'Cockle set meal', 20000, 2], ['꼬막비빔밥', 'Cockle bibimbap', 13000, 0, 1], ['녹차 삼겹살', 'Green-tea pork belly', 16000, 2]] },
     stops: [
       { key: 'tea', ko: '대한다원 녹차밭', en: 'Daehan Dawon tea plantation', kind: 'farm', text: 'Rows of tea bushes climb the hills. Pick young leaves, then roast them in a hot iron pan.', ticket: { adult: 4000, open: '09:00', last: '18:00' } },
-      { key: 'bay', ko: '순천만 습지', en: 'Suncheon Bay Wetland', kind: 'park', text: 'Endless reeds, rare cranes in winter and a sunset viewpoint.', ticket: { adult: 10000, open: '08:00', last: '19:00', note: 'Combined ticket with the National Garden.' } },
+      { key: 'bay', bg: 'suncheonbay', ko: '순천만 습지', en: 'Suncheon Bay Wetland', kind: 'park', text: 'Endless reeds, rare cranes in winter and a sunset viewpoint.', ticket: { adult: 10000, open: '08:00', last: '19:00', note: 'Combined ticket with the National Garden.' } },
       { key: 'garden', ko: '순천만국가정원', en: 'Suncheonman Bay National Garden', kind: 'park', text: 'Korea\'s first national garden with gardens from around the world.' },
     ],
   },
@@ -325,7 +325,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'RSU', go: 'Airport bus from Yeosu Airport to Yeosu Expo', days: 2, nights: 1, diff: 1, fit: [4, 5, 5, 4], budget: 280000, season: 'summer', stay: 'hotel',
     food: { place: ['여수 게장백반', 'Yeosu crab-set restaurant'], text: 'Soy-marinated raw crab ("rice thief") with unlimited refills in many places.', dishes: [['게장백반', 'Marinated crab set', 15000, 2], ['갈치조림', 'Braised hairtail', 35000, 2, 1], ['서대회', 'Spicy sole salad', 18000, 0, 2]] },
     stops: [
-      { key: 'cable', ko: '여수 해상케이블카', en: 'Yeosu Maritime Cable Car', kind: 'night', text: 'Cabins swing over the sea between Dolsando and the city – choose a glass-floor "crystal cabin".', ticket: { adult: 17000, youth: 12000, child: 12000, senior: 12000, open: '09:30', last: '21:30' } },
+      { key: 'cable', bg: 'yeosunight', ko: '여수 해상케이블카', en: 'Yeosu Maritime Cable Car', kind: 'night', text: 'Cabins swing over the sea between Dolsando and the city – choose a glass-floor "crystal cabin".', ticket: { adult: 17000, youth: 12000, child: 12000, senior: 12000, open: '09:30', last: '21:30' } },
       { key: 'odongdo', bg: 'hallyeo', ko: '오동도', en: 'Odongdo Island', kind: 'island', text: 'A camellia island linked by a 768 m causeway; red flowers bloom in winter.' },
       { key: 'pocha', bg: 'pocha', ko: '낭만포차', en: 'Romantic pojangmacha street', kind: 'night', text: 'Tent bars along the harbour with the lit bridges behind.' },
     ],
@@ -338,8 +338,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'MWX', go: 'Bus from Muan Airport to Gwangju U-Square terminal', days: 2, nights: 1, diff: 1, fit: [5, 4, 3, 4], budget: 220000, season: 'autumn', stay: 'hotel',
     food: { place: ['광주 오리탕 골목', 'Gwangju duck-soup alley'], text: 'Duck soup with perilla-seed powder and water parsley – a Gwangju classic, plus tteokgalbi.', dishes: [['오리탕', 'Duck & perilla soup', 45000, 2], ['떡갈비', 'Grilled short-rib patty', 16000], ['상추튀김', 'Fried dumplings with lettuce', 10000]] },
     stops: [
-      { key: '518', ko: '5·18기념공원', en: '5·18 Memorial Park', kind: 'memorial', text: 'In May 1980 citizens rose up for democracy; the records are on the UNESCO Memory of the World register.' },
-      { key: 'acc', ko: '국립아시아문화전당', en: 'Asia Culture Center', kind: 'museum', text: 'A huge underground arts complex built on the site of the uprising.' },
+      { key: '518', bg: 'gwangju518', ko: '5·18기념공원', en: '5·18 Memorial Park', kind: 'memorial', text: 'In May 1980 citizens rose up for democracy; the records are on the UNESCO Memory of the World register.' },
+      { key: 'acc', bg: 'gwangju518', ko: '국립아시아문화전당', en: 'Asia Culture Center', kind: 'museum', text: 'A huge underground arts complex built on the site of the uprising.' },
       { key: 'penguin', ko: '양림동 펭귄마을', en: 'Penguin Village (Yangnim-dong)', kind: 'village', text: 'Residents decorated their alleys with old clocks, pots and junk art.' },
     ],
   },
@@ -353,7 +353,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['서문시장 칼국수', 'Seomun Market noodle stall'], text: 'Noodle soup and Daegu\'s flat dumplings (napjak-mandu) dipped in spicy sauce.', dishes: [['칼국수', 'Noodle soup', 6000], ['납작만두', 'Flat dumplings', 4000], ['누른국수', 'Daegu pressed noodles', 6000]] },
     food2: { place: ['안지랑 막창골목', 'Anjirang makchang alley'], text: 'Grilled pork tripe dipped in a soybean-chili sauce – Daegu\'s soul food.', dishes: [['막창구이', 'Grilled pork makchang', 13000, 2], ['곱창', 'Grilled small intestine', 14000, 2], ['찌개라면', 'Stew ramen', 5000, 0, 1]] },
     stops: [
-      { key: 'seomun', ko: '서문시장 야시장', en: 'Seomun Night Market', kind: 'market', text: 'Korea\'s largest night market: 80 food stalls in a 350 m row.' },
+      { key: 'seomun', bg: 'seomun', ko: '서문시장 야시장', en: 'Seomun Night Market', kind: 'market', text: 'Korea\'s largest night market: 80 food stalls in a 350 m row.' },
       { key: 'kim', ko: '김광석 다시그리기길', en: 'Kim Gwang-seok Street', kind: 'street', text: 'A mural alley dedicated to a beloved folk singer.' },
       { key: 'apsan', ko: '앞산 전망대', en: 'Apsan Observatory', kind: 'night', text: 'A cable car to a lookout over the glittering city.', ticket: { adult: 12000, open: '10:00', last: '21:30' } },
     ],
