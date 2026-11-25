@@ -8,6 +8,8 @@ import {
   type CourseProgress,
   type PartyType,
   type Product,
+  withRouteSpots,
+  type RouteSpot,
 } from '@kotoventure/shared';
 import { loadContent } from './content';
 import { LangContext } from '../ui/Text';
@@ -39,10 +41,14 @@ interface State {
   trips: TripSpec[];
   /** spots the player saved ("want to go") */
   savedSpots: string[];
+  /** Kachi's picks the player added to a mission route: courseId → picks */
+  routeSpots: Record<string, RouteSpot[]>;
 }
 
 interface Api extends State {
   toggleSpot(id: string): void;
+  /** add a pick to a mission on a day (day 0 removes it) */
+  setRouteSpot(courseId: string, spotId: string, day: number): void;
   saveTrip(t: TripSpec): void;
   deleteTrip(id: string): void;
   signUp(p: Omit<Profile, 'id' | 'lang'> & { lang?: Profile['lang'] }): Promise<void>;
@@ -56,13 +62,13 @@ interface Api extends State {
   signOut(): Promise<void>;
 }
 
-const K = { profile: 'kv.profile', progress: 'kv.progress', ent: 'kv.entitlements', trips: 'kv.trips', spots: 'kv.savedSpots' };
+const K = { profile: 'kv.profile', progress: 'kv.progress', ent: 'kv.entitlements', trips: 'kv.trips', spots: 'kv.savedSpots', route: 'kv.routeSpots' };
 const Ctx = createContext<Api | null>(null);
 
 const localId = () => 'local-' + Math.random().toString(36).slice(2, 10);
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
-  const [s, setS] = useState<State>({ ready: false, content: SEED_BUNDLE, profile: null, progress: {}, entitlements: ['app_base'], trips: [], savedSpots: [] });
+  const [s, setS] = useState<State>({ ready: false, content: SEED_BUNDLE, profile: null, progress: {}, entitlements: ['app_base'], trips: [], savedSpots: [], routeSpots: {} });
 
   /* boot: cached content + local profile, then remote sync */
   useEffect(() => {
@@ -73,7 +79,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const ent = (await getJSON<string[]>(K.ent)) ?? ['app_base'];
       const trips = (await getJSON<TripSpec[]>(K.trips)) ?? [];
       const savedSpots = (await getJSON<string[]>(K.spots)) ?? [];
-      setS({ ready: true, content, profile, progress, entitlements: ent, trips, savedSpots });
+      const routeSpots = (await getJSON<Record<string, RouteSpot[]>>(K.route)) ?? {};
+      setS({ ready: true, content, profile, progress, entitlements: ent, trips, savedSpots, routeSpots });
 
       if (supabase && profile) {
         const { data } = await supabase.auth.getSession();
@@ -220,7 +227,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   // the player's own trips are built into courses and listed with the others
   const tripCourses = useMemo(() => s.trips.map((t, i) => buildTrip(t, 1000 + i)).filter((c): c is Course => !!c), [s.trips]);
-  const content = useMemo(() => (tripCourses.length ? { ...s.content, courses: [...s.content.courses, ...tripCourses] } : s.content), [s.content, tripCourses]);
+  const content = useMemo(() => {
+    const all = tripCourses.length ? [...s.content.courses, ...tripCourses] : s.content.courses;
+    // picks the player added to a route become extra scenes of that mission
+    const courses = all.map((c) => (s.routeSpots[c.id]?.length ? withRouteSpots(c, s.routeSpots[c.id], s.content.spots) : c));
+    return { ...s.content, courses };
+  }, [s.content, tripCourses, s.routeSpots]);
 
   const toggleSpot = useCallback((id: string) => {
     setS((x) => {
@@ -230,9 +242,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const setRouteSpot = useCallback((courseId: string, spotId: string, day: number) => {
+    setS((x) => {
+      const cur = (x.routeSpots[courseId] ?? []).filter((r) => r.spotId !== spotId);
+      const next = day > 0 ? [...cur, { spotId, day }] : cur;
+      const routeSpots = { ...x.routeSpots, [courseId]: next };
+      setJSON(K.route, routeSpots);
+      return { ...x, routeSpots };
+    });
+  }, []);
+
   const collectedCards = useMemo(() => new Set(Object.values(s.progress).flatMap((p) => p.cards)), [s.progress]);
 
-  const api: Api = { ...s, content, toggleSpot, saveTrip, deleteTrip, signUp, updateProfile, saveProgress, resetProgress, isUnlocked, productFor, purchase, collectedCards, signOut };
+  const api: Api = { ...s, content, toggleSpot, setRouteSpot, saveTrip, deleteTrip, signUp, updateProfile, saveProgress, resetProgress, isUnlocked, productFor, purchase, collectedCards, signOut };
   return (
     <Ctx.Provider value={api}>
       <LangContext.Provider value={s.profile?.lang ?? 'en'}>{children}</LangContext.Provider>

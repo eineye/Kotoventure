@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, BackHandler, Platform, View } from 'react-native';
+import { confirmExit } from './src/ui/exit';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { StoreProvider, useStore } from './src/data/store';
@@ -46,10 +47,11 @@ function Router() {
         pop();
         return true;
       }
-      return false;
+      confirmExit(profile?.lang);
+      return true;
     });
     return () => sub.remove();
-  }, [stack.length]);
+  }, [stack.length, profile?.lang]);
 
   // signed out from the "Me" tab → back to onboarding
   useEffect(() => {

@@ -106,3 +106,81 @@ export const SPOTS: Spot[] = [
     priceRange: 1, hours: '18:00–24:00', features: ['card', 'solo', 'noReservation'], courseIds: [], sceneIds: [], status: 'published', sponsored: false, checks: ['visited', 'priceShown', 'foreignerFriendly', 'noComplaints'], verifiedAt: '2026-11-01', sortOrder: 3,
   },
 ];
+
+/** A pick the player added to a mission's route, on a given day. */
+export interface RouteSpot {
+  spotId: string;
+  day: number;
+}
+
+const PRICE: Record<SpotKind, [number, number, number]> = {
+  food: [10000, 25000, 50000],
+  cafe: [6000, 9000, 15000],
+  shop: [0, 0, 0],
+  spot: [0, 0, 0],
+  experience: [15000, 30000, 60000],
+};
+const VISIT: Record<SpotKind, { min: number; cat: 'meal' | 'visit' }> = {
+  food: { min: 60, cat: 'meal' },
+  cafe: { min: 40, cat: 'meal' },
+  shop: { min: 60, cat: 'visit' },
+  spot: { min: 60, cat: 'visit' },
+  experience: { min: 90, cat: 'visit' },
+};
+const SPOT_BG: Record<SpotKind, string> = { food: 'restaurant', cafe: 'cafe', shop: 'shop', spot: 'village', experience: 'kitchen' };
+
+/** scenes that close a day (lodging, health stop) or the trip (departure) */
+const isDayEnd = (s: Course['scenes'][number], i: number, last: number) =>
+  i === last || /-l\d*$|-h$|-z$/.test(s.id) || /^Night\b/.test(s.title.en ?? '');
+
+/** The scene played when the traveller visits a pick they added. */
+export function spotScene(spot: Spot, day: number, area?: string): Course['scenes'][number] {
+  const v = VISIT[spot.kind];
+  const cost = spot.features.includes('free') ? 0 : PRICE[spot.kind][(spot.priceRange ?? 2) - 1];
+  const steps: import('./types').Step[] = [
+    { type: 'narration', text: spot.intro },
+    ...(spot.tip ? [{ type: 'narration' as const, text: { ...spot.tip, en: `💡 ${spot.tip.en}`, ...(spot.tip.ko ? { ko: `💡 ${spot.tip.ko}` } : {}) } }] : []),
+  ];
+  return {
+    id: `spot-${spot.id}`,
+    day,
+    bg: spot.kind === 'food' && area === 'jeju' ? 'jejufood' : SPOT_BG[spot.kind],
+    title: spot.name,
+    location: { en: spot.name.en, ko: spot.addressKo },
+    photo: { en: spot.name.en, ko: spot.addressKo },
+    est: {
+      items: [
+        { min: 20, cat: 'move', label: { en: `To ${spot.name.en}`, ko: `${spot.name.ko ?? spot.addressKo}까지 이동` }, cost: 1500, perPerson: true },
+        { min: v.min, cat: v.cat, label: spot.name, ...(cost ? { cost, perPerson: true } : {}) },
+      ],
+    },
+    steps,
+  };
+}
+
+/**
+ * The mission with the player's added picks inserted into their days (after the day's last visit,
+ * before the night's lodging / health stop / departure). The version changes with the picks,
+ * so a run in progress restarts instead of resuming at a shifted scene.
+ */
+export function withRouteSpots(course: Course, adds: RouteSpot[] | undefined, spots: Spot[] | undefined): Course {
+  const list = (adds ?? []).map((a) => ({ a, s: (spots ?? []).find((x) => x.id === a.spotId && x.status === 'published') })).filter((x): x is { a: RouteSpot; s: Spot } => !!x.s);
+  if (!list.length) return course;
+  const scenes = [...course.scenes];
+  for (const { a, s } of list) {
+    const day = Math.min(Math.max(1, a.day), course.days);
+    const last = scenes.length - 1;
+    let at = -1;
+    scenes.forEach((sc, i) => {
+      if (sc.day === day && !isDayEnd(sc, i, last)) at = i;
+    });
+    if (at < 0) {
+      const first = scenes.findIndex((sc) => sc.day === day);
+      at = first >= 0 ? first : last - 1;
+    }
+    scenes.splice(at + 1, 0, spotScene(s, day, course.area));
+  }
+  let h = 0;
+  for (const { a } of list) for (const ch of `${a.spotId}@${a.day}`) h = (h * 31 + ch.charCodeAt(0)) % 9973;
+  return { ...course, scenes, version: course.version + (h + 1) / 100000 };
+}

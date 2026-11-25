@@ -86,7 +86,7 @@ export function CourseDetail({ id, onBack, onPlay, onEdit }: { id: string; onBac
               <Panel style={{ marginTop: 14, gap: 8 }}>
                 <H size={17}>🐦 {lang === 'ko' ? '카치가 추천하는 숨은 곳' : "Kachi's hidden picks"}</H>
                 {picks.map((s) => (
-                  <SpotCard key={s.id} spot={s} lang={lang} compact />
+                  <SpotCard key={s.id} spot={s} lang={lang} compact course={c} />
                 ))}
               </Panel>
             ) : null;
