@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Animated, Easing, Linking, Pressable, ScrollView, View } from 'react-native';
 import { Text } from '../ui/Text';
-import { TIME_CAT, TOPICS, dur, hm, tr, type TimeCat } from '@kotoventure/shared';
+import { TIME_CAT, TOPICS, dur, tr, type TimeCat } from '@kotoventure/shared';
 import { PartyArt, avatarById } from '../art/Characters';
 import { Prop } from '../art/props';
 import { useStore } from '../data/store';
@@ -100,8 +100,8 @@ export function Result({ id, onHome, onReplay }: { id: string; onHome: () => voi
               .filter((x) => x.day === d)
               .map((x) => (
                 <View key={x.sceneId} style={{ flexDirection: 'row', gap: 8 }}>
-                  <Text style={{ width: 92, color: C.inkSoft, fontWeight: '800', fontSize: 12 }}>
-                    {hm(x.start)}–{hm(x.end)}
+                  <Text style={{ width: 64, color: C.inkSoft, fontWeight: '800', fontSize: 12 }}>
+                    ⏱ {dur(Math.max(0, x.end - x.start), lang)}
                   </Text>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontWeight: '800', color: C.ink }}>{tr(x.title, lang)}</Text>

@@ -6,7 +6,6 @@ import {
   scenePhotoQuery,
   TIME_CAT,
   dur,
-  hm,
   itemCost,
   sceneItems,
   type Course,
@@ -375,9 +374,11 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
           </View>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 16, marginTop: 6 }}>
-          <Text testID="hud-clock" style={{ color: '#FFF', fontWeight: '900', fontSize: 15 }}>
-            🕘 {here ? `${hm(here.start)} – ${hm(here.end)}` : hm(stats.clock?.min ?? 540)}
-          </Text>
+          {here && here.end > here.start ? (
+            <Text testID="hud-clock" style={{ color: '#FFF', fontWeight: '900', fontSize: 15 }}>
+              ⏱ {dur(here.end - here.start, lang)}
+            </Text>
+          ) : null}
           <Text style={{ color: '#CBD5E1', fontWeight: '800', fontSize: 13 }}>
             {lang === 'ko' ? '오늘 활동' : 'Today'} {dur(todayMin, lang)}
           </Text>
@@ -422,13 +423,9 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
             ) : here && here.items.length > 0 ? (
               <View testID="scene-schedule" style={{ marginTop: 12, backgroundColor: '#FFF', borderRadius: R.m, padding: 10, gap: 4, ...shadow }}>
                 {(() => {
-                  let t0 = here.start;
                   return here.items.map((it, k) => {
-                    const from = t0;
-                    if (it.cat !== 'stay') t0 += it.min;
                     return (
                       <View key={k} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                        <Text style={{ width: 44, color: C.inkSoft, fontWeight: '800', fontSize: 12 }}>{it.cat === 'stay' ? '🌙' : hm(from)}</Text>
                         <Text style={{ flex: 1, color: C.ink, fontSize: 13 }}>
                           {TIME_CAT[it.cat].icon} {tr(it.label, lang)}
                         </Text>
