@@ -34,7 +34,7 @@ export const kcultureExperience: Course = {
   sortOrder: 5,
   scenes: [
     {
-      id: 'kc-1', day: 1, bg: 'airport',
+      id: 'kc-1', day: 1, bg: 'airport-gmp',
       title: { en: 'Gimpo Airport arrival', ko: '김포공항 도착' },
       location: { en: 'Gimpo International Airport', ko: '김포국제공항' },
       steps: [
@@ -223,7 +223,7 @@ export const kcultureExperience: Course = {
       ],
     },
     {
-      id: 'kc-8', day: 4, bg: 'airport',
+      id: 'kc-8', day: 4, bg: 'airport-gmp',
       title: { en: 'Departure from Gimpo', ko: '김포공항 출국' },
       location: { en: 'Gimpo International Airport', ko: '김포국제공항' },
       steps: [

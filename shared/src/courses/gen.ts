@@ -102,7 +102,7 @@ export interface MissionDef {
 export type HubId = 'ICN' | 'GMP' | 'CJU' | 'PUS' | 'TAE' | 'CJJ' | 'YNY' | 'MWX' | 'RSU' | 'INCHEON-PORT' | 'BUSAN-PORT' | 'JEJU-PORT';
 export const HUBS: Record<HubId, { kind: 'airport' | 'port'; ko: string; en: string; bg: string }> = {
   ICN: { kind: 'airport', ko: '인천국제공항', en: 'Incheon International Airport', bg: 'airport' },
-  GMP: { kind: 'airport', ko: '김포국제공항', en: 'Gimpo International Airport', bg: 'airport' },
+  GMP: { kind: 'airport', ko: '김포국제공항', en: 'Gimpo International Airport', bg: 'airport-gmp' },
   CJU: { kind: 'airport', ko: '제주국제공항', en: 'Jeju International Airport', bg: 'airport-cju' },
   PUS: { kind: 'airport', ko: '김해국제공항', en: 'Gimhae International Airport', bg: 'airport-pus' },
   TAE: { kind: 'airport', ko: '대구국제공항', en: 'Daegu International Airport', bg: 'airport' },
