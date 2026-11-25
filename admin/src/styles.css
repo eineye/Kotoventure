@@ -167,3 +167,6 @@ details.step.dialog { border-left: 4px solid #7a4fd6; }
   table { display: block; overflow-x: auto; }
 }
 details.step.sim { border-left: 4px solid #E5383B; }
+.server-box { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.seed-box { border: 1.5px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; background: #fff; }
+.seed-log { background: #F6F4EE; border-radius: 8px; padding: 8px 10px; font-size: 12px; white-space: pre-wrap; }

@@ -373,7 +373,28 @@ class DemoRepo implements Repo {
   }
 }
 
-const url = import.meta.env.VITE_SUPABASE_URL;
-const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
+/**
+ * Server connection: build-time env vars, or (for the hosted admin) a URL + anon key
+ * entered on the login screen and kept in this browser.
+ */
+const SERVER_KEY = 'kv.admin.server';
+const saved = (() => {
+  try {
+    return JSON.parse(localStorage.getItem(SERVER_KEY) ?? 'null') as { url: string; key: string } | null;
+  } catch {
+    return null;
+  }
+})();
+export const serverSource: 'env' | 'browser' | 'none' = import.meta.env.VITE_SUPABASE_URL ? 'env' : saved?.url ? 'browser' : 'none';
+const url = import.meta.env.VITE_SUPABASE_URL || saved?.url;
+const key = import.meta.env.VITE_SUPABASE_ANON_KEY || saved?.key;
+export function connectServer(u: string, k: string) {
+  localStorage.setItem(SERVER_KEY, JSON.stringify({ url: u.trim().replace(/\/+$/, ''), key: k.trim() }));
+  window.location.reload();
+}
+export function disconnectServer() {
+  localStorage.removeItem(SERVER_KEY);
+  window.location.reload();
+}
 export const repo: Repo = url && key ? new SupabaseRepo(createClient(url, key)) : new DemoRepo();
 export const demoRepo = repo instanceof DemoRepo ? repo : null;
