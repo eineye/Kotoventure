@@ -14,8 +14,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'ICN', go: 'Airport limousine bus to Suwon station', days: 2, nights: 1, diff: 1, fit: [4, 5, 4, 5], budget: 250000, season: 'autumn', stay: 'hanok',
     food: { place: ['수원 통닭거리', 'Suwon fried-chicken alley'], text: 'A whole chicken fried in a big cauldron, the old-fashioned way – plus Suwon\'s famous marinated galbi.', dishes: [['통닭', 'Whole fried chicken', 18000], ['수원왕갈비', 'Suwon king galbi', 32000, 2], ['양념통닭', 'Sweet-spicy chicken', 19000, 0, 1]] },
     stops: [
-      { key: 'wall', ko: '수원 화성', en: 'Hwaseong Fortress wall', kind: 'palace', text: 'Gates, watchtowers and a beacon tower along a UNESCO-listed wall. Try the traditional archery range!', ticket: { adult: 1000, open: '09:00', last: '18:00' } },
-      { key: 'haenggung', ko: '화성행궁', en: 'Hwaseong Haenggung', kind: 'palace', text: 'The king\'s temporary palace – the royal guard ceremony takes place on Sundays.', ticket: { adult: 1500, open: '09:00', last: '17:30', hanbok: true } },
+      { key: 'wall', bg: 'hwaseong', ko: '수원 화성', en: 'Hwaseong Fortress wall', kind: 'palace', text: 'Gates, watchtowers and a beacon tower along a UNESCO-listed wall. Try the traditional archery range!', ticket: { adult: 1000, open: '09:00', last: '18:00' } },
+      { key: 'haenggung', bg: 'hwaseong', ko: '화성행궁', en: 'Hwaseong Haenggung', kind: 'palace', text: 'The king\'s temporary palace – the royal guard ceremony takes place on Sundays.', ticket: { adult: 1500, open: '09:00', last: '17:30', hanbok: true } },
       { key: 'haenggung-gil', ko: '행리단길', en: 'Haengridan-gil', kind: 'street', text: 'Hanok cafés and craft shops right under the fortress wall.' },
     ],
   },
@@ -27,7 +27,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['이천 쌀밥집', 'Icheon rice-feast restaurant'], text: 'Rice cooked to order in a stone pot, with more than 20 side dishes.', dishes: [['이천쌀밥정식', 'Icheon rice feast', 18000, 2], ['돌솥밥', 'Stone-pot rice', 15000], ['간장게장', 'Soy-marinated crab', 30000]] },
     food2: { place: ['이천 한우식당', 'Icheon beef restaurant'], text: 'Local hanwoo beef grilled at the table.', dishes: [['한우 등심', 'Hanwoo sirloin', 38000, 2], ['육회비빔밥', 'Beef tartare bibimbap', 14000], ['갈비탕', 'Short-rib soup', 15000]] },
     stops: [
-      { key: 'pottery', ko: '이천 도자기마을', en: 'Icheon Ceramic Village', kind: 'workshop', text: 'Hundreds of kilns. A potter guides your hands on the wheel – your bowl is fired and mailed to you later.' },
+      { key: 'pottery', bg: 'icheon', ko: '이천 도자기마을', en: 'Icheon Ceramic Village', kind: 'workshop', text: 'Hundreds of kilns. A potter guides your hands on the wheel – your bowl is fired and mailed to you later.' },
       { key: 'seolbong', ko: '설봉공원', en: 'Seolbong Park', kind: 'park', text: 'A lake park with the ceramics museum and a hilltop fortress.' },
       { key: 'market', ko: '이천 관고시장', en: 'Icheon Gwango Market', kind: 'market', text: 'A traditional 5-day market with rice cakes made from Icheon rice.' },
     ],
@@ -40,7 +40,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'ICN', go: 'Airport limousine bus to Suwon, then shuttle to the Folk Village', days: 2, nights: 1, diff: 1, fit: [3, 5, 5, 5], budget: 280000, season: 'autumn', stay: 'hotel',
     food: { place: ['민속촌 장터', 'Folk Village market inn'], text: 'An old-style market inn serves pajeon, gukbap and makgeolli in brass bowls.', dishes: [['장터국밥', 'Market rice soup', 10000], ['해물파전', 'Seafood pancake', 15000], ['도토리묵', 'Acorn jelly', 12000]] },
     stops: [
-      { key: 'village', ko: '한국민속촌', en: 'Korean Folk Village', kind: 'village', text: 'More than 270 traditional houses from all over Korea, with farmers, scholars and a "yangban" mansion.', ticket: { adult: 32000, youth: 26000, child: 24000, senior: 24000, open: '10:00', last: '17:00', note: 'Shows: farmers\' dance, tightrope, horse-riding.' } },
+      { key: 'village', bg: 'folkvillage', ko: '한국민속촌', en: 'Korean Folk Village', kind: 'village', text: 'More than 270 traditional houses from all over Korea, with farmers, scholars and a "yangban" mansion.', ticket: { adult: 32000, youth: 26000, child: 24000, senior: 24000, open: '10:00', last: '17:00', note: 'Shows: farmers\' dance, tightrope, horse-riding.' } },
       { key: 'show', ko: '마상무예 공연', en: 'Horse-riding martial-arts show', kind: 'workshop', text: 'Riders shoot arrows and swing swords at full gallop.' },
       { key: 'craft', ko: '전통 공예 체험', en: 'Traditional craft corner', kind: 'workshop', text: 'Make a paper fan or a wooden mask with a craftsman.' },
     ],
@@ -65,7 +65,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'GMP', go: 'Bus from Hapjeong station to Paju (Heyri)', days: 2, nights: 1, diff: 1, fit: [4, 5, 4, 4], budget: 230000, season: 'spring', stay: 'pension',
     food: { place: ['파주 장단콩 두부집', 'Paju Jangdan-bean tofu house'], text: 'Paju is famous for Jangdan soybeans – soft tofu stew and fresh tofu.', dishes: [['순두부찌개', 'Soft tofu stew', 10000, 0, 1], ['두부보쌈', 'Tofu with pork slices', 25000], ['콩국수', 'Cold soybean noodles', 11000]] },
     stops: [
-      { key: 'heyri', ko: '헤이리 예술마을', en: 'Heyri Art Valley', kind: 'museum', text: 'Galleries, small museums and studios designed by architects.' },
+      { key: 'heyri', bg: 'heyri', ko: '헤이리 예술마을', en: 'Heyri Art Valley', kind: 'museum', text: 'Galleries, small museums and studios designed by architects.' },
       { key: 'provence', ko: '프로방스 마을', en: 'Provence Village', kind: 'street', text: 'Pastel buildings and bakeries – a favourite photo spot.' },
       { key: 'imjingak', ko: '임진각 평화누리', en: 'Imjingak Peace Park', kind: 'memorial', text: 'The Freedom Bridge and prayer ribbons for reunification, a few km from the border.' },
     ],
@@ -129,7 +129,7 @@ export const REGION_MISSIONS: MissionDef[] = [
       { key: 'nightpark', min: 60, walk: 10, day: 1, ko: '센트럴파크 야경', en: 'Central Park at night', kind: 'night', text: 'The towers light up and reflect in the canal – the best photo spot of the day.' },
       { key: 'wolmido', min: 60, day: 2, ko: '월미도·월미문화의거리', en: 'Wolmido & Wolmi Culture Street', kind: 'beach', text: 'A seaside promenade with fair rides, buskers and gulls – ferries and cargo ships pass by.', move: { dest: '월미도 Wolmido', addr: '인천 중구 월미문화로 81', fare: 25000, text: 'You leave Songdo by car – about 40 minutes to Wolmido.' } },
       { key: 'seatrain', min: 50, walk: 5, day: 2, ko: '월미바다열차', en: 'Wolmi Sea Train', kind: 'street', text: 'An elevated train circling Wolmido with views of the harbour, the sea and the old port.', ticket: { adult: 8000, open: '10:00', last: '17:30' } },
-      { key: 'chinatown', min: 50, walk: 10, day: 2, ko: '인천 차이나타운', en: 'Incheon Chinatown', kind: 'market', text: 'Red gates and lanterns – Korea\'s oldest Chinatown, home of jjajangmyeon. Try a hollow "gonggal-ppang" or a mooncake for dessert.' },
+      { key: 'chinatown', bg: 'chinatown', min: 50, walk: 10, day: 2, ko: '인천 차이나타운', en: 'Incheon Chinatown', kind: 'market', text: 'Red gates and lanterns – Korea\'s oldest Chinatown, home of jjajangmyeon. Try a hollow "gonggal-ppang" or a mooncake for dessert.' },
       { key: 'fairy', min: 30, walk: 5, day: 2, ko: '송월동 동화마을', en: 'Songwol-dong Fairy-Tale Village', kind: 'village', text: 'Houses painted with fairy-tale scenes – people live here, so keep it quiet while taking photos.' },
       { key: 'openport', min: 60, walk: 10, day: 2, ko: '자유공원·개항장 거리', en: 'Jayu Park & Open Port Street', kind: 'memorial', text: 'Jayu Park (1888) is Korea\'s first Western-style park. Below it, banks and offices from the 1883 port opening tell the story of modern Korea.' },
     ],
@@ -455,7 +455,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['성읍 토속음식점', 'Seongeup local restaurant'], text: 'Buckwheat dishes and pheasant noodles in a thatched house.', dishes: [['꿩메밀국수', 'Pheasant buckwheat noodles', 11000], ['빙떡', 'Buckwheat radish roll', 6000], ['몸국', 'Seaweed pork soup (momguk)', 10000]] },
     stops: [
       { key: '43', ko: '제주4·3평화공원', en: 'Jeju 4·3 Peace Park', kind: 'memorial', text: 'From 1947 to 1954 tens of thousands of islanders were killed. The memorial hall tells their stories.' },
-      { key: 'seongeup', ko: '성읍민속마을', en: 'Seongeup Folk Village', kind: 'village', text: 'Thatched stone houses with "jeongnang" – three wooden bars instead of a gate that show if someone is home.' },
+      { key: 'seongeup', bg: 'folkvillage', ko: '성읍민속마을', en: 'Seongeup Folk Village', kind: 'village', text: 'Thatched stone houses with "jeongnang" – three wooden bars instead of a gate that show if someone is home.' },
       { key: 'stonepark', ko: '제주돌문화공원', en: 'Jeju Stone Park', kind: 'museum', text: 'Myths of Jeju\'s creator goddess and hundreds of dol hareubang statues.', ticket: { adult: 5000, open: '09:00', last: '17:00' } },
     ],
   },
