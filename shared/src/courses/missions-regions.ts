@@ -144,7 +144,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'transit', ko: '환승 투어 데스크', en: 'Transit tour desk', kind: 'workshop', text: 'Transit passengers can join free short tours – your passport, visa rules and connecting time are checked first.' },
       { key: 'culture', ko: '한국전통문화센터', en: 'Korean Traditional Culture Center (airport)', kind: 'workshop', text: 'Make a traditional bookmark or fan, and watch a royal procession inside the terminal.' },
-      { key: 'eurwangni', ko: '을왕리 해수욕장', en: 'Eurwangni Beach', kind: 'beach', text: 'The closest beach to the airport – famous for sunsets and seafood.' },
+      { key: 'eurwangni', bg: 'westsunset', ko: '을왕리 해수욕장', en: 'Eurwangni Beach', kind: 'beach', text: 'The closest beach to the airport – famous for sunsets and seafood.' },
     ],
     extra: 'locker',
   },
@@ -209,7 +209,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['대천 조개구이', 'Daecheon shellfish grill'], text: 'Shellfish grilled on charcoal, finished with clam noodle soup.', dishes: [['조개구이', 'Grilled shellfish', 25000, 2], ['바지락칼국수', 'Clam noodle soup', 10000], ['대하구이', 'Grilled king prawns', 35000]] },
     stops: [
       { key: 'mud', ko: '보령 머드체험관', en: 'Boryeong Mud Experience Hall', kind: 'workshop', text: 'Mud pools, mud slides and mud massage – in July the world-famous Mud Festival takes over the beach.', ticket: { adult: 12000, open: '10:00', last: '17:00' } },
-      { key: 'daecheon', ko: '대천해수욕장', en: 'Daecheon Beach', kind: 'beach', text: 'A 3.5 km beach with a sky-bike rail along the coast.' },
+      { key: 'daecheon', bg: 'westsunset', ko: '대천해수욕장', en: 'Daecheon Beach', kind: 'beach', text: 'A 3.5 km beach with a sky-bike rail along the coast.' },
       { key: 'anmyeon', ko: '안면도 꽃지해변', en: 'Kkotji Beach, Anmyeondo', kind: 'beach', text: 'Two rocks in the sea – "grandfather and grandmother" – frame one of Korea\'s best sunsets.' },
     ],
     extra: 'recycle',
@@ -224,8 +224,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['명동 닭갈비골목', 'Chuncheon dakgalbi alley'], text: 'Spicy chicken, cabbage and rice cakes stir-fried on a giant iron pan – staff cook it for you.', dishes: [['닭갈비', 'Spicy stir-fried chicken', 14000, 2, 2], ['치즈추가', 'Cheese topping', 5000], ['볶음밥', 'Fried rice in the pan', 3000]], tip: 'Leave some sauce – we fry rice in it at the end!' },
     food2: { place: ['춘천 막국수집', 'Chuncheon makguksu house'], text: 'Cold buckwheat noodles in a tangy broth – Gangwon\'s mountain food.', dishes: [['물막국수', 'Cold buckwheat noodles in broth', 9000], ['비빔막국수', 'Spicy buckwheat noodles', 9000, 0, 2], ['메밀전병', 'Buckwheat crêpe roll', 8000]] },
     stops: [
-      { key: 'alley', ko: '춘천 명동 닭갈비골목', en: 'Dakgalbi alley', kind: 'street', text: 'Dozens of dakgalbi restaurants side by side – each claims to be the original.' },
-      { key: 'makguksu', ko: '막국수체험박물관', en: 'Makguksu Museum', kind: 'workshop', text: 'Press your own buckwheat noodles with a traditional wooden press.', ticket: { adult: 1000, open: '10:00', last: '17:00' } },
+      { key: 'alley', bg: 'dakgalbi', ko: '춘천 명동 닭갈비골목', en: 'Dakgalbi alley', kind: 'street', text: 'Dozens of dakgalbi restaurants side by side – each claims to be the original.' },
+      { key: 'makguksu', bg: 'dakgalbi', ko: '막국수체험박물관', en: 'Makguksu Museum', kind: 'workshop', text: 'Press your own buckwheat noodles with a traditional wooden press.', ticket: { adult: 1000, open: '10:00', last: '17:00' } },
       { key: 'skywalk', ko: '소양강 스카이워크', en: 'Soyang River Skywalk', kind: 'river', text: 'A glass-floored walkway 156 m over the river next to the famous mandarin-fish statue.' },
     ],
   },
@@ -236,9 +236,9 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'YNY', go: 'Bus from Yangyang Airport to Gangneung', days: 2, nights: 1, diff: 1, fit: [4, 5, 4, 5], budget: 260000, season: 'autumn', stay: 'hanok',
     food: { place: ['초당 순두부마을', 'Chodang tofu village'], text: 'Tofu made with seawater instead of brine – silky soft tofu and the new "tofu jjamppong".', dishes: [['초당순두부', 'Chodang soft tofu', 10000], ['순두부젤라또', 'Soft-tofu gelato', 5000], ['짬뽕순두부', 'Spicy seafood tofu stew', 11000, 0, 2]] },
     stops: [
-      { key: 'ojukheon', ko: '오죽헌', en: 'Ojukheon', kind: 'palace', text: 'Black-bamboo house where Yulgok Yi I was born. Take out a ₩5,000 note – the house is on the back!', ticket: { adult: 3000, open: '09:00', last: '17:30' } },
+      { key: 'ojukheon', bg: 'ojukheon', ko: '오죽헌', en: 'Ojukheon', kind: 'palace', text: 'Black-bamboo house where Yulgok Yi I was born. Take out a ₩5,000 note – the house is on the back!', ticket: { adult: 3000, open: '09:00', last: '17:30' } },
       { key: 'seongyojang', ko: '선교장', en: 'Seongyojang House', kind: 'village', text: 'A 300-year-old aristocrat\'s mansion with 102 rooms and a lotus pavilion.', ticket: { adult: 5000, open: '09:00', last: '17:00' } },
-      { key: 'anmok', ko: '안목 커피거리', en: 'Anmok Coffee Street', kind: 'beach', text: 'Cafés line the beach – Gangneung hosts a coffee festival every October.' },
+      { key: 'anmok', bg: 'ojukheon', ko: '안목 커피거리', en: 'Anmok Coffee Street', kind: 'beach', text: 'Cafés line the beach – Gangneung hosts a coffee festival every October.' },
     ],
   },
   {
@@ -260,7 +260,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'YNY', go: 'Bus from Yangyang Airport to Sokcho', days: 2, nights: 1, diff: 1, fit: [4, 5, 4, 5], budget: 220000, season: 'summer', stay: 'motel',
     food: { place: ['아바이순대집', 'Abai sundae house'], text: 'Squid stuffed with rice and vegetables – a North Korean refugee recipe.', dishes: [['아바이순대', 'Abai sausage', 15000], ['오징어순대', 'Stuffed squid', 15000], ['순대국', 'Sausage soup', 10000]] },
     stops: [
-      { key: 'gaetbae', ko: '갯배', en: 'Gaetbae hand-pulled ferry', kind: 'island', text: 'Passengers pull a steel cable to cross 50 m of water – it costs a few hundred won.' },
+      { key: 'gaetbae', bg: 'gaetbae', ko: '갯배', en: 'Gaetbae hand-pulled ferry', kind: 'island', text: 'Passengers pull a steel cable to cross 50 m of water – it costs a few hundred won.' },
       { key: 'jungang', ko: '속초관광수산시장', en: 'Sokcho Jungang Market', kind: 'market', text: 'The famous dakgangjeong boxes and fresh squid.' },
       { key: 'yeonggeumjeong', ko: '영금정', en: 'Yeonggeumjeong Pavilion', kind: 'beach', text: 'A pavilion on rocks in the sea – sunrise spot.' },
     ],
@@ -273,7 +273,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'YNY', go: 'Taxi or bus from Yangyang Airport to Jukdo Beach', days: 2, nights: 1, diff: 2, fit: [5, 5, 5, 3], budget: 280000, season: 'summer', stay: 'guesthouse', health: 'heat',
     food: { place: ['양양 섭국집', 'Yangyang mussel-soup house'], text: 'A thick spicy soup of wild mussels, local to the east coast.', dishes: [['섭국', 'Wild-mussel soup', 13000, 0, 1], ['물회', 'Cold raw-fish soup', 17000, 0, 1], ['감자전', 'Potato pancake', 10000]] },
     stops: [
-      { key: 'jukdo', ko: '죽도해변 서핑스쿨', en: 'Jukdo Beach surf school', kind: 'beach', text: 'A two-hour lesson: paddling, pop-up on the sand, then the waves.', ticket: { adult: 60000, youth: 60000, child: 60000, senior: 60000, open: '09:00', last: '16:00', note: 'Lesson + board + wetsuit.' } },
+      { key: 'jukdo', bg: 'surf', ko: '죽도해변 서핑스쿨', en: 'Jukdo Beach surf school', kind: 'beach', text: 'A two-hour lesson: paddling, pop-up on the sand, then the waves.', ticket: { adult: 60000, youth: 60000, child: 60000, senior: 60000, open: '09:00', last: '16:00', note: 'Lesson + board + wetsuit.' } },
       { key: 'naksansa', ko: '낙산사', en: 'Naksansa Temple', kind: 'temple', text: 'A temple on cliffs above the sea with a 16 m statue of the Bodhisattva of Mercy.' },
       { key: 'hajodae', ko: '하조대', en: 'Hajodae', kind: 'beach', text: 'A pavilion on a rocky cape and a white lighthouse.' },
     ],
