@@ -37,9 +37,12 @@ interface State {
   entitlements: string[];
   /** trips the player planned themselves (built into playable courses) */
   trips: TripSpec[];
+  /** spots the player saved ("want to go") */
+  savedSpots: string[];
 }
 
 interface Api extends State {
+  toggleSpot(id: string): void;
   saveTrip(t: TripSpec): void;
   deleteTrip(id: string): void;
   signUp(p: Omit<Profile, 'id' | 'lang'> & { lang?: Profile['lang'] }): Promise<void>;
@@ -53,13 +56,13 @@ interface Api extends State {
   signOut(): Promise<void>;
 }
 
-const K = { profile: 'kv.profile', progress: 'kv.progress', ent: 'kv.entitlements', trips: 'kv.trips' };
+const K = { profile: 'kv.profile', progress: 'kv.progress', ent: 'kv.entitlements', trips: 'kv.trips', spots: 'kv.savedSpots' };
 const Ctx = createContext<Api | null>(null);
 
 const localId = () => 'local-' + Math.random().toString(36).slice(2, 10);
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
-  const [s, setS] = useState<State>({ ready: false, content: SEED_BUNDLE, profile: null, progress: {}, entitlements: ['app_base'], trips: [] });
+  const [s, setS] = useState<State>({ ready: false, content: SEED_BUNDLE, profile: null, progress: {}, entitlements: ['app_base'], trips: [], savedSpots: [] });
 
   /* boot: cached content + local profile, then remote sync */
   useEffect(() => {
@@ -69,7 +72,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const progress = (await getJSON<Record<string, CourseProgress>>(K.progress)) ?? {};
       const ent = (await getJSON<string[]>(K.ent)) ?? ['app_base'];
       const trips = (await getJSON<TripSpec[]>(K.trips)) ?? [];
-      setS({ ready: true, content, profile, progress, entitlements: ent, trips });
+      const savedSpots = (await getJSON<string[]>(K.spots)) ?? [];
+      setS({ ready: true, content, profile, progress, entitlements: ent, trips, savedSpots });
 
       if (supabase && profile) {
         const { data } = await supabase.auth.getSession();
@@ -218,9 +222,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const tripCourses = useMemo(() => s.trips.map((t, i) => buildTrip(t, 1000 + i)).filter((c): c is Course => !!c), [s.trips]);
   const content = useMemo(() => (tripCourses.length ? { ...s.content, courses: [...s.content.courses, ...tripCourses] } : s.content), [s.content, tripCourses]);
 
+  const toggleSpot = useCallback((id: string) => {
+    setS((x) => {
+      const savedSpots = x.savedSpots.includes(id) ? x.savedSpots.filter((y) => y !== id) : [...x.savedSpots, id];
+      setJSON(K.spots, savedSpots);
+      return { ...x, savedSpots };
+    });
+  }, []);
+
   const collectedCards = useMemo(() => new Set(Object.values(s.progress).flatMap((p) => p.cards)), [s.progress]);
 
-  const api: Api = { ...s, content, saveTrip, deleteTrip, signUp, updateProfile, saveProgress, resetProgress, isUnlocked, productFor, purchase, collectedCards, signOut };
+  const api: Api = { ...s, content, toggleSpot, saveTrip, deleteTrip, signUp, updateProfile, saveProgress, resetProgress, isUnlocked, productFor, purchase, collectedCards, signOut };
   return (
     <Ctx.Provider value={api}>
       <LangContext.Provider value={s.profile?.lang ?? 'en'}>{children}</LangContext.Provider>
