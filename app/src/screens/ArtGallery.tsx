@@ -7,12 +7,18 @@ import { Logo, LogoMark } from '../art/Logo';
 import { Prop } from '../art/props';
 import { Banknote, Coin } from '../art/Money';
 import { TmoneyCard } from '../art/TmoneyCard';
+import { SubwayMap } from '../sim/SubwayMap';
 
 /** Dev/design review page: every illustration id. Open the web build with ?gallery */
 export function ArtGallery() {
   const speakers = ['guide', 'local', 'staff', 'driver', 'police', 'doctor', 'pharmacist', 'elder', 'monk', 'haenyeo'] as const;
   return (
     <ScrollView contentContainerStyle={{ padding: 12, backgroundColor: '#FFF' }}>
+      {(['seoul', 'busan', 'incheon'] as const).map((n) => (
+        <View key={n} testID={`gal-subway-${n}`} style={{ marginBottom: 10, alignSelf: 'flex-start' }}>
+          <SubwayMap net={n} width={360} state={{ path: [], cur: '', goal: '', near: new Set() }} />
+        </View>
+      ))}
       <Logo width={340} />
       {[1000, 5000, 10000, 50000].map((v) => (
         <View key={v} style={{ flexDirection: 'row', gap: 6, marginBottom: 6 }}>
