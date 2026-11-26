@@ -108,7 +108,7 @@ export const HUBS: Record<HubId, { kind: 'airport' | 'port'; ko: string; en: str
   TAE: { kind: 'airport', ko: '대구국제공항', en: 'Daegu International Airport', bg: 'airport' },
   CJJ: { kind: 'airport', ko: '청주국제공항', en: 'Cheongju International Airport', bg: 'airport-cjj' },
   YNY: { kind: 'airport', ko: '양양국제공항', en: 'Yangyang International Airport', bg: 'airport-yny' },
-  MWX: { kind: 'airport', ko: '무안국제공항', en: 'Muan International Airport', bg: 'airport' },
+  MWX: { kind: 'airport', ko: '무안국제공항', en: 'Muan International Airport', bg: 'airport-mwx' },
   RSU: { kind: 'airport', ko: '여수공항', en: 'Yeosu Airport', bg: 'airport' },
   'INCHEON-PORT': { kind: 'port', ko: '인천항 국제여객터미널', en: 'Incheon Port International Ferry Terminal', bg: 'port' },
   'BUSAN-PORT': { kind: 'port', ko: '부산항 국제여객터미널', en: 'Busan Port International Passenger Terminal', bg: 'port' },
@@ -308,7 +308,7 @@ const BANK: Record<Kind, Q[]> = {
   ],
 };
 /** revision of the generated content (season-aware steps, guidebook cards for SIM/bus/subway/toilets/ordering) */
-const GEN_REV = 3;
+const GEN_REV = 4;
 
 const KIND_BG: Record<Kind, string> = {
   palace: 'palace', temple: 'temple', market: 'market', mountain: 'mountain', beach: 'beach', museum: 'museum', street: 'street', village: 'village',

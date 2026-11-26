@@ -942,6 +942,7 @@ const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   'airport-yny': require('../../assets/bg/airport-yny.webp'),
   'airport-cju': require('../../assets/bg/airport-cju.webp'),
   'airport-pus': require('../../assets/bg/airport-pus.webp'),
+  'airport-mwx': require('../../assets/bg/airport-mwx.webp'),
   'airport-gmp': require('../../assets/bg/airport-gmp.webp'),
   hanyangwall: require('../../assets/bg/hanyangwall.webp'),
   garden: require('../../assets/bg/garden.webp'),
