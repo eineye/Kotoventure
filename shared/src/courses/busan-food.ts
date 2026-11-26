@@ -1,7 +1,9 @@
-import type { Course } from '../types';
+import type { Course, Step } from '../types';
 import { ask, event, learn, M, no, ok, P, say, simulate, talk } from '../dsl';
 
 const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
+/** how the day planner got you to a place ("by:<place>:<mode>") */
+const by = (place: string, ...modes: string[]) => modes.map((m) => `by:${place}:${m}`);
 
 /** 식도락 – Busan food trail. Arrives and leaves at Gimhae Airport. */
 export const busanFood: Course = {
@@ -30,7 +32,7 @@ export const busanFood: Course = {
   coverBg: 'market',
   access: 'base',
   isPublished: true,
-  version: 6,
+  version: 7,
   sortOrder: 2,
   scenes: [
     {
@@ -150,11 +152,13 @@ export const busanFood: Course = {
       location: { en: 'Gamcheon, Saha-gu', ko: '감천, 사하구' },
       steps: [
         say('A hillside of pastel houses, murals and the "Little Prince" statue. A small green "maeul bus" (village bus) climbs the steep road from Toseong station.'),
-        simulate('bus', 'transport', 'Village bus to Gamcheon', 'Take the green village bus up the hill: find it on the arrival board, tap in at the front, ring the bell and tap out at the back door.', { busNo: '사하1-1', busColor: 'green', stops: ['토성역 Toseong Stn.', '부산대병원 PNU Hospital', '감정초등학교 Gamjeong Elem.', '감천문화마을 Gamcheon Village'], getOff: '감천문화마을 Gamcheon Village' }, 'tr-bus'),
+        say('Your taxi climbs the steep, winding road and drops you at the top of the village.', { ifFlags: by('gamcheon', 'taxi') }),
+        say('You walk up from Toseong station – 25 minutes of steep hill. Worth it for the view!', { ifFlags: by('gamcheon', 'walk') }),
+        { ...simulate('bus', 'transport', 'Village bus to Gamcheon', 'Take the green village bus up the hill: find it on the arrival board, tap in at the front, ring the bell and tap out at the back door.', { busNo: '사하1-1', busColor: 'green', stops: ['토성역 Toseong Stn.', '부산대병원 PNU Hospital', '감정초등학교 Gamjeong Elem.', '감천문화마을 Gamcheon Village'], getOff: '감천문화마을 Gamcheon Village' }, 'tr-bus'), unlessFlags: by('gamcheon', 'taxi', 'walk') } as Step,
         ask('transport', 'On the packed village bus an elderly lady gets on with groceries.', [
           ok('Offer her my seat', 'She pats your arm: "Gomawoyo!" Respect for elders matters a lot.', { manner: 8, energy: -3 }, 'priority-seat'),
           no('Pretend to sleep', 'An easy one to miss! Giving your seat to elders is a kind gesture Koreans really appreciate – try it next time.', { manner: -6 }),
-        ], 'et-seats'),
+        ], 'et-seats', { unlessFlags: by('gamcheon', 'taxi', 'walk') }),
         ask('etiquette', 'The alleys are tiny and people\'s laundry hangs outside.', [
           ok('Keep voices low and stay on the marked tour route', 'Residents appreciate it.', { manner: 5 }, 'quiet'),
           no('Play music on a speaker', 'Sound carries in the tiny alleys and people live here. Keep it quiet and residents will greet you warmly.', { manner: -8 }),
@@ -179,7 +183,7 @@ export const busanFood: Course = {
           ok('Find the designated smoking area off the beach', 'Right. Smoking on the beach can be fined.', { manner: 4 }, 'no-smoking'),
           no('Smoke on the sand and bury the butt', 'Smoking on the beach can be fined, and families play here. Designated smoking areas are easy to find nearby.', { money: -50000, manner: -10 }),
         ], 'la-minor'),
-        ask('lodging', 'Tonight you need a cheap, private room near the beach. What\'s a good Korean option?', [
+        ask('lodging', 'Back at your Nampo hotel, a traveller asks you: where can you sleep cheaply near Haeundae next time?', [
           ok('A clean modern motel with a self check-in kiosk', 'Korean motels are budget-friendly and private.', { money: -60000, energy: 15 }, 'motel'),
           ok('A guesthouse dorm (social & cheapest)', 'Great for meeting other travellers.', { money: -30000, energy: 10 }, 'house'),
           no('Sleep on the beach', 'Security politely wakes you at 3 am and you sleep badly. Korea has plenty of affordable motels and guesthouses – no need to rough it!', { energy: -25 }),
@@ -203,7 +207,7 @@ export const busanFood: Course = {
           ok('Fill your friend\'s glass – they will fill yours', 'Yes! Never pour for yourself.', { manner: 6 }, 'soju'),
           no('Refill only your own glass', 'Your friend smiles and fills your glass for you – in Korea you pour for each other. Try it next round!', { manner: -5 }),
         ], 'fo-drink'),
-        ask('law', 'You had two drinks. Your rental e-scooter is parked nearby.', [
+        ask('law', 'You had two drinks. A shared e-scooter is parked nearby – quicker than waiting for a taxi.', [
           ok('Take a taxi – drink-riding is illegal on scooters too', 'Right. Korea\'s limit is 0.03% and police check scooters too.', { money: -9000, manner: 5 }, 'taxi'),
           no('Ride the scooter back, it\'s only 2 km', 'Police check for drink-riding at night, and the fine is heavy. Taxis are cheap and safe in Korea – the easy choice!', { money: -100000, manner: -15 }),
         ], 'la-traffic'),

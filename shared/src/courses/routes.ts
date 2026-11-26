@@ -154,7 +154,7 @@ export function routesFor(x: RouteInput): EntryRoute[] {
     const steps: Step[] = [learn('tr-arex')];
     if (st)
       steps.push(
-        simulate('train', 'transport', 'KTX map & ticket machine', `At ${f.name[0]} Station, find ${rail.to[0]} on the KTX map and buy tickets for your whole party. Try to arrive by ${arriveBy}.`, { from: rail.from, to: rail.station, arriveBy }, 'tr-ktx'),
+        { ...simulate('train', 'transport', 'KTX map & ticket machine', `At ${f.name[0]} Station, find ${rail.to[0]} on the KTX map and buy tickets for your whole party. Try to arrive by ${arriveBy}.`, { from: rail.from, to: rail.station, arriveBy }, 'tr-ktx'), intro: { en: `At ${f.name[0]} Station, find ${rail.to[0]} on the KTX map and buy tickets for your whole party. Try to arrive by ${arriveBy}.`, ko: `${f.name[1]}역에서 KTX 노선도에서 ${rail.to[1]}역을 찾고 일행 모두의 표를 사세요. ${arriveBy}까지 도착하도록 해 보세요.` } } as Step,
       );
     else steps.push(learn('tr-ktx'));
     out.push({

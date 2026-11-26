@@ -1,6 +1,6 @@
 import { Alert, Platform, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 import { Text } from '../ui/Text';
-import { PARTY_TYPES, TOPICS, courseEstimate, courseTopics, dur, spotsForCourse, tr, type Course } from '@kotoventure/shared';
+import { PARTY_TYPES, TOPICS, isBranchScene, courseEstimate, courseTopics, dur, spotsForCourse, tr, type Course } from '@kotoventure/shared';
 import { SpotCard } from '../ui/SpotCard';
 import { Background } from '../art/backgrounds';
 import { useStore } from '../data/store';
@@ -118,7 +118,7 @@ export function CourseDetail({ id, onBack, onPlay, onEdit, onResult }: { id: str
                         <View style={{ marginLeft: 10, flex: 1 }}>
                           <Text style={{ fontWeight: '800', color: C.ink }}>
                             {tr(s.title, lang)}
-                            {s.requires?.length ? <Text style={{ color: C.orange, fontSize: 12 }}> · {lang === 'ko' ? '일정에 넣으면' : 'if you plan it'}</Text> : null}
+                            {s.requires?.length ? <Text style={{ color: C.orange, fontSize: 12 }}> · {isBranchScene(s) ? (lang === 'ko' ? '고른 교통편에 따라' : 'depends on your choice') : lang === 'ko' ? '일정에 넣으면' : 'if you plan it'}</Text> : null}
                           </Text>
                           <Text style={{ fontSize: 12, color: C.inkSoft }}>📍 {tr(s.location, lang)}</Text>
                         </View>

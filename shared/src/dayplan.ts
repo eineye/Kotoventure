@@ -24,6 +24,8 @@ export interface PlanResult {
   cost: number;
   energy: number;
   visited: string[];
+  /** how you got to each visited place (scenes later show the matching ride) */
+  modes: Record<string, Transport>;
   score: number;
   endMin: number;
   /** fun needed for 100 points (scaled to available hours and region) */
@@ -63,6 +65,7 @@ export function simulatePlan(cfg: SimConfig, stops: PlanStop[], returnMode: Tran
   let ate = t >= 12 * 60; // starting after noon = already had lunch
   let penalty = 0;
   const visited: string[] = [];
+  const modes: Record<string, Transport> = {};
 
   const go = (to: Place, mode: Transport) => {
     const tr = travel(at, to, mode, t);
@@ -152,6 +155,7 @@ export function simulatePlan(cfg: SimConfig, stops: PlanStop[], returnMode: Tran
     energy += e;
     fun += Math.max(0, f);
     visited.push(p.id);
+    modes[p.id] = s.mode;
     ev.push({ time: hhmm(start), kind: 'visit', text: `${p.name.en}: ${p.food ? 'meal, ' : ''}${end - start} min${p.cost ? ` (₩${p.cost.toLocaleString('en-US')})` : ''}`, good: true });
     ev.push(...notes);
   }
@@ -172,5 +176,5 @@ export function simulatePlan(cfg: SimConfig, stops: PlanStop[], returnMode: Tran
   ev.push({ time: hhmm(t), kind: 'end', text: `Back at the hotel at ${hhmm(t)}.` });
   const target = funTarget(cfg);
   const score = Math.max(0, Math.min(100, Math.round((fun / target) * 100) - penalty));
-  return { events: ev, fun: Math.round(fun), cost, energy, visited, score, endMin: t, target };
+  return { events: ev, fun: Math.round(fun), cost, energy, visited, modes, score, endMin: t, target };
 }

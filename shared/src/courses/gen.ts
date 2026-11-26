@@ -13,6 +13,7 @@ import { CUISINES, TICKET_SITES, RESTAURANTS, inferCuisine, menuIntro, type BusC
 import type { Area, ChoiceOption, Course, EstItem, PartyType, Scene, Step, TimeCat, TopicId } from '../types';
 import { ask, event, learn, M, no, ok, P, say, simulate, talk } from '../dsl';
 import { routesFor, withEntryRoute } from './routes';
+import { stationOf } from '../subway';
 
 export type Kind =
   | 'palace' | 'temple' | 'market' | 'mountain' | 'beach' | 'museum' | 'street' | 'village'
@@ -481,7 +482,11 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
       steps.push(simulate('taxi', 'transport', `Taxi to ${s.en}`, `Call a taxi in the app to ${s.en} – check the Korean address and the plate number.`, { dest: s.move.dest, addr: s.move.addr, fare: s.move.fare }, 'tr-taxi'));
     }
     if (s.bus) steps.push(simulate('bus', 'transport', `Bus to ${s.en}`, `Take city bus ${s.bus.no}: find it on the arrival board, tap in at the front, ring the bell and tap out at the back door.`, { busNo: s.bus.no, busColor: s.bus.color, stops: s.bus.stops, getOff: s.bus.stops[s.bus.stops.length - 1] }, 'tr-bus'));
-    if (s.subway) steps.push(simulate('transfer', 'transport', `Subway to ${s.en}`, `Find the fastest subway route to ${s.subway.station} station before your train leaves. Bold circles are transfer stations.`, { fromStation: s.subway.from, toStation: s.subway.to }, 'tr-transfer'));
+    if (s.subway) {
+      const st = simulate('transfer', 'transport', `Subway to ${s.en}`, `Find the fastest subway route to ${s.subway.station} station before your train leaves. Bold circles are transfer stations.`, { fromStation: s.subway.from, toStation: s.subway.to }, 'tr-transfer');
+      const ko = stationOf(s.subway.to)?.ko ?? s.subway.station;
+      steps.push({ ...st, title: { en: `Subway to ${s.en}`, ko: `${s.ko}까지 지하철` }, intro: { en: `Find the fastest subway route to ${s.subway.station} station before your train leaves. Bold circles are transfer stations.`, ko: `열차가 떠나기 전에 ${ko}역까지 가는 가장 빠른 지하철 경로를 찾으세요. 굵은 동그라미가 환승역이에요.` } } as Step);
+    }
     steps.push(say(s.text));
     if (s.tip) steps.push(talk('guide', s.tip));
     if (s.phrase) steps.push(talk('local', s.phrase[2], P(s.phrase[0], s.phrase[1], s.phrase[2])));

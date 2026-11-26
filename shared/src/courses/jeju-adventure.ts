@@ -30,7 +30,7 @@ export const jejuAdventure: Course = {
   coverBg: 'mountain',
   access: 'base',
   isPublished: true,
-  version: 4,
+  version: 5,
   sortOrder: 4,
   scenes: [
     {
@@ -54,7 +54,7 @@ export const jejuAdventure: Course = {
         ask('law', 'On the road, which side do you drive on and what about speed?', [
           ok('Right side; follow limits – there are many speed cameras', 'Safe driving. Cameras flash often on Jeju.', { manner: 5 }, 'crosswalk'),
           no('Left side like in Australia/Japan, as fast as I want', 'Koreans drive on the right – a near-miss and a speed-camera fine. Take it slow and enjoy the island roads!', { money: -60000, energy: -15 }),
-        ], 'la-traffic'),
+        ], 'la-traffic', { ifFlags: ['rentalCar'] }),
       ],
     },
     {
@@ -69,7 +69,7 @@ export const jejuAdventure: Course = {
           ok('Tell the host and pay the extra-guest fee', 'Honest – and safe for fire regulations.', { money: -40000, manner: 5 }, 'pension'),
           no('Sneak the extra two in', 'The host notices and charges extra (rooms have fire-safety limits). Just ask – most hosts are flexible!', { manner: -12, money: -60000 }),
         ], undefined, { parties: ['friends', 'group'] }),
-        ask('lodging', 'Solo on Jeju: where do you stay to meet people?', [
+        ask('lodging', 'Your host asks: next time, where could you stay on Jeju to meet other travellers?', [
           ok('A guesthouse with a shared kitchen and evening gatherings', 'You meet hikers for tomorrow.', { money: -35000, energy: 10 }, 'house'),
           no('Sleep in the car', 'Cramped and cold.', { energy: -20 }),
         ], 'lo-motel', { parties: ['solo', 'couple'] }),

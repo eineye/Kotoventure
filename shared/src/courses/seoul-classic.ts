@@ -1,7 +1,9 @@
-import type { Course } from '../types';
+import type { Course, Step } from '../types';
 import { ask, event, learn, M, no, ok, P, say, simulate, talk } from '../dsl';
 
 const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
+/** how the day planner got you to a place ("by:<place>:<mode>") */
+const by = (place: string, ...modes: string[]) => modes.map((m) => `by:${place}:${m}`);
 
 /**
  * 관광 – Seoul Classic. Based on the most popular first-timer route for foreign visitors:
@@ -34,7 +36,7 @@ export const seoulClassic: Course = {
   coverBg: 'palace',
   access: 'base',
   isPublished: true,
-  version: 5,
+  version: 6,
   sortOrder: 1,
   scenes: [
     {
@@ -59,16 +61,16 @@ export const seoulClassic: Course = {
         simulate('exchange', 'money', 'Airport exchange counter', 'You need some won for the T-money card and street food. Read the rate board for your currency, decide how much to change at the (expensive) airport counter, count the cash and get to know every Korean note and coin.', { venue: 'airport', targetKRW: 100000 }, 'mo-exchange'),
         learn('mo-notes'),
         ask('transport', 'You have one big suitcase. Which is the best way into central Seoul?', [
-          ok('AREX train to Seoul Station', 'Fast, cheap and on time. Follow the "Train to Seoul" signs to B1.', { money: -11000 }, 'arex'),
-          ok('Airport limousine bus to Myeongdong', 'Also great with luggage – it stops near big hotels.', { money: -18000 }, 'bus'),
-          no('Regular taxi all the way', 'Possible, but about ₩60,000–90,000 with tolls and a late-night surcharge.', { money: -75000 }, 'taxi'),
+          flag(ok('AREX train to Seoul Station', 'Fast, cheap and on time. Follow the "Train to Seoul" signs to B1.', { money: -11000 }, 'arex'), 'go:arex'),
+          flag(ok('Airport limousine bus to Myeongdong', 'Also great with luggage – it stops near big hotels.', { money: -18000 }, 'bus'), 'go:limo'),
+          flag(no('Regular taxi all the way', 'Possible, but about ₩60,000–90,000 with tolls and a late-night surcharge.', { money: -75000 }, 'taxi'), 'go:taxi'),
         ], 'tr-arex'),
         say('For a group this size, everyone needs their own T-money card – one card can\'t pay for several people on the subway.', { parties: ['group'] }),
         simulate('tmoney', 'transport', 'T-money: buy, top up, tap', 'Buy a T-money card at the convenience store, top it up with cash at the station machine, then get through the ticket gates like a local.', { buyCard: true }, 'tr-tmoney'),
       ],
     },
     {
-      id: 'sc-2', day: 1, bg: 'subway',
+      id: 'sc-2', day: 1, bg: 'subway', requires: ['go:arex'],
       title: { en: 'Subway to Myeongdong', ko: '지하철로 명동 가기' },
       location: { en: 'Seoul Station → Myeongdong (Line 4)', ko: '서울역 → 명동역 (4호선)' },
       steps: [
@@ -88,6 +90,41 @@ export const seoulClassic: Course = {
           no('Sit in the pink seat – nobody is pregnant now', 'Koreans keep this pink seat free for pregnant women, even on busy trains – a kind custom to follow.', { manner: -6 }),
         ], 'et-seats'),
         learn('et-quiet'),
+      ],
+    },
+    {
+      id: 'sc-2b', day: 1, bg: 'airport', requires: ['go:limo'],
+      title: { en: 'Limousine bus to Myeongdong', ko: '공항리무진버스로 명동 가기' },
+      location: { en: 'Incheon Airport → Myeongdong (limousine 6015)', ko: '인천공항 → 명동 (리무진 6015)' },
+      steps: [
+        say('Airport limousine buses leave from the arrivals floor (1F). Route 6015 goes to Myeongdong and stops near the big hotels.'),
+        ask('transport', 'How do you buy the ticket?', [
+          ok('At the ticket counter or kiosk in the arrivals hall – or tap a T-money/credit card on board', 'Right. Tell the staff "명동" (Myeongdong) and check the stop number on the ticket.', { manner: 3 }, 'bus'),
+          no('Pay the driver in US dollars', 'Drivers only take Korean cards or won. Buy a ticket at the counter first.', { energy: -4 }),
+        ], 'tr-airbus'),
+        ask('etiquette', 'The driver opens the luggage hold. What do you do with your suitcase?', [
+          ok('Put it in the hold and keep the luggage tag – take valuables and my passport on board', 'Perfect. The tag proves the bag is yours at your stop.', { manner: 4 }, 'bus'),
+          no('Carry the big suitcase into the aisle', 'It blocks the aisle and is unsafe if the bus brakes. Big bags go in the hold.', { manner: -5 }),
+        ]),
+        ask('law', 'The bus joins the expressway. What is required?', [
+          ok('Fasten the seat belt – it is the law on expressway buses', 'Right. Seat belts are compulsory on intercity and airport buses.', { manner: 3 }),
+          no('Stand up to take photos while it drives', 'Standing is not allowed on expressway buses – stay seated with the belt on.', { manner: -4 }),
+        ]),
+        say('About 70 minutes later the screen shows "명동 Myeongdong". You get off with your bag and walk to the hotel.'),
+        learn('et-quiet'),
+      ],
+    },
+    {
+      id: 'sc-2c', day: 1, bg: 'street', requires: ['go:taxi'],
+      title: { en: 'Taxi into Seoul', ko: '택시로 서울 가기' },
+      location: { en: 'Incheon Airport → Myeongdong (taxi)', ko: '인천공항 → 명동 (택시)' },
+      steps: [
+        say('You join the taxi rank at the arrivals floor. Use only the official rank – touts inside the hall overcharge.'),
+        ask('money', 'The meter runs and you cross the long bridges. What adds to the fare?', [
+          ok('Expressway tolls – they are paid on top of the meter', 'Right. Ask for a receipt (영수증 주세요). With tolls it is ₩60,000–90,000 – next time try AREX or the limousine bus.', { manner: 2 }, 'taxi'),
+          no('Nothing – the meter shows everything', 'Tolls are added on top of the meter. Ask for a receipt.', {}),
+        ], 'tr-taxi'),
+        say('About an hour later the driver drops you in Myeongdong.'),
       ],
     },
     {
@@ -236,8 +273,10 @@ export const seoulClassic: Course = {
       title: { en: 'N Seoul Tower at sunset', ko: '남산 N서울타워' },
       location: { en: 'Namsan', ko: '남산' },
       steps: [
-        say('Late afternoon. You take the yellow Namsan circular bus to N Seoul Tower, on top of Namsan mountain.'),
-        simulate('bus', 'transport', 'Ride the Namsan circular bus', 'Find the right bus on the arrival board, board at the front and tap your T-money, ring the bell before your stop and tap again when you get off.', { busNo: '01A', busColor: 'yellow', stops: ['명동역 Myeongdong Stn.', '남산케이블카 Cable Car', '국립극장 National Theater', '남산서울타워 N Seoul Tower'], getOff: '남산서울타워 N Seoul Tower' }, 'tr-bus'),
+        say('Late afternoon. Your taxi drops you at the Namsan cable car station – private cars and taxis can\'t drive up to the tower – and you ride the cable car to the top.', { ifFlags: by('nseoultower', 'taxi') }),
+        say('Late afternoon. You walk up the Namsan trail from Myeongdong – about 40 minutes of steps through the forest to N Seoul Tower.', { ifFlags: by('nseoultower', 'walk') }),
+        { ...say('Late afternoon. You take the yellow Namsan circular bus to N Seoul Tower, on top of Namsan mountain.'), unlessFlags: by('nseoultower', 'taxi', 'walk') } as Step,
+        { ...simulate('bus', 'transport', 'Ride the Namsan circular bus', 'Find the right bus on the arrival board, board at the front and tap your T-money, ring the bell before your stop and tap again when you get off.', { busNo: '01A', busColor: 'yellow', stops: ['명동역 Myeongdong Stn.', '남산케이블카 Cable Car', '국립극장 National Theater', '남산서울타워 N Seoul Tower'], getOff: '남산서울타워 N Seoul Tower' }, 'tr-bus'), unlessFlags: by('nseoultower', 'taxi', 'walk') } as Step,
         say('Couples attach "love locks" to the fence at the top. You write both names on a lock.', { parties: ['couple'] }),
         simulate('ticket', 'money', 'Observatory tickets', 'The plaza is free, but the observatory needs a ticket. Read the price board and buy the right tickets for everyone in your party.', { site: 'tower' }),
         event('weather', 'Sudden downpour!', 'Out of nowhere, a violent rain shower hits – but you have your compact umbrella. Smart purchase!', { energy: -2 }, 'umbrella', { ifFlags: ['umbrella'] }),
@@ -268,7 +307,9 @@ export const seoulClassic: Course = {
       title: { en: 'Gyeongbokgung Palace in hanbok', ko: '경복궁 한복 체험' },
       location: { en: 'Gyeongbokgung, Jongno', ko: '경복궁, 종로' },
       steps: [
-        simulate('transfer', 'transport', 'Subway to the palace', 'Find the fastest subway route from Myeongdong to Gyeongbokgung station before the train leaves. Tip: bold circles are transfer stations.', { fromStation: 'myeongdong', toStation: 'gyeongbokgung', timeLimit: 60 }, 'tr-transfer'),
+        say('A taxi from Myeongdong takes about 15 minutes to Gwanghwamun Gate.', { ifFlags: by('gyeongbokgung', 'taxi') }),
+        say('You walk from Myeongdong past City Hall and Gwanghwamun Square to the palace – about 30 minutes.', { ifFlags: by('gyeongbokgung', 'walk') }),
+        { ...simulate('transfer', 'transport', 'Subway to the palace', 'Find the fastest subway route from Myeongdong to Gyeongbokgung station before the train leaves. Tip: bold circles are transfer stations.', { fromStation: 'myeongdong', toStation: 'gyeongbokgung', timeLimit: 60 }, 'tr-transfer'), unlessFlags: by('gyeongbokgung', 'taxi', 'walk') } as Step,
         say('Day 5: Gyeongbokgung, the main royal palace of the Joseon dynasty (built 1395). In front of you stands Gwanghwamun Gate.'),
         say('You rented hanbok at a shop near the palace. Time to get tickets!'),
         simulate('ticket', 'money', 'Palace ticket office', 'Read the ticket board at Gwanghwamun. Your whole party is wearing hanbok today – what does that mean at the ticket office?', { site: 'palace', hanbok: true }),
@@ -289,7 +330,9 @@ export const seoulClassic: Course = {
       location: { en: 'Seongsu-dong', ko: '성수동' },
       steps: [
         say('Seongsu-dong – old factories turned into cafés, galleries and brand pop-up stores.'),
-        simulate('transfer', 'transport', 'Subway to Seongsu', 'Get from Myeongdong to Seongsu station by subway – find the fastest route (Line 2 is the green circle line).', { fromStation: 'myeongdong', toStation: 'seongsu', timeLimit: 60 }),
+        say('A taxi along the river takes about 25 minutes from Myeongdong to Seongsu.', { ifFlags: by('seongsu', 'taxi') }),
+        say('A long walk east along Cheonggyecheon stream brings you to Seongsu – over an hour on foot.', { ifFlags: by('seongsu', 'walk') }),
+        { ...simulate('transfer', 'transport', 'Subway to Seongsu', 'Get from Myeongdong to Seongsu station by subway – find the fastest route (Line 2 is the green circle line).', { fromStation: 'myeongdong', toStation: 'seongsu', timeLimit: 60 }), unlessFlags: by('seongsu', 'taxi', 'walk') } as Step,
         say('Your fine-dust app shows "bad" (나쁨) air quality today.', undefined),
         ask('weather', 'The fine-dust index is "bad". What\'s the best move?', [
           ok('Wear a KF94 mask from the convenience store and stay indoors more', 'Good choice. Fine dust is common from late autumn to spring.', { energy: 5, money: -2000 }, 'fine-dust'),
