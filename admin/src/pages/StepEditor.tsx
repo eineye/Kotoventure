@@ -394,7 +394,7 @@ function SimConfigEdit({ sim, value, onChange }: { sim: string; value: SimConfig
         <>
           <Field label="출발역 → 도착역">
             <div className="row">
-              <Select value={value.fromStation ?? 'myeongdong'} onChange={(fromStation) => set({ fromStation })} options={SUBWAY_STATIONS.map((x) => [x.id, `${x.ko}${x.net === 'busan' ? ' (부산)' : ''}`] as [string, string])} />
+              <Select value={value.fromStation ?? 'myeongdong'} onChange={(fromStation) => set({ fromStation })} options={SUBWAY_STATIONS.map((x) => [x.id, `${x.ko}${x.net === 'busan' ? ' (부산)' : x.net === 'incheon' ? ' (인천)' : ''}`] as [string, string])} />
               →
               <Select value={value.toStation ?? 'seongsu'} onChange={(toStation) => set({ toStation })} options={SUBWAY_STATIONS.filter((x) => (x.net ?? 'seoul') === (SUBWAY_STATIONS.find((f) => f.id === (value.fromStation ?? 'myeongdong'))?.net ?? 'seoul')).map((x) => [x.id, x.ko] as [string, string])} />
             </div>

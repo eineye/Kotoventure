@@ -32,6 +32,8 @@ export interface Stop {
   ticket?: { adult: number; youth?: number; child?: number; senior?: number; open: string; last: string; hanbok?: boolean; note?: string };
   /** take a city bus to get here: number, colour and stops (last = get off) */
   bus?: { no: string; color: BusColor; stops: string[] };
+  /** take the subway to get here: route puzzle between two stations of subway.ts (and the station's name for the text) */
+  subway?: { from: string; to: string; station: string };
   /** a phrase a local says here */
   phrase?: [string, string, string];
   /** explicit day and time slot (for detailed itineraries) */
@@ -309,7 +311,7 @@ const BANK: Record<Kind, Q[]> = {
   ],
 };
 /** revision of the generated content (season-aware steps, guidebook cards for SIM/bus/subway/toilets/ordering) */
-const GEN_REV = 5;
+const GEN_REV = 6;
 
 const KIND_BG: Record<Kind, string> = {
   palace: 'palace', temple: 'temple', market: 'market', mountain: 'mountain', beach: 'beach', museum: 'museum', street: 'street', village: 'village',
@@ -479,6 +481,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
       steps.push(simulate('taxi', 'transport', `Taxi to ${s.en}`, `Call a taxi in the app to ${s.en} – check the Korean address and the plate number.`, { dest: s.move.dest, addr: s.move.addr, fare: s.move.fare }, 'tr-taxi'));
     }
     if (s.bus) steps.push(simulate('bus', 'transport', `Bus to ${s.en}`, `Take city bus ${s.bus.no}: find it on the arrival board, tap in at the front, ring the bell and tap out at the back door.`, { busNo: s.bus.no, busColor: s.bus.color, stops: s.bus.stops, getOff: s.bus.stops[s.bus.stops.length - 1] }, 'tr-bus'));
+    if (s.subway) steps.push(simulate('transfer', 'transport', `Subway to ${s.en}`, `Find the fastest subway route to ${s.subway.station} station before your train leaves. Bold circles are transfer stations.`, { fromStation: s.subway.from, toStation: s.subway.to }, 'tr-transfer'));
     steps.push(say(s.text));
     if (s.tip) steps.push(talk('guide', s.tip));
     if (s.phrase) steps.push(talk('local', s.phrase[2], P(s.phrase[0], s.phrase[1], s.phrase[2])));
@@ -495,7 +498,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
     if (def.extra === 'recycle' && i === def.stops.length - 1) steps.push(simulate('recycle', 'etiquette', 'Recycling station', 'Sort everything from your day out into the right bins.', { trash: ['pet', 'can', 'chicken-meat', 'bones', 'peel', 'tissue', 'bag', 'box'] }, 'et-trash'));
     if (def.extra === 'cashpay' && i === 1) steps.push(simulate('cashpay', 'money', 'Pay a cash-only stall', 'This little stall only takes cash. Pick the right notes and coins and check your change.', { shop: `${s.ko} 노점 Stall`, items: [{ name: '간식 Snack', price: 3000 }, { name: '음료 Drink', price: 2000 }], cashOnly: true }, 'mo-notes'));
     const items: EstItem[] = [];
-    if (i > 0 && !s.bus && !s.move) {
+    if (i > 0 && !s.bus && !s.move && !s.subway) {
       if (s.walk) items.push(est(s.walk, 'walk', `Walk to ${s.en}`, `${s.ko}까지 도보`));
       else items.push(est(s.ride ?? 20, 'move', `Subway / bus to ${s.en}`, `${s.ko}까지 지하철·버스`, 1500));
     }

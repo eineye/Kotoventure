@@ -37,7 +37,7 @@ function proj(lng: number, lat: number) {
 const P = ([lng, lat]: LL) => proj(lng, lat);
 
 /** smooth Catmull-Rom path through points */
-function smooth(pts: { x: number; y: number }[], closed: boolean) {
+export function smooth(pts: { x: number; y: number }[], closed: boolean) {
   if (pts.length < 2) return '';
   const n = pts.length;
   const at = (i: number) => (closed ? pts[(i + n) % n] : pts[Math.max(0, Math.min(n - 1, i))]);

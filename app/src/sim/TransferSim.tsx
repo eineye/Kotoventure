@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Pressable, View, useWindowDimensions } from 'react-native';
 import { Text } from '../ui/Text';
-import Svg, { Circle, G, Polyline, Rect, Text as T } from 'react-native-svg';
 import { SUBWAY_LINES, SUBWAY_STATIONS, bestRoute, linesBetween, routeTime, stationOf, tr, netOf } from '@kotoventure/shared';
 import { Btn, H, P } from '../ui/kit';
 import { C } from '../ui/theme';
+import { SubwayMapCard } from './SubwayMap';
 import { Box, DoneCard, SimShell, useScore, type SimProps } from './kit';
 
-const MW = 300;
-const MH = 200;
 
 const lineName = (id: string) => SUBWAY_LINES.find((l) => l.id === id)?.name ?? id;
 
@@ -37,11 +35,9 @@ export function TransferSim({ step, ctx, onDone }: SimProps) {
   const [path, setPath] = useState<string[]>([from]);
   const [left, setLeft] = useState(limit);
   const [done, setDone] = useState<null | { score: number; reached: boolean }>(null);
-  const k = Math.min(width - 40, 400) / MW;
   const cur = path[path.length - 1];
   const rt = routeTime(path);
   const net = netOf(from);
-  const LINES = SUBWAY_LINES.filter((l) => (l.net ?? 'seoul') === net);
   const STATIONS = SUBWAY_STATIONS.filter((st) => (st.net ?? 'seoul') === net);
 
   useEffect(() => {
@@ -98,48 +94,21 @@ export function TransferSim({ step, ctx, onDone }: SimProps) {
           {ko ? '분' : ' min'} · {ko ? '환승' : 'transfers'} {rt.transfers}
         </Text>
       </Box>
-      <Box style={{ padding: 4, alignItems: 'center' }}>
-        <View style={{ width: MW * k, height: MH * k }}>
-          <Svg width={MW * k} height={MH * k} viewBox={`0 0 ${MW} ${MH}`}>
-            <Rect x="0" y="0" width={MW} height={MH} rx="8" fill="#F8FAFC" />
-            {LINES.map((l) => (
-              <Polyline key={l.id} points={l.stations.map((s) => `${stationOf(s)!.x},${stationOf(s)!.y}`).join(' ')} stroke={l.color} strokeWidth="5" fill="none" strokeLinejoin="round" opacity={0.85} />
-            ))}
-            {path.length > 1 && <Polyline points={path.map((s) => `${stationOf(s)!.x},${stationOf(s)!.y}`).join(' ')} stroke="#E5383B" strokeWidth="2.6" strokeDasharray="5 3" fill="none" />}
-            {STATIONS.map((s) => {
-              const inter = LINES.filter((l) => l.stations.includes(s.id)).length > 1;
-              const isCur = s.id === cur;
-              const isGoal = s.id === to;
-              const near = nb.has(s.id) && !done;
-              return (
-                <G key={s.id}>
-                  {near && <Circle cx={s.x} cy={s.y} r="8" fill="#FDE68A" opacity={0.7} />}
-                  <Circle cx={s.x} cy={s.y} r={inter ? 5 : 3.6} fill={isCur ? '#E5383B' : isGoal ? '#FACC15' : '#FFFFFF'} stroke="#1B2140" strokeWidth={inter ? 1.8 : 1.2} />
-                  <T x={s.x} y={s.below ? s.y + 12 : s.y - 7} fontSize={net === 'busan' ? '6' : '7'} fontWeight="900" fill="#1B2140" textAnchor="middle">
-                    {s.ko}
-                  </T>
-                </G>
-              );
-            })}
-            {LINES.map((l, i) => (
-              <G key={l.id} transform={`translate(${6 + i * 44},${MH - 8})`}>
-                <Rect x="0" y="-5" width="10" height="5" rx="2" fill={l.color} />
-                <T x="13" y="0" fontSize="6.5" fontWeight="800" fill="#1B2140">
-                  {l.name}
-                </T>
-              </G>
-            ))}
-          </Svg>
-          {STATIONS.map((s) => (
-            <Pressable
-              key={s.id}
-              testID={`stn-${s.id}`}
-              accessibilityLabel={s.en}
-              onPress={() => tap(s.id)}
-              style={{ position: 'absolute', left: (s.x - 10) * k, top: (s.y - 10) * k, width: 20 * k, height: 20 * k, borderRadius: 10 * k }}
-            />
-          ))}
-        </View>
+      <Box style={{ padding: 6 }}>
+        <SubwayMapCard
+          net={net}
+          width={Math.min(width - 56, 420)}
+          lang={ctx.lang}
+          state={{ path, cur, goal: to, near: done ? new Set() : nb }}
+          onTap={tap}
+          closeWhen={!!done}
+          status={
+            <Text style={{ fontWeight: '900', color: left < limit * 0.3 ? '#FCA5A5' : '#FFF' }}>
+              🚇 {stationOf(from)?.ko} → 🎯 {stationOf(to)?.ko} · ⏱ {left}s · {rt.min}
+              {ko ? '분' : ' min'} · {ko ? '환승' : 'transfers'} {rt.transfers}
+            </Text>
+          }
+        />
       </Box>
       {!done && path.length > 1 && <Text style={{ color: C.ink, fontWeight: '700' }}>🛤️ {describe(path)}</Text>}
       {!done && (
