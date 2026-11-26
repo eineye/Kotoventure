@@ -13,6 +13,7 @@ import { Result } from './src/screens/Result';
 import { C } from './src/ui/theme';
 import { ArtGallery } from './src/screens/ArtGallery';
 import { Planner } from './src/screens/Planner';
+import { TrekDetail, TrekList } from './src/screens/Treks';
 
 // Web preview only: render SVG text with a sans-serif stack (native already uses the system font)
 if (Platform.OS === 'web' && typeof document !== 'undefined') {
@@ -30,7 +31,9 @@ type Route =
   | { name: 'course'; id: string }
   | { name: 'play'; id: string; restart: boolean }
   | { name: 'result'; id: string }
-  | { name: 'planner'; tripId?: string };
+  | { name: 'planner'; tripId?: string }
+  | { name: 'treks' }
+  | { name: 'trek'; id: string };
 
 function Router() {
   const { ready, profile } = useStore();
@@ -77,6 +80,7 @@ function Router() {
           setTab={(tab) => setStack((s) => [...s.slice(0, -1), { name: 'home', tab }])}
           openCourse={(id) => push({ name: 'course', id })}
           openPlanner={() => push({ name: 'planner' })}
+          openTreks={() => push({ name: 'treks' })}
         />
       );
     case 'course':
@@ -91,6 +95,10 @@ function Router() {
           onSaved={(id) => setStack((s) => [...s.slice(0, route.tripId ? -2 : -1), { name: 'course', id }])}
         />
       );
+    case 'treks':
+      return <TrekList onBack={pop} onOpen={(id) => push({ name: 'trek', id })} />;
+    case 'trek':
+      return <TrekDetail id={route.id} onBack={pop} />;
     case 'play':
       return (
         <Play

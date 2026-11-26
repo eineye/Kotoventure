@@ -317,6 +317,8 @@ export interface ContentBundle {
   config: AppConfig;
   /** recommended restaurants, cafés, shops and places (see spots.ts) */
   spots?: import('./spots').Spot[];
+  /** hidden-gem trekking courses (see treks.ts) */
+  treks?: import('./treks').Trek[];
 }
 
 /** player state while playing a course */

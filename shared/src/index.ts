@@ -1,3 +1,4 @@
+import { TREKS } from './treks';
 import { SPOTS } from './spots';
 export * from './types';
 export * from './meta';
@@ -58,9 +59,11 @@ export const SEED_BUNDLE: ContentBundle = {
   products: PRODUCTS,
   config: DEFAULT_CONFIG,
   spots: SPOTS,
+  treks: TREKS,
 };
 export * from './art-ids';
 export * from './spots';
+export * from './treks';
 export * from './places';
 export * from './subway';
 export * from './dayplan';

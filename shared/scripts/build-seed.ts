@@ -37,6 +37,7 @@ sql += upsert('courses',
 sql += upsert('scenes', ['id', 'course_id', 'sort_order', 'day', 'title', 'location', 'bg', 'steps'],
   b.courses.flatMap((c) => c.scenes.map((s, i) => [s.id, c.id, i, s.day, s.title, s.location, s.bg, s.steps])), ['course_id', 'id']);
 sql += upsert('app_config', ['key', 'value'], [['main', b.config]], ['key']);
+sql += upsert('treks', ['id', 'status', 'area', 'data'], (b.treks ?? []).map((x) => [x.id, x.status, x.area, x]), ['id']);
 sql += upsert('spots', ['id', 'status', 'area', 'sponsored', 'data'], (b.spots ?? []).map((x) => [x.id, x.status, x.area, x.sponsored, x]), ['id']);
 
 const out = resolve(__dirname, '../../supabase/seed.sql');

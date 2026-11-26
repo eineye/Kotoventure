@@ -16,14 +16,14 @@ import { UpdateBanner } from '../update';
 
 export type Tab = 'missions' | 'guide' | 'kit' | 'me';
 
-export function Home({ tab, setTab, openCourse, openPlanner }: { tab: Tab; setTab: (t: Tab) => void; openCourse: (id: string) => void; openPlanner: () => void }) {
+export function Home({ tab, setTab, openCourse, openPlanner, openTreks }: { tab: Tab; setTab: (t: Tab) => void; openCourse: (id: string) => void; openPlanner: () => void; openTreks: () => void }) {
   const { profile } = useStore();
   const L = t(profile?.lang);
   return (
     <View style={{ flex: 1, backgroundColor: C.paper }}>
       <UpdateBanner lang={profile?.lang} />
       <View style={{ flex: 1 }}>
-        {tab === 'missions' && <Missions openCourse={openCourse} openPlanner={openPlanner} />}
+        {tab === 'missions' && <Missions openCourse={openCourse} openPlanner={openPlanner} openTreks={openTreks} />}
         {tab === 'guide' && <Guidebook />}
         {tab === 'kit' && <Kit />}
         {tab === 'me' && <Me />}
@@ -47,7 +47,7 @@ export function Home({ tab, setTab, openCourse, openPlanner }: { tab: Tab; setTa
   );
 }
 
-function Missions({ openCourse, openPlanner }: { openCourse: (id: string) => void; openPlanner: () => void }) {
+function Missions({ openCourse, openPlanner, openTreks }: { openCourse: (id: string) => void; openPlanner: () => void; openTreks: () => void }) {
   const { content, profile, progress } = useStore();
   const lang = profile?.lang ?? 'en';
   const L = t(lang);
@@ -97,6 +97,16 @@ function Missions({ openCourse, openPlanner }: { openCourse: (id: string) => voi
           <Text style={{ color: '#FFF', fontWeight: '900', fontSize: 17 }}>{lang === 'ko' ? '나만의 여행 만들기' : 'Plan my own trip'}</Text>
           <Text style={{ color: '#CBD5E1', fontSize: 12, fontWeight: '700' }}>
             {lang === 'ko' ? '가고 싶은 곳과 일정을 직접 짜고 시뮬레이션해 보세요' : 'Choose your own places and days, then simulate the trip'}
+          </Text>
+        </View>
+        <Text style={{ color: C.yellow, fontWeight: '900', fontSize: 20 }}>›</Text>
+      </Pressable>
+      <Pressable testID="open-treks" onPress={openTreks} accessibilityRole="button" style={{ marginTop: 12, backgroundColor: '#2F5E46', borderRadius: R.l, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12, ...shadow }}>
+        <Text style={{ fontSize: 30 }}>🥾</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#FFF', fontWeight: '900', fontSize: 17 }}>{lang === 'ko' ? '숨은 명소 트레킹' : 'Hidden-gem treks'}</Text>
+          <Text style={{ color: '#D7E8DC', fontSize: 12, fontWeight: '700' }}>
+            {lang === 'ko' ? '잘 알려지지 않은 곳을 오직 걸어서만 – 코스·지도·식사 안내' : 'Lesser-known places on foot only – route, map and food tips'}
           </Text>
         </View>
         <Text style={{ color: C.yellow, fontWeight: '900', fontSize: 20 }}>›</Text>

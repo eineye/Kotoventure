@@ -19,6 +19,7 @@ export function SeedUpload() {
     products: new Set(content.products.map((x) => x.id)),
     courses: new Set(content.courses.map((x) => x.id)),
     spots: new Set((content.spots ?? []).map((x) => x.id)),
+    treks: new Set((content.treks ?? []).map((x) => x.id)),
   };
   const b = SEED_BUNDLE;
   const missing = {
@@ -27,6 +28,7 @@ export function SeedUpload() {
     products: b.products.filter((x) => !has.products.has(x.id)),
     courses: b.courses.filter((x) => !has.courses.has(x.id)),
     spots: (b.spots ?? []).filter((x) => !has.spots.has(x.id)),
+    treks: (b.treks ?? []).filter((x) => !has.treks.has(x.id)),
   };
   const total = Object.values(missing).reduce((a, l) => a + l.length, 0);
 
@@ -58,6 +60,9 @@ export function SeedUpload() {
       const spots = pick(b.spots ?? [], missing.spots);
       for (const x of spots) await repo.saveSpot(x);
       say(`🐦 추천 장소 ${spots.length}개`);
+      const treks = pick(b.treks ?? [], missing.treks);
+      for (const x of treks) await repo.saveTrek(x);
+      say(`🥾 트레킹 ${treks.length}개`);
       if (all || content.courses.length === 0) {
         await repo.saveConfig(b.config);
         say('⚙️ 앱 설정');
@@ -77,7 +82,7 @@ export function SeedUpload() {
       <p className="dim">
         앱에 들어 있는 미션·지식카드·분류·상품·추천 장소를 Supabase 서버로 올립니다. 새 서버를 만든 뒤 처음 한 번 실행하세요.
         <br />
-        서버에 없는 항목: 분류 {missing.categories.length} · 카드 {missing.cards.length} · 상품 {missing.products.length} · 미션 {missing.courses.length} · 추천 장소 {missing.spots.length}
+        서버에 없는 항목: 분류 {missing.categories.length} · 카드 {missing.cards.length} · 상품 {missing.products.length} · 미션 {missing.courses.length} · 추천 장소 {missing.spots.length} · 트레킹 {missing.treks.length}
       </p>
       <div className="row">
         <button disabled={busy || total === 0} onClick={() => run(false)}>
