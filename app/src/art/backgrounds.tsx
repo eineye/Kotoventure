@@ -943,6 +943,7 @@ const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   'airport-cju': require('../../assets/bg/airport-cju.webp'),
   'airport-pus': require('../../assets/bg/airport-pus.webp'),
   'airport-gmp': require('../../assets/bg/airport-gmp.webp'),
+  hanyangwall: require('../../assets/bg/hanyangwall.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {

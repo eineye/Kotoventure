@@ -28,7 +28,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food2: { place: ['이천 한우식당', 'Icheon beef restaurant'], text: 'Local hanwoo beef grilled at the table.', dishes: [['한우 등심', 'Hanwoo sirloin', 38000, 2], ['육회비빔밥', 'Beef tartare bibimbap', 14000], ['갈비탕', 'Short-rib soup', 15000]] },
     stops: [
       { key: 'pottery', bg: 'icheon', ko: '이천 도자기마을', en: 'Icheon Ceramic Village', kind: 'workshop', text: 'Hundreds of kilns. A potter guides your hands on the wheel – your bowl is fired and mailed to you later.' },
-      { key: 'seolbong', ko: '설봉공원', en: 'Seolbong Park', kind: 'park', text: 'A lake park with the ceramics museum and a hilltop fortress.' },
+      { key: 'seolbong', bg: 'icheon', ko: '설봉공원', en: 'Seolbong Park', kind: 'park', text: 'A lake park with the ceramics museum and a hilltop fortress.' },
       { key: 'market', ko: '이천 관고시장', en: 'Icheon Gwango Market', kind: 'market', text: 'A traditional 5-day market with rice cakes made from Icheon rice.' },
     ],
     extra: 'cashpay',
@@ -53,8 +53,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['가평 닭갈비집', 'Gapyeong dakgalbi house'], text: 'Spicy chicken stir-fried on a giant iron pan; finish with fried rice in the leftovers.', dishes: [['닭갈비', 'Spicy stir-fried chicken', 15000, 2, 2], ['막국수', 'Buckwheat noodles', 9000], ['볶음밥', 'Fried rice (in the pan)', 3000]] },
     stops: [
       { key: 'railbike', bg: 'railbike', ko: '가평 레일바이크', en: 'Gapyeong Rail Bike', kind: 'park', text: 'A four-seat pedal car on a disused railway along the river.', ticket: { adult: 40000, youth: 40000, child: 40000, senior: 40000, open: '09:00', last: '17:00', note: 'Price per bike (2–4 people).' } },
-      { key: 'nami', ko: '남이섬', en: 'Nami Island', kind: 'island', text: 'Tree-lined avenues made famous by a K-drama; arrive by ferry or by zip-wire.', ticket: { adult: 16000, youth: 13000, child: 10000, senior: 13000, open: '08:00', last: '21:00', note: 'Includes the ferry.' } },
-      { key: 'garden', ko: '아침고요수목원', en: 'Garden of Morning Calm', kind: 'park', text: 'A mountain garden – in winter it glows with a huge light festival.' },
+      { key: 'nami', bg: 'railbike', ko: '남이섬', en: 'Nami Island', kind: 'island', text: 'Tree-lined avenues made famous by a K-drama; arrive by ferry or by zip-wire.', ticket: { adult: 16000, youth: 13000, child: 10000, senior: 13000, open: '08:00', last: '21:00', note: 'Includes the ferry.' } },
+      { key: 'garden', bg: 'suncheonbay', ko: '아침고요수목원', en: 'Garden of Morning Calm', kind: 'park', text: 'A mountain garden – in winter it glows with a huge light festival.' },
     ],
     extra: 'recycle',
   },
@@ -67,7 +67,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'heyri', bg: 'heyri', ko: '헤이리 예술마을', en: 'Heyri Art Valley', kind: 'museum', text: 'Galleries, small museums and studios designed by architects.' },
       { key: 'provence', ko: '프로방스 마을', en: 'Provence Village', kind: 'street', text: 'Pastel buildings and bakeries – a favourite photo spot.' },
-      { key: 'imjingak', ko: '임진각 평화누리', en: 'Imjingak Peace Park', kind: 'memorial', text: 'The Freedom Bridge and prayer ribbons for reunification, a few km from the border.' },
+      { key: 'imjingak', bg: 'dmz', ko: '임진각 평화누리', en: 'Imjingak Peace Park', kind: 'memorial', text: 'The Freedom Bridge and prayer ribbons for reunification, a few km from the border.' },
     ],
   },
 
@@ -80,8 +80,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['무의도 조개구이', 'Muuido grilled-shellfish place'], text: 'Grill clams, scallops and prawns on charcoal right by the sea.', dishes: [['조개구이', 'Grilled shellfish platter', 25000, 2], ['해물칼국수', 'Seafood noodle soup', 11000], ['새우구이', 'Grilled prawns', 30000]] },
     stops: [
       { key: 'silmido', bg: 'mudflat', ko: '실미도 갯길', en: 'Silmido tidal path', kind: 'island', text: 'At low tide a path appears across the mud flats. When the tide turns, the sea comes back fast – check the time!', tip: 'Tide tables are posted at the entrance. Come back at least an hour before high tide.' },
-      { key: 'hanagae', ko: '하나개 해수욕장', en: 'Hanagae Beach', kind: 'beach', text: 'A wide sandy beach with a sea-deck trail around the cliffs.' },
-      { key: 'horyonggok', ko: '호룡곡산', en: 'Horyonggoksan', kind: 'mountain', text: 'A short hill hike with views over the airport runways and islands.' },
+      { key: 'hanagae', bg: 'westsunset', ko: '하나개 해수욕장', en: 'Hanagae Beach', kind: 'beach', text: 'A wide sandy beach with a sea-deck trail around the cliffs.' },
+      { key: 'horyonggok', bg: 'mudflat', ko: '호룡곡산', en: 'Horyonggoksan', kind: 'mountain', text: 'A short hill hike with views over the airport runways and islands.' },
     ],
     extra: 'recycle',
   },
@@ -89,12 +89,12 @@ export const REGION_MISSIONS: MissionDef[] = [
     id: 'ic-chinatown', area: 'incheon', cat: 'food',
     title: ['Incheon Chinatown & Jjajang', '인천 차이나타운 짜장면'], sub: ['Birthplace of jjajangmyeon, Sinpo Market & Fairy-Tale Village – 1 night', '짜장면 발상지·신포시장·동화마을 1박2일'],
     desc: 'Jjajangmyeon – black-bean noodles – was born here in 1905. Eat it where it started, then chase dakgangjeong at Sinpo Market.',
-    hub: 'INCHEON-PORT', exit: 'ICN', go: 'Taxi or bus from the ferry terminal to Incheon station (Chinatown)', days: 2, nights: 1, diff: 1, fit: [4, 5, 5, 5], budget: 230000, season: 'winter', stay: 'hotel',
+    hub: 'ICN', go: 'AREX to Gyeyang, then subway Line 1 to Incheon station (Chinatown)', days: 2, nights: 1, diff: 1, fit: [4, 5, 5, 5], budget: 230000, season: 'winter', stay: 'hotel',
     food: { place: ['차이나타운 중식당', 'Chinatown Chinese-Korean restaurant'], text: 'Chinese-Korean food: jjajangmyeon, spicy jjamppong and sweet-sour tangsuyuk.', dishes: [['짜장면', 'Black-bean noodles', 8000], ['짬뽕', 'Spicy seafood noodles', 10000, 0, 2], ['탕수육', 'Sweet & sour pork', 22000]], tip: 'Mix the sauce well before eating!' },
     food2: { place: ['신포시장 닭강정', 'Sinpo Market dakgangjeong'], text: 'Crispy sweet-spicy fried chicken pieces in a paper box – the market\'s star.', dishes: [['닭강정', 'Sweet crispy chicken', 18000, 0, 1], ['공갈빵', 'Hollow "liar\'s" bread', 2000], ['만두', 'Dumplings', 6000]] },
     stops: [
-      { key: 'museum', ko: '짜장면박물관', en: 'Jjajangmyeon Museum', kind: 'museum', text: 'In the former Gonghwachun restaurant – how a cheap noodle dish became Korea\'s comfort food.', ticket: { adult: 1000, open: '09:00', last: '17:30' } },
-      { key: 'fairy', ko: '송월동 동화마을', en: 'Songwol-dong Fairy-Tale Village', kind: 'village', text: 'Houses painted with fairy-tale scenes – people live here, so keep it quiet.' },
+      { key: 'museum', bg: 'chinatown', ko: '짜장면박물관', en: 'Jjajangmyeon Museum', kind: 'museum', text: 'In the former Gonghwachun restaurant – how a cheap noodle dish became Korea\'s comfort food.', ticket: { adult: 1000, open: '09:00', last: '17:30' } },
+      { key: 'fairy', bg: 'chinatown', ko: '송월동 동화마을', en: 'Songwol-dong Fairy-Tale Village', kind: 'village', text: 'Houses painted with fairy-tale scenes – people live here, so keep it quiet.' },
       { key: 'sinpo', ko: '신포국제시장', en: 'Sinpo International Market', kind: 'market', text: 'Incheon\'s first modern market, famous for dakgangjeong and dumplings.' },
     ],
   },
@@ -103,11 +103,11 @@ export const REGION_MISSIONS: MissionDef[] = [
     title: ['Ganghwa: Island of History', '강화도 역사 여행'], sub: ['UNESCO dolmens, Jeondeungsa & the Peace Observatory – 1 night', '고인돌·전등사·평화전망대 1박2일'],
     desc: 'Ganghwa Island holds 3,000-year-old dolmens, an ancient temple and a view across the water into North Korea.',
     hub: 'ICN', go: 'Bus via Gimpo to Ganghwa terminal', days: 2, nights: 1, diff: 1, fit: [4, 4, 3, 5], budget: 210000, season: 'autumn', stay: 'pension',
-    food: { place: ['강화 젓국갈비', 'Ganghwa jeotguk-galbi house'], text: 'A local stew of pork ribs in shrimp-salt broth, and Ganghwa\'s purple sweet potatoes.', dishes: [['젓국갈비', 'Pork-rib shrimp-salt stew', 13000, 2], ['밴댕이회', 'Sliced shad sashimi', 20000], ['순무김치', 'Turnip kimchi set', 9000]] },
+    food: { after: 'observatory', place: ['강화 젓국갈비', 'Ganghwa jeotguk-galbi house'], text: 'A local stew of pork ribs in shrimp-salt broth, and Ganghwa\'s purple sweet potatoes.', dishes: [['젓국갈비', 'Pork-rib shrimp-salt stew', 13000, 2], ['밴댕이회', 'Sliced shad sashimi', 20000], ['순무김치', 'Turnip kimchi set', 9000]] },
     stops: [
       { key: 'dolmen', bg: 'ganghwa', ko: '강화 고인돌', en: 'Ganghwa Dolmen', kind: 'memorial', text: 'A giant table-shaped Bronze Age tomb – part of a UNESCO World Heritage site.' },
-      { key: 'jeondeungsa', ko: '전등사', en: 'Jeondeungsa Temple', kind: 'temple', text: 'One of Korea\'s oldest temples, inside a fortress said to be built by the sons of the mythical founder Dangun.' },
-      { key: 'observatory', ko: '강화 평화전망대', en: 'Ganghwa Peace Observatory', kind: 'memorial', text: 'Binoculars show villages in North Korea only 2–3 km across the water.', ticket: { adult: 2500, open: '09:00', last: '17:30', note: 'Bring your passport – military checkpoint.' } },
+      { key: 'observatory', bg: 'dmz', ko: '강화 평화전망대', en: 'Ganghwa Peace Observatory', kind: 'memorial', text: 'Binoculars show villages in North Korea only 2–3 km across the water.', ticket: { adult: 2500, open: '09:00', last: '17:30', note: 'Bring your passport – military checkpoint.' } },
+      { key: 'jeondeungsa', bg: 'haeinsa', ko: '전등사', en: 'Jeondeungsa Temple', kind: 'temple', text: 'One of Korea\'s oldest temples, inside a fortress said to be built by the sons of the mythical founder Dangun.' },
     ],
   },
   {
@@ -126,12 +126,12 @@ export const REGION_MISSIONS: MissionDef[] = [
       { key: 'gtower', bg: 'songdo', min: 50, walk: 10, day: 1, ko: 'G타워 전망대', en: 'G-Tower observatory', kind: 'street', text: 'A free observatory on the 33rd floor: the whole international city, the canal park and Incheon Bridge stretching to the airport.' },
       { key: 'outlet', min: 75, walk: 10, day: 1, ko: '현대프리미엄아울렛 송도점', en: 'Hyundai Premium Outlet Songdo', kind: 'street', text: 'Brand outlet shopping – and time for a coffee break.', kiosk: true },
       { key: 'triple', min: 70, walk: 10, day: 1, ko: '트리플스트리트', en: 'Triple Street', kind: 'street', text: 'An open-air shopping street with restaurants and street art – a nice stroll before dinner.' },
-      { key: 'nightpark', min: 60, walk: 10, day: 1, ko: '센트럴파크 야경', en: 'Central Park at night', kind: 'night', text: 'The towers light up and reflect in the canal – the best photo spot of the day.' },
-      { key: 'wolmido', min: 60, day: 2, ko: '월미도·월미문화의거리', en: 'Wolmido & Wolmi Culture Street', kind: 'beach', text: 'A seaside promenade with fair rides, buskers and gulls – ferries and cargo ships pass by.', move: { dest: '월미도 Wolmido', addr: '인천 중구 월미문화로 81', fare: 25000, text: 'You leave Songdo by car – about 40 minutes to Wolmido.' } },
+      { key: 'nightpark', bg: 'songdo', min: 60, walk: 10, day: 1, ko: '센트럴파크 야경', en: 'Central Park at night', kind: 'night', text: 'The towers light up and reflect in the canal – the best photo spot of the day.' },
+      { key: 'wolmido', bg: 'westsunset', min: 60, day: 2, ko: '월미도·월미문화의거리', en: 'Wolmido & Wolmi Culture Street', kind: 'beach', text: 'A seaside promenade with fair rides, buskers and gulls – ferries and cargo ships pass by.', move: { dest: '월미도 Wolmido', addr: '인천 중구 월미문화로 81', fare: 25000, text: 'You leave Songdo by car – about 40 minutes to Wolmido.' } },
       { key: 'seatrain', min: 50, walk: 5, day: 2, ko: '월미바다열차', en: 'Wolmi Sea Train', kind: 'street', text: 'An elevated train circling Wolmido with views of the harbour, the sea and the old port.', ticket: { adult: 8000, open: '10:00', last: '17:30' } },
       { key: 'chinatown', bg: 'chinatown', min: 50, walk: 10, day: 2, ko: '인천 차이나타운', en: 'Incheon Chinatown', kind: 'market', text: 'Red gates and lanterns – Korea\'s oldest Chinatown, home of jjajangmyeon. Try a hollow "gonggal-ppang" or a mooncake for dessert.' },
-      { key: 'fairy', min: 30, walk: 5, day: 2, ko: '송월동 동화마을', en: 'Songwol-dong Fairy-Tale Village', kind: 'village', text: 'Houses painted with fairy-tale scenes – people live here, so keep it quiet while taking photos.' },
-      { key: 'openport', min: 60, walk: 10, day: 2, ko: '자유공원·개항장 거리', en: 'Jayu Park & Open Port Street', kind: 'memorial', text: 'Jayu Park (1888) is Korea\'s first Western-style park. Below it, banks and offices from the 1883 port opening tell the story of modern Korea.' },
+      { key: 'fairy', bg: 'chinatown', min: 30, walk: 5, day: 2, ko: '송월동 동화마을', en: 'Songwol-dong Fairy-Tale Village', kind: 'village', text: 'Houses painted with fairy-tale scenes – people live here, so keep it quiet while taking photos.' },
+      { key: 'openport', bg: 'chinatown', min: 60, walk: 10, day: 2, ko: '자유공원·개항장 거리', en: 'Jayu Park & Open Port Street', kind: 'memorial', text: 'Jayu Park (1888) is Korea\'s first Western-style park. Below it, banks and offices from the 1883 port opening tell the story of modern Korea.' },
     ],
     tips: { couple: 'Central Park at night is a classic date spot.', group: 'Rent a water taxi together on the canal.' },
   },
@@ -156,11 +156,11 @@ export const REGION_MISSIONS: MissionDef[] = [
     desc: 'Daejeon is a bread pilgrimage city: people queue for hours at Sungsimdang. Add noodle soup and a riverside arboretum.',
     hub: 'CJJ', go: 'Bus from Cheongju Airport to Daejeon (or KTX via Osong)', days: 2, nights: 1, diff: 1, fit: [5, 5, 4, 4], budget: 200000, season: 'autumn', stay: 'hotel', health: 'stomach',
     food: { place: ['대전 칼국수집', 'Daejeon kalguksu house'], text: 'Daejeon has more kalguksu shops per person than anywhere – try it with spicy duruchigi.', dishes: [['칼국수', 'Knife-cut noodle soup', 8000], ['두부두루치기', 'Spicy tofu stir-fry', 15000, 2, 2], ['수육', 'Boiled pork', 20000]] },
-    food2: { place: ['성심당 빵집', 'Sungsimdang bakery'], text: 'Since 1956 – its fried "soboro" bread is a Daejeon legend.', dishes: [['튀김소보로', 'Fried soboro bread', 1700], ['부추빵', 'Chive bread', 2000], ['딸기시루', 'Strawberry layer cake', 49000]] },
+    food2: { after: 'hanbat', place: ['성심당 DCC점', 'Sungsimdang DCC branch (next to the arboretum)'], text: 'Since 1956 – its fried "soboro" bread is a Daejeon legend.', dishes: [['튀김소보로', 'Fried soboro bread', 1700], ['부추빵', 'Chive bread', 2000], ['딸기시루', 'Strawberry layer cake', 49000]] },
     stops: [
       { key: 'sungsimdang', bg: 'bakery', ko: '성심당 본점', en: 'Sungsimdang main store', kind: 'market', text: 'The queue snakes around the block – it moves fast. Grab a tray and tongs.' },
       { key: 'jungang', ko: '대전 중앙시장', en: 'Daejeon Jungang Market', kind: 'market', text: 'One of the largest traditional markets in central Korea.' },
-      { key: 'hanbat', ko: '한밭수목원', en: 'Hanbat Arboretum', kind: 'park', text: 'A huge free city arboretum next to the science park.' },
+      { key: 'hanbat', bg: 'suncheonbay', ko: '한밭수목원', en: 'Hanbat Arboretum', kind: 'park', text: 'A huge free city arboretum next to the science park.' },
     ],
     extra: 'kiosk',
   },
@@ -169,11 +169,11 @@ export const REGION_MISSIONS: MissionDef[] = [
     title: ['Baekje Kingdom', '백제역사유적지구'], sub: ['Gongju & Buyeo UNESCO sites – 2 nights', '공주·부여 세계유산 2박3일'],
     desc: 'The Baekje kingdom (18 BC – 660 AD) shared its art with Japan. Walk its fortress, royal tombs and a lotus pond palace garden.',
     hub: 'CJJ', go: 'Bus from Cheongju Airport to Gongju', days: 3, nights: 2, diff: 2, fit: [4, 4, 3, 5], budget: 300000, season: 'summer', stay: 'hanok',
-    food: { place: ['부여 연잎밥집', 'Buyeo lotus-leaf rice house'], text: 'Rice with nuts steamed in a lotus leaf – Buyeo\'s speciality.', dishes: [['연잎밥정식', 'Lotus-leaf rice set', 16000], ['메밀묵', 'Buckwheat jelly', 10000], ['우렁쌈밥', 'Snail wrap rice', 14000]] },
+    food: { after: 'tombs', place: ['부여 연잎밥집', 'Buyeo lotus-leaf rice house'], text: 'Rice with nuts steamed in a lotus leaf – Buyeo\'s speciality.', dishes: [['연잎밥정식', 'Lotus-leaf rice set', 16000], ['메밀묵', 'Buckwheat jelly', 10000], ['우렁쌈밥', 'Snail wrap rice', 14000]] },
     stops: [
       { key: 'gongsanseong', bg: 'baekje', ko: '공산성', en: 'Gongsanseong Fortress', kind: 'palace', text: 'A 2.6 km fortress wall on a hill above the Geum River – flags of Baekje fly on top.', ticket: { adult: 1200, open: '09:00', last: '17:30' } },
       { key: 'tombs', bg: 'baekje', ko: '무령왕릉', en: 'Tomb of King Muryeong', kind: 'memorial', text: 'The only Baekje royal tomb whose owner is known – 4,600 treasures were found here in 1971.', ticket: { adult: 1500, open: '09:00', last: '17:30' } },
-      { key: 'gungnamji', ko: '궁남지', en: 'Gungnamji Pond', kind: 'park', text: 'Korea\'s oldest man-made pond – in July it is covered with lotus flowers.' },
+      { key: 'gungnamji', bg: 'royalpalaces', ko: '궁남지', en: 'Gungnamji Pond', kind: 'park', text: 'Korea\'s oldest man-made pond – in July it is covered with lotus flowers.' },
     ],
   },
   {
@@ -184,8 +184,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['단양 마늘정식', 'Danyang garlic restaurant'], text: 'Danyang garlic is famous – garlic bibimbap, garlic tteokgalbi and garlic sweets.', dishes: [['마늘정식', 'Garlic set meal', 18000, 2], ['마늘떡갈비', 'Garlic short-rib patty', 16000], ['쏘가리매운탕', 'Spicy mandarin-fish stew', 50000, 2, 2]] },
     stops: [
       { key: 'paraglide', bg: 'paraglide', ko: '양방산 패러글라이딩', en: 'Yangbangsan paragliding', kind: 'mountain', text: 'A tandem pilot runs with you off the launch pad – 10 minutes of silence above the river.', ticket: { adult: 120000, youth: 120000, child: 120000, senior: 120000, open: '09:00', last: '16:00', note: 'Tandem flight with an instructor. Weather permitting.' } },
-      { key: 'skywalk', ko: '만천하스카이워크', en: 'Mancheonha Skywalk', kind: 'night', text: 'A glass-floored lookout 80 m above the river.', ticket: { adult: 3000, open: '09:00', last: '17:00' } },
-      { key: 'gosu', ko: '고수동굴', en: 'Gosu Cave', kind: 'cave', text: 'A 1.7 km limestone cave with stalactites, narrow stairs and dripping water.', ticket: { adult: 11000, open: '09:00', last: '17:30' } },
+      { key: 'skywalk', bg: 'paraglide', ko: '만천하스카이워크', en: 'Mancheonha Skywalk', kind: 'night', text: 'A glass-floored lookout 80 m above the river.', ticket: { adult: 3000, open: '09:00', last: '17:00' } },
+      { key: 'gosu', bg: 'paraglide', ko: '고수동굴', en: 'Gosu Cave', kind: 'cave', text: 'A 1.7 km limestone cave with stalactites, narrow stairs and dripping water.', ticket: { adult: 11000, open: '09:00', last: '17:30' } },
     ],
   },
   {
@@ -195,9 +195,9 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'CJJ', go: 'Airport bus to downtown Cheongju', days: 2, nights: 1, diff: 1, fit: [4, 5, 4, 5], budget: 220000, season: 'spring', stay: 'hotel',
     food: { place: ['청주 삼겹살거리', 'Cheongju pork-belly street'], text: 'Cheongju claims the soy-dipped pork belly ("seogwa" style) – grilled on a tilted pan.', dishes: [['간장삼겹살', 'Soy-dipped pork belly', 15000, 2], ['김치찌개', 'Kimchi stew', 8000, 0, 1], ['냉면', 'Cold noodles', 8000]] },
     stops: [
-      { key: 'cheongnamdae', ko: '청남대', en: 'Cheongnamdae', kind: 'park', text: 'The former presidential villa on a lake, now a park with statues of every president.', ticket: { adult: 6000, open: '09:00', last: '16:30' } },
+      { key: 'cheongnamdae', bg: 'hallyeo', ko: '청남대', en: 'Cheongnamdae', kind: 'park', text: 'The former presidential villa on a lake, now a park with statues of every president.', ticket: { adult: 6000, open: '09:00', last: '16:30' } },
       { key: 'jikji', bg: 'jikji', ko: '청주고인쇄박물관', en: 'Cheongju Early Printing Museum', kind: 'museum', text: 'Jikji (1377) is the oldest surviving book printed with movable metal type – 78 years before Gutenberg.' },
-      { key: 'suamgol', ko: '수암골', en: 'Suamgol Mural Village', kind: 'village', text: 'A hillside village with murals and cafés overlooking the city.' },
+      { key: 'suamgol', bg: 'cafe', ko: '수암골', en: 'Suamgol Mural Village', kind: 'village', text: 'A hillside village with murals and cafés overlooking the city.' },
     ],
     extra: 'crosswalk',
   },
@@ -208,9 +208,9 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'CJJ', go: 'Bus from Cheongju to Boryeong (Daecheon)', days: 2, nights: 1, diff: 1, fit: [4, 5, 5, 4], budget: 260000, season: 'summer', stay: 'pension', health: 'heat',
     food: { place: ['대천 조개구이', 'Daecheon shellfish grill'], text: 'Shellfish grilled on charcoal, finished with clam noodle soup.', dishes: [['조개구이', 'Grilled shellfish', 25000, 2], ['바지락칼국수', 'Clam noodle soup', 10000], ['대하구이', 'Grilled king prawns', 35000]] },
     stops: [
-      { key: 'mud', ko: '보령 머드체험관', en: 'Boryeong Mud Experience Hall', kind: 'workshop', text: 'Mud pools, mud slides and mud massage – in July the world-famous Mud Festival takes over the beach.', ticket: { adult: 12000, open: '10:00', last: '17:00' } },
+      { key: 'mud', bg: 'beach', ko: '보령 머드체험관', en: 'Boryeong Mud Experience Hall', kind: 'workshop', text: 'Mud pools, mud slides and mud massage – in July the world-famous Mud Festival takes over the beach.', ticket: { adult: 12000, open: '10:00', last: '17:00' } },
       { key: 'daecheon', bg: 'westsunset', ko: '대천해수욕장', en: 'Daecheon Beach', kind: 'beach', text: 'A 3.5 km beach with a sky-bike rail along the coast.' },
-      { key: 'anmyeon', ko: '안면도 꽃지해변', en: 'Kkotji Beach, Anmyeondo', kind: 'beach', text: 'Two rocks in the sea – "grandfather and grandmother" – frame one of Korea\'s best sunsets.' },
+      { key: 'anmyeon', bg: 'westsunset', ko: '안면도 꽃지해변', en: 'Kkotji Beach, Anmyeondo', kind: 'beach', text: 'Two rocks in the sea – "grandfather and grandmother" – frame one of Korea\'s best sunsets.' },
     ],
     extra: 'recycle',
   },
@@ -226,7 +226,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'alley', bg: 'dakgalbi', ko: '춘천 명동 닭갈비골목', en: 'Dakgalbi alley', kind: 'street', text: 'Dozens of dakgalbi restaurants side by side – each claims to be the original.' },
       { key: 'makguksu', bg: 'dakgalbi', ko: '막국수체험박물관', en: 'Makguksu Museum', kind: 'workshop', text: 'Press your own buckwheat noodles with a traditional wooden press.', ticket: { adult: 1000, open: '10:00', last: '17:00' } },
-      { key: 'skywalk', ko: '소양강 스카이워크', en: 'Soyang River Skywalk', kind: 'river', text: 'A glass-floored walkway 156 m over the river next to the famous mandarin-fish statue.' },
+      { key: 'skywalk', bg: 'hallyeo', ko: '소양강 스카이워크', en: 'Soyang River Skywalk', kind: 'river', text: 'A glass-floored walkway 156 m over the river next to the famous mandarin-fish statue.' },
     ],
   },
   {
@@ -237,7 +237,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['초당 순두부마을', 'Chodang tofu village'], text: 'Tofu made with seawater instead of brine – silky soft tofu and the new "tofu jjamppong".', dishes: [['초당순두부', 'Chodang soft tofu', 10000], ['순두부젤라또', 'Soft-tofu gelato', 5000], ['짬뽕순두부', 'Spicy seafood tofu stew', 11000, 0, 2]] },
     stops: [
       { key: 'ojukheon', bg: 'ojukheon', ko: '오죽헌', en: 'Ojukheon', kind: 'palace', text: 'Black-bamboo house where Yulgok Yi I was born. Take out a ₩5,000 note – the house is on the back!', ticket: { adult: 3000, open: '09:00', last: '17:30' } },
-      { key: 'seongyojang', ko: '선교장', en: 'Seongyojang House', kind: 'village', text: 'A 300-year-old aristocrat\'s mansion with 102 rooms and a lotus pavilion.', ticket: { adult: 5000, open: '09:00', last: '17:00' } },
+      { key: 'seongyojang', bg: 'ojukheon', ko: '선교장', en: 'Seongyojang House', kind: 'village', text: 'A 300-year-old aristocrat\'s mansion with 102 rooms and a lotus pavilion.', ticket: { adult: 5000, open: '09:00', last: '17:00' } },
       { key: 'anmok', bg: 'ojukheon', ko: '안목 커피거리', en: 'Anmok Coffee Street', kind: 'beach', text: 'Cafés line the beach – Gangneung hosts a coffee festival every October.' },
     ],
   },
@@ -246,11 +246,11 @@ export const REGION_MISSIONS: MissionDef[] = [
     title: ['Seoraksan Ulsanbawi', '설악산 울산바위'], sub: ['Ulsanbawi climb, cable car & Sokcho seafood – 1 night', '울산바위·권금성 케이블카·속초 1박2일'],
     desc: 'Climb 808 steel steps to the giant granite cliffs of Ulsanbawi, then ride the cable car to Gwongeumseong.',
     hub: 'YNY', go: 'Bus from Yangyang Airport to Sokcho, then city bus 7 to Seorak-dong', days: 2, nights: 1, diff: 3, fit: [5, 4, 5, 2], budget: 280000, season: 'autumn', stay: 'resort', health: 'sprain',
-    food: { place: ['속초 대포항 횟집', 'Daepo Port seafood restaurant'], text: 'Fresh raw fish and deep-fried prawns at the harbour.', dishes: [['모둠회', 'Mixed sashimi', 50000, 2], ['새우튀김', 'Fried prawns', 15000], ['오징어순대', 'Stuffed squid', 15000]] },
+    food: { after: 'sinheungsa', place: ['속초 대포항 횟집', 'Daepo Port seafood restaurant'], text: 'Fresh raw fish and deep-fried prawns at the harbour.', dishes: [['모둠회', 'Mixed sashimi', 50000, 2], ['새우튀김', 'Fried prawns', 15000], ['오징어순대', 'Stuffed squid', 15000]] },
     stops: [
       { key: 'ulsanbawi', bg: 'ulsanbawi', ko: '울산바위', en: 'Ulsanbawi Rock', kind: 'mountain', text: 'Six granite peaks; the last 30 minutes are steep steel stairs. Allow 4 hours round trip.', bus: { no: '7', color: 'green', stops: ['속초 시내 Sokcho', '물치 Mulchi', '설악동 Seorak-dong', '설악산 소공원 Seoraksan Park'] } },
-      { key: 'cable', ko: '권금성 케이블카', en: 'Gwongeumseong Cable Car', kind: 'mountain', text: 'A 5-minute ride to a rocky fortress ridge with views to the sea.', ticket: { adult: 15000, open: '08:00', last: '17:00' } },
-      { key: 'sinheungsa', ko: '신흥사', en: 'Sinheungsa Temple', kind: 'temple', text: 'A giant bronze Buddha at the foot of the mountain.' },
+      { key: 'cable', bg: 'ulsanbawi', ko: '권금성 케이블카', en: 'Gwongeumseong Cable Car', kind: 'mountain', text: 'A 5-minute ride to a rocky fortress ridge with views to the sea.', ticket: { adult: 15000, open: '08:00', last: '17:00' } },
+      { key: 'sinheungsa', bg: 'haeinsa', ko: '신흥사', en: 'Sinheungsa Temple', kind: 'temple', text: 'A giant bronze Buddha at the foot of the mountain.' },
     ],
   },
   {
@@ -274,8 +274,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['양양 섭국집', 'Yangyang mussel-soup house'], text: 'A thick spicy soup of wild mussels, local to the east coast.', dishes: [['섭국', 'Wild-mussel soup', 13000, 0, 1], ['물회', 'Cold raw-fish soup', 17000, 0, 1], ['감자전', 'Potato pancake', 10000]] },
     stops: [
       { key: 'jukdo', bg: 'surf', ko: '죽도해변 서핑스쿨', en: 'Jukdo Beach surf school', kind: 'beach', text: 'A two-hour lesson: paddling, pop-up on the sand, then the waves.', ticket: { adult: 60000, youth: 60000, child: 60000, senior: 60000, open: '09:00', last: '16:00', note: 'Lesson + board + wetsuit.' } },
-      { key: 'naksansa', ko: '낙산사', en: 'Naksansa Temple', kind: 'temple', text: 'A temple on cliffs above the sea with a 16 m statue of the Bodhisattva of Mercy.' },
-      { key: 'hajodae', ko: '하조대', en: 'Hajodae', kind: 'beach', text: 'A pavilion on a rocky cape and a white lighthouse.' },
+      { key: 'hajodae', bg: 'surf', ko: '하조대', en: 'Hajodae', kind: 'beach', text: 'A pavilion on a rocky cape and a white lighthouse.' },
+      { key: 'naksansa', bg: 'haeinsa', ko: '낙산사', en: 'Naksansa Temple', kind: 'temple', text: 'A temple on cliffs above the sea with a 16 m statue of the Bodhisattva of Mercy.' },
     ],
   },
 
@@ -289,7 +289,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food2: { place: ['콩나물국밥집', 'Bean-sprout soup house'], text: 'Jeonju\'s hangover breakfast: bean-sprout rice soup with a soft-boiled egg and moju (sweet rice wine).', dishes: [['콩나물국밥', 'Bean-sprout rice soup', 9000], ['모주', 'Moju (sweet herbal wine)', 2000], ['오징어 사리', 'Extra squid', 3000]] },
     stops: [
       { key: 'hanok', bg: 'jeonju', ko: '전주 한옥마을', en: 'Jeonju Hanok Village', kind: 'village', text: '700 hanok in one neighbourhood, with Gyeonggijeon shrine holding the portrait of King Taejo.', ticket: { adult: 3000, open: '09:00', last: '18:00', hanbok: true, note: 'Gyeonggijeon shrine – free in hanbok.' } },
-      { key: 'omokdae', ko: '오목대', en: 'Omokdae', kind: 'park', text: 'A hill pavilion with a view over the sea of tiled roofs.' },
+      { key: 'omokdae', bg: 'jeonju', ko: '오목대', en: 'Omokdae', kind: 'park', text: 'A hill pavilion with a view over the sea of tiled roofs.' },
       { key: 'nambu', ko: '남부시장 야시장', en: 'Nambu Market night market', kind: 'market', text: 'On Friday and Saturday nights, food stalls and young chefs fill the old market.' },
     ],
     extra: 'cashpay',
@@ -301,9 +301,9 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'MWX', go: 'Bus from Muan Airport to Gwangju, then intercity bus to Boseong', days: 3, nights: 2, diff: 1, fit: [4, 5, 4, 5], budget: 320000, season: 'spring', stay: 'pension',
     food: { place: ['벌교 꼬막정식', 'Beolgyo cockle restaurant'], text: 'Cockles from the mud flats: boiled, seasoned and mixed into bibimbap.', dishes: [['꼬막정식', 'Cockle set meal', 20000, 2], ['꼬막비빔밥', 'Cockle bibimbap', 13000, 0, 1], ['녹차 삼겹살', 'Green-tea pork belly', 16000, 2]] },
     stops: [
-      { key: 'tea', ko: '대한다원 녹차밭', en: 'Daehan Dawon tea plantation', kind: 'farm', text: 'Rows of tea bushes climb the hills. Pick young leaves, then roast them in a hot iron pan.', ticket: { adult: 4000, open: '09:00', last: '18:00' } },
+      { key: 'tea', bg: 'suncheonbay', ko: '대한다원 녹차밭', en: 'Daehan Dawon tea plantation', kind: 'farm', text: 'Rows of tea bushes climb the hills. Pick young leaves, then roast them in a hot iron pan.', ticket: { adult: 4000, open: '09:00', last: '18:00' } },
       { key: 'bay', bg: 'suncheonbay', ko: '순천만 습지', en: 'Suncheon Bay Wetland', kind: 'park', text: 'Endless reeds, rare cranes in winter and a sunset viewpoint.', ticket: { adult: 10000, open: '08:00', last: '19:00', note: 'Combined ticket with the National Garden.' } },
-      { key: 'garden', ko: '순천만국가정원', en: 'Suncheonman Bay National Garden', kind: 'park', text: 'Korea\'s first national garden with gardens from around the world.' },
+      { key: 'garden', bg: 'suncheonbay', ko: '순천만국가정원', en: 'Suncheonman Bay National Garden', kind: 'park', text: 'Korea\'s first national garden with gardens from around the world.' },
     ],
   },
   {
@@ -313,9 +313,9 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'MWX', go: 'Bus from Muan Airport to Gwangju, then bus to Gurye', days: 2, nights: 1, diff: 3, fit: [5, 4, 5, 2], budget: 240000, season: 'spring', stay: 'pension', health: 'sprain',
     food: { place: ['구례 산채정식', 'Gurye mountain-herb restaurant'], text: 'Twenty kinds of wild mountain greens with rice and doenjang stew.', dishes: [['산채정식', 'Mountain-herb set', 15000, 2], ['산채비빔밥', 'Mountain-herb bibimbap', 11000], ['흑돼지구이', 'Black pork BBQ', 16000, 2]] },
     stops: [
-      { key: 'hwaeomsa', ko: '화엄사', en: 'Hwaeomsa Temple', kind: 'temple', text: 'A temple founded in 544 with one of Korea\'s largest wooden halls.' },
+      { key: 'hwaeomsa', bg: 'haeinsa', ko: '화엄사', en: 'Hwaeomsa Temple', kind: 'temple', text: 'A temple founded in 544 with one of Korea\'s largest wooden halls.' },
       { key: 'nogodan', bg: 'nogodan', ko: '노고단', en: 'Nogodan Peak', kind: 'mountain', text: 'From Seongsamjae pass a 1.5-hour trail leads to the summit – the last part needs an online reservation.' },
-      { key: 'sansuyu', ko: '구례 산수유마을', en: 'Sansuyu Village', kind: 'village', text: 'In March the whole valley turns yellow with cornelian-cherry blossoms.' },
+      { key: 'sansuyu', bg: 'suncheonbay', ko: '구례 산수유마을', en: 'Sansuyu Village', kind: 'village', text: 'In March the whole valley turns yellow with cornelian-cherry blossoms.' },
     ],
   },
   {
@@ -340,7 +340,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: '518', bg: 'gwangju518', ko: '5·18기념공원', en: '5·18 Memorial Park', kind: 'memorial', text: 'In May 1980 citizens rose up for democracy; the records are on the UNESCO Memory of the World register.' },
       { key: 'acc', bg: 'gwangju518', ko: '국립아시아문화전당', en: 'Asia Culture Center', kind: 'museum', text: 'A huge underground arts complex built on the site of the uprising.' },
-      { key: 'penguin', ko: '양림동 펭귄마을', en: 'Penguin Village (Yangnim-dong)', kind: 'village', text: 'Residents decorated their alleys with old clocks, pots and junk art.' },
+      { key: 'penguin', bg: 'gwangju518', ko: '양림동 펭귄마을', en: 'Penguin Village (Yangnim-dong)', kind: 'village', text: 'Residents decorated their alleys with old clocks, pots and junk art.' },
     ],
   },
 
@@ -355,7 +355,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'seomun', bg: 'seomun', ko: '서문시장 야시장', en: 'Seomun Night Market', kind: 'market', text: 'Korea\'s largest night market: 80 food stalls in a 350 m row.' },
       { key: 'kim', ko: '김광석 다시그리기길', en: 'Kim Gwang-seok Street', kind: 'street', text: 'A mural alley dedicated to a beloved folk singer.' },
-      { key: 'apsan', ko: '앞산 전망대', en: 'Apsan Observatory', kind: 'night', text: 'A cable car to a lookout over the glittering city.', ticket: { adult: 12000, open: '10:00', last: '21:30' } },
+      { key: 'apsan', bg: 'seomun', ko: '앞산 전망대', en: 'Apsan Observatory', kind: 'night', text: 'A cable car to a lookout over the glittering city.', ticket: { adult: 12000, open: '10:00', last: '21:30' } },
     ],
   },
   {
@@ -367,7 +367,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'dongpirang', ko: '동피랑 벽화마을', en: 'Dongpirang Mural Village', kind: 'village', text: 'A hillside village saved from demolition by murals – views over the harbour.' },
       { key: 'cable', bg: 'hallyeo', ko: '한려수도 조망 케이블카', en: 'Hallyeosu cable car', kind: 'mountain', text: 'A 2 km cable car up Mireuksan – on clear days you see dozens of islands.', ticket: { adult: 17000, youth: 13000, child: 13000, senior: 13000, open: '09:30', last: '17:00' } },
-      { key: 'sebyeonggwan', ko: '삼도수군통제영', en: 'Samdo Naval Command', kind: 'palace', text: 'HQ of the Joseon navy – Admiral Yi defeated the Japanese fleet nearby in 1592. He\'s on the ₩100 coin!', ticket: { adult: 3000, open: '09:00', last: '17:30' } },
+      { key: 'sebyeonggwan', bg: 'hallyeo', ko: '삼도수군통제영', en: 'Samdo Naval Command', kind: 'palace', text: 'HQ of the Joseon navy – Admiral Yi defeated the Japanese fleet nearby in 1592. He\'s on the ₩100 coin!', ticket: { adult: 3000, open: '09:00', last: '17:30' } },
     ],
   },
   {
@@ -375,22 +375,22 @@ export const REGION_MISSIONS: MissionDef[] = [
     title: ['Andong Hahoe Village', '안동 하회마을'], sub: ['UNESCO village, mask dance & Confucian academy – 1 night', '하회마을·탈춤·병산서원 1박2일'],
     desc: 'A clan village where the Ryu family has lived for 600 years, wrapped by a river bend – plus Korea\'s famous mask dance.',
     hub: 'TAE', go: 'Bus from Daegu to Andong, then city bus 246 to Hahoe', days: 2, nights: 1, diff: 1, fit: [4, 5, 3, 5], budget: 240000, season: 'autumn', stay: 'hanok',
-    food: { place: ['안동 찜닭골목', 'Andong jjimdak alley'], text: 'Braised chicken with glass noodles in a sweet soy sauce – an Andong invention.', dishes: [['안동찜닭', 'Andong braised chicken', 30000, 0, 1], ['헛제삿밥', 'Mock ancestral-rite rice', 11000], ['간고등어', 'Salted mackerel', 13000]] },
+    food: { after: 'talchum', place: ['안동 찜닭골목', 'Andong jjimdak alley'], text: 'Braised chicken with glass noodles in a sweet soy sauce – an Andong invention.', dishes: [['안동찜닭', 'Andong braised chicken', 30000, 0, 1], ['헛제삿밥', 'Mock ancestral-rite rice', 11000], ['간고등어', 'Salted mackerel', 13000]] },
     stops: [
       { key: 'hahoe', bg: 'hahoe', ko: '하회마을', en: 'Hahoe Folk Village', kind: 'village', text: 'Thatched and tiled houses where families still live; Queen Elizabeth II visited in 1999.', ticket: { adult: 5000, open: '09:00', last: '18:00' }, bus: { no: '246', color: 'blue', stops: ['안동역 Andong Stn.', '병산 Byeongsan', '하회 입구 Hahoe Gate', '하회마을 Hahoe Village'] } },
       { key: 'talchum', bg: 'hahoe', ko: '하회별신굿탈놀이', en: 'Hahoe mask dance', kind: 'workshop', text: 'A satirical mask dance mocking nobles and monks – a UNESCO intangible heritage.' },
-      { key: 'byeongsan', ko: '병산서원', en: 'Byeongsan Seowon', kind: 'village', text: 'A Confucian academy with a 7-bay pavilion facing cliffs and the river.' },
+      { key: 'byeongsan', bg: 'hahoe', ko: '병산서원', en: 'Byeongsan Seowon', kind: 'village', text: 'A Confucian academy with a 7-bay pavilion facing cliffs and the river.' },
     ],
   },
   {
     id: 'gs-coast', area: 'gyeongsang', cat: 'adventure',
     title: ['Busan Coastal Trek', '부산 해안 트레킹'], sub: ['Igidae coastal walk, Taejongdae cliffs & Songdo cable car – 1 night', '이기대·태종대·송도 1박2일'],
     desc: 'Arrive by ferry and hike Busan\'s wild coast: suspension bridges, cliffs and a cable car over the sea.',
-    hub: 'BUSAN-PORT', exit: 'PUS', go: 'Subway Line 1 from Busan Station, then bus 27 to Igidae', days: 2, nights: 1, diff: 2, fit: [5, 5, 5, 3], budget: 250000, season: 'spring', stay: 'jjimjilbang', health: 'sprain',
+    hub: 'PUS', go: 'Light rail and subway from Gimhae Airport to Kyungsung Univ., then bus 27 to Igidae', days: 2, nights: 1, diff: 2, fit: [5, 5, 5, 3], budget: 250000, season: 'spring', stay: 'jjimjilbang', health: 'sprain',
     food: { place: ['부산 밀면집', 'Busan milmyeon house'], text: 'Busan\'s cold wheat noodles – created by refugees during the Korean War.', dishes: [['물밀면', 'Cold milmyeon in broth', 9000], ['비빔밀면', 'Spicy milmyeon', 9000, 0, 2], ['왕만두', 'Big dumplings', 6000]] },
     stops: [
       { key: 'igidae', bg: 'igidae', ko: '이기대 해안산책로', en: 'Igidae Coastal Walk', kind: 'mountain', text: 'A 4.7 km cliff trail with views of Gwangan Bridge, ending at the glass Oryukdo Skywalk.' },
-      { key: 'taejongdae', ko: '태종대', en: 'Taejongdae', kind: 'park', text: 'Pine-covered cliffs and a lighthouse at the southern tip of Yeongdo.' },
+      { key: 'taejongdae', bg: 'hallyeo', ko: '태종대', en: 'Taejongdae', kind: 'park', text: 'Pine-covered cliffs and a lighthouse at the southern tip of Yeongdo.' },
       { key: 'songdo', ko: '송도해상케이블카', en: 'Songdo Marine Cable Car', kind: 'beach', text: 'Korea\'s first beach, with a cable car flying over the sea.', ticket: { adult: 17000, youth: 12000, child: 12000, senior: 12000, open: '09:00', last: '21:00' } },
     ],
     extra: 'recycle',
@@ -404,7 +404,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'tripitaka', bg: 'haeinsa', ko: '해인사 장경판전', en: 'Janggyeong Panjeon (Tripitaka hall)', kind: 'temple', text: 'Ingenious halls keep the 81,258 blocks dry without any modern equipment – a UNESCO World Heritage site.' },
       { key: 'templestay', bg: 'haeinsa', ko: '템플스테이', en: 'Temple stay programme', kind: 'workshop', text: 'Learn the 108 bows, meditate and share a silent monastic meal.' },
-      { key: 'gayasan', ko: '가야산 소리길', en: 'Gayasan Sorigil trail', kind: 'mountain', text: 'A gentle valley trail along a stream – "the path of sounds".' },
+      { key: 'gayasan', bg: 'haeinsa', ko: '가야산 소리길', en: 'Gayasan Sorigil trail', kind: 'mountain', text: 'A gentle valley trail along a stream – "the path of sounds".' },
     ],
   },
 
@@ -417,8 +417,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['제주 고기국수집', 'Jeju pork-noodle house'], text: 'Thick noodles in a rich pork-bone broth with sliced pork – Jeju comfort food.', dishes: [['고기국수', 'Pork noodle soup', 9000], ['비빔국수', 'Spicy noodles', 9000, 0, 2], ['돔베고기', 'Sliced boiled pork', 25000]] },
     stops: [
       { key: 'geomun', bg: 'geomun', ko: '거문오름', en: 'Geomun Oreum', kind: 'mountain', text: 'A UNESCO volcanic cone – visits need a reservation and a guide, and are closed on Tuesdays.', ticket: { adult: 2000, open: '09:00', last: '13:00', note: 'Reservation required. No hiking poles or umbrellas.' } },
-      { key: 'saryeoni', ko: '사려니숲길', en: 'Saryeoni Forest Path', kind: 'park', text: 'A 10 km path through cedar forest – cool even in summer.' },
-      { key: 'horse', ko: '승마 체험', en: 'Jeju pony ride', kind: 'farm', text: 'Jeju ponies were once the island\'s pride – a guided 30-minute trail ride.' },
+      { key: 'saryeoni', bg: 'mountain', ko: '사려니숲길', en: 'Saryeoni Forest Path', kind: 'park', text: 'A 10 km path through cedar forest – cool even in summer.' },
+      { key: 'horse', bg: 'mountain', ko: '승마 체험', en: 'Jeju pony ride', kind: 'farm', text: 'Jeju ponies were once the island\'s pride – a guided 30-minute trail ride.' },
     ],
     extra: 'recycle',
   },
@@ -428,23 +428,23 @@ export const REGION_MISSIONS: MissionDef[] = [
     desc: 'The south side of Jeju: a buzzing market, silver hairtail fish and tangerines in every form.',
     hub: 'CJU', go: 'Airport limousine bus 600 to Seogwipo', days: 2, nights: 1, diff: 1, fit: [4, 5, 5, 5], budget: 280000, season: 'winter', stay: 'hotel', health: 'stomach',
     food: { place: ['서귀포 갈치집', 'Seogwipo hairtail restaurant'], text: 'A whole silver hairtail, grilled or braised – a Jeju speciality.', dishes: [['통갈치구이', 'Whole grilled hairtail', 60000, 2], ['갈치조림', 'Braised hairtail', 40000, 2, 1], ['전복뚝배기', 'Abalone stew', 16000]] },
-    food2: { place: ['매일올레시장', 'Maeil Olle Market'], text: 'Fried tangerine snacks, raw-fish boxes and Jeju\'s famous crispy "omegi" rice cakes.', dishes: [['오메기떡', 'Omegi rice cake', 8000], ['흑돼지꼬치', 'Black-pork skewer', 6000], ['한라봉주스', 'Hallabong juice', 5000]] },
+    food2: { after: 'farm', place: ['매일올레시장', 'Maeil Olle Market'], text: 'Fried tangerine snacks, raw-fish boxes and Jeju\'s famous crispy "omegi" rice cakes.', dishes: [['오메기떡', 'Omegi rice cake', 8000], ['흑돼지꼬치', 'Black-pork skewer', 6000], ['한라봉주스', 'Hallabong juice', 5000]] },
     stops: [
       { key: 'olle', ko: '서귀포 매일올레시장', en: 'Seogwipo Maeil Olle Market', kind: 'market', text: 'A covered market open every day, perfect for a rainy afternoon.' },
-      { key: 'jeongbang', ko: '정방폭포', en: 'Jeongbang Waterfall', kind: 'beach', text: 'One of the few waterfalls in Asia that falls straight into the sea.', ticket: { adult: 2000, open: '09:00', last: '17:20' } },
-      { key: 'farm', ko: '감귤 체험농장', en: 'Tangerine farm', kind: 'farm', text: 'In winter, pick tangerines from the tree and fill a basket.' },
+      { key: 'jeongbang', bg: 'coast', ko: '정방폭포', en: 'Jeongbang Waterfall', kind: 'beach', text: 'One of the few waterfalls in Asia that falls straight into the sea.', ticket: { adult: 2000, open: '09:00', last: '17:20' } },
+      { key: 'farm', bg: 'coast', ko: '감귤 체험농장', en: 'Tangerine farm', kind: 'farm', text: 'In winter, pick tangerines from the tree and fill a basket.' },
     ],
   },
   {
     id: 'jj-haenyeo', area: 'jeju', cat: 'experience',
     title: ['Jeju Haenyeo Day', '제주 해녀 체험'], sub: ['Haenyeo Museum, a diving class & a tea museum – 1 night', '해녀박물관·물질 체험·오설록 1박2일'],
     desc: 'Meet the women free-divers of Jeju, try snorkelling with them and learn how their community shares the sea.',
-    hub: 'JEJU-PORT', exit: 'CJU', go: 'City bus or taxi from the ferry terminal to Gujwa (Haenyeo Museum)', days: 2, nights: 1, diff: 2, fit: [4, 5, 5, 4], budget: 280000, season: 'summer', stay: 'guesthouse', health: 'heat',
+    hub: 'CJU', go: 'Express bus 201 or a taxi from Jeju Airport to Gujwa (Haenyeo Museum)', days: 2, nights: 1, diff: 2, fit: [4, 5, 5, 4], budget: 280000, season: 'summer', stay: 'guesthouse', health: 'heat',
     food: { place: ['해녀의 집', 'Haenyeo kitchen'], text: 'The divers serve what they caught this morning – sea urchin, conch and abalone porridge.', dishes: [['전복죽', 'Abalone porridge', 15000], ['성게미역국', 'Sea-urchin seaweed soup', 15000], ['해산물모둠', 'Seafood platter', 40000, 2]] },
     stops: [
-      { key: 'museum', ko: '해녀박물관', en: 'Haenyeo Museum', kind: 'museum', text: 'The story of the haenyeo (UNESCO intangible heritage) – some still dive in their 80s.', ticket: { adult: 1100, open: '09:00', last: '17:00' } },
+      { key: 'museum', bg: 'haenyeo', ko: '해녀박물관', en: 'Haenyeo Museum', kind: 'museum', text: 'The story of the haenyeo (UNESCO intangible heritage) – some still dive in their 80s.', ticket: { adult: 1100, open: '09:00', last: '17:00' } },
       { key: 'dive', bg: 'haenyeo', ko: '해녀 물질 체험', en: 'Haenyeo diving class', kind: 'workshop', text: 'With wetsuit and weights you practise holding your breath and the "sumbisori" whistle.', ticket: { adult: 50000, youth: 50000, child: 50000, senior: 50000, open: '10:00', last: '15:00', note: 'Instructor included. Weather permitting.' } },
-      { key: 'osulloc', ko: '오설록 티뮤지엄', en: 'O\'sulloc Tea Museum', kind: 'farm', text: 'Green-tea fields and a famous green-tea ice cream.' },
+      { key: 'osulloc', bg: 'jejuwest', ko: '오설록 티뮤지엄', en: 'O\'sulloc Tea Museum', kind: 'farm', text: 'Green-tea fields and a famous green-tea ice cream.' },
     ],
   },
   {
@@ -452,11 +452,11 @@ export const REGION_MISSIONS: MissionDef[] = [
     title: ['Jeju Stories', '제주 4·3과 성읍마을'], sub: ['4·3 Peace Park, Seongeup Folk Village & Stone Park – 1 night', '4·3평화공원·성읍민속마을·돌문화공원 1박2일'],
     desc: 'Behind the beaches lies a painful history and a unique island culture of stone walls, gods and thatched houses.',
     hub: 'CJU', go: 'City bus from Jeju Airport to the 4·3 Peace Park', days: 2, nights: 1, diff: 1, fit: [5, 4, 3, 4], budget: 220000, season: 'autumn', stay: 'pension',
-    food: { place: ['성읍 토속음식점', 'Seongeup local restaurant'], text: 'Buckwheat dishes and pheasant noodles in a thatched house.', dishes: [['꿩메밀국수', 'Pheasant buckwheat noodles', 11000], ['빙떡', 'Buckwheat radish roll', 6000], ['몸국', 'Seaweed pork soup (momguk)', 10000]] },
+    food: { after: 'stonepark', place: ['성읍 토속음식점', 'Seongeup local restaurant'], text: 'Buckwheat dishes and pheasant noodles in a thatched house.', dishes: [['꿩메밀국수', 'Pheasant buckwheat noodles', 11000], ['빙떡', 'Buckwheat radish roll', 6000], ['몸국', 'Seaweed pork soup (momguk)', 10000]] },
     stops: [
       { key: '43', bg: 'jeju43', ko: '제주4·3평화공원', en: 'Jeju 4·3 Peace Park', kind: 'memorial', text: 'From 1947 to 1954 tens of thousands of islanders were killed. The memorial hall tells their stories.' },
+      { key: 'stonepark', bg: 'coast', ko: '제주돌문화공원', en: 'Jeju Stone Park', kind: 'museum', text: 'Myths of Jeju\'s creator goddess and hundreds of dol hareubang statues.', ticket: { adult: 5000, open: '09:00', last: '17:00' } },
       { key: 'seongeup', bg: 'jeju43', ko: '성읍민속마을', en: 'Seongeup Folk Village', kind: 'village', text: 'Thatched stone houses with "jeongnang" – three wooden bars instead of a gate that show if someone is home.' },
-      { key: 'stonepark', ko: '제주돌문화공원', en: 'Jeju Stone Park', kind: 'museum', text: 'Myths of Jeju\'s creator goddess and hundreds of dol hareubang statues.', ticket: { adult: 5000, open: '09:00', last: '17:00' } },
     ],
   },
   {
@@ -467,8 +467,8 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['한림 보말칼국수', 'Hallim conch-noodle house'], text: 'Noodles in a green broth made from tiny sea snails (bomal).', dishes: [['보말칼국수', 'Sea-snail noodle soup', 11000], ['전복김밥', 'Abalone gimbap', 7000], ['흑돼지돈가스', 'Black-pork cutlet', 13000]] },
     stops: [
       { key: 'hyeopjae', bg: 'jejuwest', ko: '협재해수욕장', en: 'Hyeopjae Beach', kind: 'beach', text: 'White sand, emerald water and Biyangdo island floating offshore.' },
-      { key: 'hallim', ko: '한림공원', en: 'Hallim Park', kind: 'park', text: 'Palm avenues, lava caves and seasonal flower gardens.', ticket: { adult: 15000, youth: 10000, child: 9000, senior: 10000, open: '08:30', last: '17:30' } },
-      { key: 'sanbang', ko: '산방산·용머리해안', en: 'Sanbangsan & Yongmeori Coast', kind: 'mountain', text: 'A bell-shaped mountain with a cave temple; below, layered rock cliffs shaped like a dragon\'s head – closed at high tide.', ticket: { adult: 2000, open: '09:00', last: '17:00', note: 'Yongmeori coast closes at high tide or in strong wind.' } },
+      { key: 'hallim', bg: 'coast', ko: '한림공원', en: 'Hallim Park', kind: 'park', text: 'Palm avenues, lava caves and seasonal flower gardens.', ticket: { adult: 15000, youth: 10000, child: 9000, senior: 10000, open: '08:30', last: '17:30' } },
+      { key: 'sanbang', bg: 'coast', ko: '산방산·용머리해안', en: 'Sanbangsan & Yongmeori Coast', kind: 'mountain', text: 'A bell-shaped mountain with a cave temple; below, layered rock cliffs shaped like a dragon\'s head – closed at high tide.', ticket: { adult: 2000, open: '09:00', last: '17:00', note: 'Yongmeori coast closes at high tide or in strong wind.' } },
     ],
   },
 ];

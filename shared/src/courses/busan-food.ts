@@ -3,18 +3,18 @@ import { ask, event, learn, M, no, ok, P, say, simulate, talk } from '../dsl';
 
 const flag = <T extends object>(o: T, ...f: string[]) => ({ ...o, setFlags: f });
 
-/** 식도락 – Busan food trail. Starts at a PORT (ferry from Fukuoka), ends at Gimhae Airport. */
+/** 식도락 – Busan food trail. Arrives and leaves at Gimhae Airport. */
 export const busanFood: Course = {
   id: 'busan-food',
   categoryId: 'food',
   title: { en: 'Busan Food Trail', ko: '부산 먹방 투어' },
-  subtitle: { en: 'Ferry in, eat everything – 3 nights / 4 days', ko: '배 타고 부산 먹방 3박4일' },
+  subtitle: { en: 'Fly in, eat everything – 3 nights / 4 days', ko: '김해공항 입국 부산 먹방 3박4일' },
   description: {
-    en: 'Arrive by ferry from Japan at Busan Port, then eat your way through Jagalchi fish market, Gukje market hotteok, dwaeji gukbap, chimaek at Gwangalli beach under the drone show, and sleep in a giant jjimjilbang.',
-    ko: '부산항 입국 → 자갈치 → 국제시장 → 돼지국밥 → 감천 → 해운대 → 광안리 치맥 → 찜질방 → 김해공항.',
+    en: 'Land at Gimhae Airport, then eat your way through Jagalchi fish market, Gukje market hotteok, dwaeji gukbap, chimaek at Gwangalli beach under the drone show, and sleep in a giant jjimjilbang.',
+    ko: '김해공항 입국 → 자갈치 → 국제시장 → 돼지국밥 → 감천 → 해운대 → 광안리 치맥 → 찜질방 → 김해공항.',
   },
   region: { en: 'Busan', ko: '부산' },
-  entry: { kind: 'port', code: 'BUSAN-PORT', name: { en: 'Busan Port International Passenger Terminal', ko: '부산항 국제여객터미널' } },
+  entry: { kind: 'airport', code: 'PUS', name: { en: 'Gimhae International Airport', ko: '김해국제공항' } },
   exit: { kind: 'airport', code: 'PUS', name: { en: 'Gimhae International Airport', ko: '김해국제공항' } },
   nights: 3,
   days: 4,
@@ -30,33 +30,33 @@ export const busanFood: Course = {
   coverBg: 'market',
   access: 'base',
   isPublished: true,
-  version: 5,
+  version: 6,
   sortOrder: 2,
   scenes: [
     {
-      id: 'bf-1', day: 1, bg: 'port',
-      title: { en: 'Arrive at Busan Port', ko: '부산항 도착' },
-      location: { en: 'Busan Port International Passenger Terminal', ko: '부산항 국제여객터미널' },
+      id: 'bf-1', day: 1, bg: 'airport-pus',
+      title: { en: 'Arrive at Gimhae Airport', ko: '김해공항 도착' },
+      location: { en: 'Gimhae International Airport', ko: '김해국제공항' },
       steps: [
         learn('tr-subway'),
-        say('Your ferry from Fukuoka glides into Busan Port. Seagulls, container cranes and the mountains of Korea\'s second city greet you.'),
+        say('Your plane lands at Gimhae International Airport, on the edge of Busan. The mountains and the Nakdong River of Korea\'s second city greet you.'),
         talk('guide', 'Welcome to Busan! Locals say "Annyeong-haseyo" with a strong, friendly accent here.'),
-        ask('law', 'At the port arrival hall, what do you need?', [
-          ok('My passport and entry approval – same as at an airport', 'Yes. Ports are international borders too.', { manner: 3 }, 'passport'),
-          no('Only my ferry ticket', 'The ticket is not an ID. Immigration needs your passport.', { energy: -10 }),
-        ], 'tr-ferry'),
-        event('weather', 'Typhoon season note', 'It\'s late summer. The captain says yesterday\'s sailing was cancelled for strong winds – typhoons often reach the south coast in August–September.', undefined, 'typhoon', { months: M.typhoon }),
-        event('weather', 'Ferry weather note', 'The captain says sailings are cancelled in strong wind – check the forecast before any ferry day.', undefined, 'typhoon', { months: M.noTyphoon }),
+        ask('law', 'At immigration the officer asks for your documents. What do you show?', [
+          ok('My passport and entry approval (K-ETA/visa if needed)', 'Correct. Keep them handy until you are through customs.', { manner: 3 }, 'passport'),
+          no('Only my boarding pass', 'A boarding pass is not an ID. Immigration needs your passport.', { energy: -10 }),
+        ]),
+        learn('tr-sim'),
+        event('weather', 'Typhoon season note', 'It\'s late summer. Your airline app warns that flights are cancelled when typhoons reach the south coast – this happens in August–September.', undefined, 'typhoon', { months: M.typhoon }),
         ask('weather', 'Your return flight is in 4 days and a typhoon is forecast for the weekend. What do you do?', [
           ok('Watch the forecast & phone alerts and keep a buffer in my plans', 'Good. Flights and ferries are cancelled during typhoons.', { energy: 5 }, 'typhoon'),
           no('Ignore it, typhoons never reach Korea', 'They do – mostly Jeju and the south coast in Aug–Sep.', { energy: -5 }),
         ], 'we-rain'),
-        simulate('atm', 'money', 'Global ATM at the ferry terminal', 'You need about ₩100,000 in cash for the fish market and street food. Use the Global ATM: choose the right menu, insert your card, enter your PIN, pick the amount – and don\'t fall for the currency-conversion trap. Bonus: practise a Korean passbook update.', { targetKRW: 100000, passbookPractice: true }, 'mo-atm'),
-        ask('lodging', 'Before leaving the terminal: how do you keep your hotel\'s address handy?', [
+        simulate('atm', 'money', 'Global ATM in the arrivals hall', 'You need about ₩100,000 in cash for the fish market and street food. Use the Global ATM: choose the right menu, insert your card, enter your PIN, pick the amount – and don\'t fall for the currency-conversion trap. Bonus: practise a Korean passbook update.', { targetKRW: 100000, passbookPractice: true }, 'mo-atm'),
+        ask('lodging', 'Before leaving the airport: how do you keep your hotel\'s address handy?', [
           flag(ok('Save a screenshot of the address in KOREAN (Hangul) + the phone number', 'Smart – many taxi drivers can\'t read romanised addresses.', { manner: 2 }, 'hotel'), 'hangulAddr'),
           no('The English hotel name is enough', 'We\'ll see…', {}),
         ], 'lo-hotel'),
-        say('You take the subway – T-money cards work in Busan too. Line 1 (orange) runs to Jagalchi.'),
+        say('You take the Busan–Gimhae Light Rail to Sasang, then the subway – T-money cards work in Busan too. Change to Line 1 (orange) at Seomyeon for Jagalchi.'),
       ],
     },
     {

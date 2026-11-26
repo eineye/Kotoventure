@@ -127,6 +127,13 @@ export function recommend(courses: Course[], party: PartyType): Course[] {
 export interface Issue { level: 'error' | 'warn'; where: string; msg: string }
 
 /** Validates a bundle; used by `npm run validate` and the admin "Check" button. */
+/** painted backgrounds that show a recognisable place – only for missions in these areas */
+export const REGION_BG: Record<string, string[]> = {
+  mountain: ['jeju'], volcano: ['jeju'], coast: ['jeju'], storm: ['jeju'], jejufood: ['jeju'], 'airport-cju': ['jeju'],
+  village: ['gyeongsang'], 'night-beach': ['gyeongsang'], tombs: ['gyeongsang'], temple: ['gyeongsang'], 'airport-pus': ['gyeongsang'],
+  river: ['seoul'], hanok: ['seoul'], tower: ['seoul'], towernight: ['seoul'], palace: ['seoul'], templestay: ['seoul'], royalpalaces: ['seoul', 'chungcheong'],
+};
+
 export function validateBundle(b: ContentBundle, known?: { props?: Set<string>; bgs?: Set<string> }): Issue[] {
   const issues: Issue[] = [];
   const cardIds = new Set(b.cards.map((c) => c.id));
@@ -181,6 +188,8 @@ export function validateBundle(b: ContentBundle, known?: { props?: Set<string>; 
         if (st.type === 'event') checkProp(ws, st.prop);
       });
       if (i === 0 && !(sc.bg === 'port' || sc.bg.startsWith('airport'))) issues.push({ level: 'warn', where: w, msg: 'first scene should be the airport/port' });
+      const only = REGION_BG[sc.bg];
+      if (only && c.area && !only.includes(c.area)) issues.push({ level: 'warn', where: w, msg: `background "${sc.bg}" shows a ${only.join('/')} landmark but this mission is in ${c.area}` });
     });
   }
   const used = new Set(

@@ -42,8 +42,8 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     food2: { place: ['홍대 치킨집', 'Hongdae fried-chicken pub'], text: 'Night in Hongdae: chimaek (chicken + beer) is the classic.', dishes: [['후라이드치킨', 'Fried chicken', 20000], ['양념치킨', 'Sweet-spicy chicken', 21000, 0, 1], ['치즈볼', 'Cheese balls', 6000]] },
     stops: [
       { key: 'mangwon', bg: 'mangwon', ko: '망원시장', en: 'Mangwon Market', kind: 'market', text: 'A covered local market loved by young Seoulites – everything costs a few thousand won.' },
-      { key: 'yeonnam', ko: '연트럴파크', en: 'Gyeongui Line Forest Park (Yeonnam)', kind: 'park', text: 'An old railway turned into a long green park lined with cafés – nicknamed "Yeon-tral Park".' },
-      { key: 'hongdae', ko: '홍대 걷고싶은거리', en: 'Hongdae street', kind: 'night', text: 'Buskers, dance crews and street stalls fill the walking street every evening.' },
+      { key: 'yeonnam', bg: 'cafe', ko: '연트럴파크', en: 'Gyeongui Line Forest Park (Yeonnam)', kind: 'park', text: 'An old railway turned into a long green park lined with cafés – nicknamed "Yeon-tral Park".' },
+      { key: 'hongdae', bg: 'kpop', ko: '홍대 걷고싶은거리', en: 'Hongdae street', kind: 'night', text: 'Buskers, dance crews and street stalls fill the walking street every evening.' },
     ],
     extra: 'recycle',
   },
@@ -70,7 +70,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'trail', bg: 'bukhansan', ko: '백운대 탐방로', en: 'Baegundae trail', kind: 'mountain', text: 'Steep granite steps with steel cables near the top. Weekend trails are busy with friendly Korean hikers.' },
       { key: 'summit', bg: 'bukhansan', ko: '백운대 정상', en: 'Baegundae summit', kind: 'mountain', text: 'At 836 m the whole city spreads below you – on clear days you can see the Yellow Sea.' },
-      { key: 'temple', ko: '도선사', en: 'Doseonsa Temple', kind: 'temple', text: 'A mountain temple from the 9th century, with a giant stone Buddha carved by hand.' },
+      { key: 'temple', bg: 'haeinsa', ko: '도선사', en: 'Doseonsa Temple', kind: 'temple', text: 'A mountain temple from the 9th century, with a giant stone Buddha carved by hand.' },
     ],
   },
   {
@@ -81,7 +81,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     food: { place: ['잠실 한식당', 'Jamsil Korean restaurant'], text: 'A busy Korean restaurant near Lotte World Tower – families share big pots of stew.', dishes: [['부대찌개', 'Army stew', 11000, 2, 1], ['불고기', 'Bulgogi', 15000], ['비빔밥', 'Bibimbap', 10000]] },
     stops: [
       { key: 'sky', bg: 'lotteworld', ko: '서울스카이', en: 'Seoul Sky (Lotte World Tower)', kind: 'night', text: 'A 555 m tower with a glass-floor observatory on the 118th floor.', ticket: { adult: 31000, youth: 28000, child: 28000, senior: 28000, open: '10:30', last: '21:00', note: 'Glass floor – not for the faint-hearted!' } },
-      { key: 'lake', ko: '석촌호수', en: 'Seokchon Lake', kind: 'park', text: 'A lake walk under the tower – famous for cherry blossoms in April.' },
+      { key: 'lake', bg: 'lotteworld', ko: '석촌호수', en: 'Seokchon Lake', kind: 'park', text: 'A lake walk under the tower – famous for cherry blossoms in April.' },
       { key: 'banpo', ko: '반포 한강공원', en: 'Banpo Hangang Park', kind: 'river', text: 'The Moonlight Rainbow Fountain sprays water from the bridge with music on spring–autumn evenings.' },
     ],
     extra: 'recycle',
@@ -96,7 +96,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'nmk', ko: '국립중앙박물관', en: 'National Museum of Korea', kind: 'museum', text: 'One of the world\'s largest museums – Silla gold crowns, celadon and the 10-storey Gyeongcheonsa pagoda indoors. Free.' },
       { key: 'hangeul', ko: '국립한글박물관', en: 'National Hangeul Museum', kind: 'museum', text: 'King Sejong created Hangeul in 1443 so everyone could read. Try writing your name in Korean!', phrase: ['제 이름은 ___예요', 'Je i-reu-meun ___-ye-yo', 'My name is ___'] },
-      { key: 'war', ko: '전쟁기념관', en: 'War Memorial of Korea', kind: 'memorial', text: 'Tanks and planes outside, and moving stories of the 1950–53 Korean War and the soldiers from 16 nations.' },
+      { key: 'war', bg: 'museum', ko: '전쟁기념관', en: 'War Memorial of Korea', kind: 'memorial', text: 'Tanks and planes outside, and moving stories of the 1950–53 Korean War and the soldiers from 16 nations.' },
     ],
     extra: 'crosswalk',
   },
@@ -109,7 +109,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'hanbok', bg: 'hanbokroom', ko: '한복 대여점', en: 'Hanbok rental shop', kind: 'workshop', text: 'Choose a jeogori jacket and a full chima skirt; staff braid your hair and add a norigae ornament.' },
       { key: 'insadong', bg: 'hanbokroom', ko: '인사동 찻집', en: 'Insadong tea house', kind: 'workshop', text: 'A master shows how to warm the cups, pour three times and hold the cup with two hands.', phrase: ['차 맛있어요', 'Cha ma-si-sseo-yo', 'The tea is delicious'] },
-      { key: 'ikseon', ko: '익선동', en: 'Ikseon-dong', kind: 'village', text: 'A maze of 1920s hanok now full of tiny cafés, bakeries and photo studios.' },
+      { key: 'ikseon', bg: 'hanok', ko: '익선동', en: 'Ikseon-dong', kind: 'village', text: 'A maze of 1920s hanok now full of tiny cafés, bakeries and photo studios.' },
     ],
   },
   {
@@ -121,7 +121,7 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'kstar', bg: 'kpop', ko: 'K스타로드', en: 'K-Star Road (Apgujeong)', kind: 'street', text: 'Colourful bear statues ("GangnamDol") for each idol group line the street near the old agency buildings.' },
       { key: 'coex', ko: '코엑스 별마당도서관', en: 'COEX & Starfield Library', kind: 'museum', text: 'A 13 m wall of books inside a mall, and the famous 3D "wave" screen outside.' },
-      { key: 'busking', ko: '홍대 버스킹', en: 'Hongdae busking', kind: 'night', text: 'Dance crews cover the latest choreography – crowds film and cheer.' },
+      { key: 'busking', bg: 'kpop', ko: '홍대 버스킹', en: 'Hongdae busking', kind: 'night', text: 'Dance crews cover the latest choreography – crowds film and cheer.' },
     ],
     extra: 'locker',
   },
@@ -142,9 +142,9 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     title: ['Namsan Night Walk', '남산 야경 산책'], sub: ['N Seoul Tower, hanok village & Myeongdong night market – 1 night', 'N서울타워·남산골·명동 야시장 1박2일'],
     desc: 'Climb Seoul\'s central mountain at sunset, see the lights come on and finish with street food in Myeongdong.',
     hub: 'ICN', go: 'Airport limousine bus to Myeongdong', days: 2, nights: 1, diff: 1, fit: [4, 5, 4, 4], budget: 280000, season: 'autumn', stay: 'hotel',
-    food: { place: ['명동 야시장', 'Myeongdong night stalls'], text: 'From 17:00 food carts fill Myeongdong: lobster tails, egg bread, tornado potatoes.', dishes: [['계란빵', 'Egg bread', 3000], ['회오리감자', 'Tornado potato', 5000], ['닭꼬치', 'Chicken skewer', 5000, 0, 1]] },
+    food: { after: 'myeongdong', place: ['명동 야시장', 'Myeongdong night stalls'], text: 'From 17:00 food carts fill Myeongdong: lobster tails, egg bread, tornado potatoes.', dishes: [['계란빵', 'Egg bread', 3000], ['회오리감자', 'Tornado potato', 5000], ['닭꼬치', 'Chicken skewer', 5000, 0, 1]] },
     stops: [
-      { key: 'hanokvillage', ko: '남산골 한옥마을', en: 'Namsangol Hanok Village', kind: 'village', text: 'Five restored noble houses and a time capsule buried for Seoul\'s 600th anniversary. Free entry.' },
+      { key: 'hanokvillage', bg: 'hanok', ko: '남산골 한옥마을', en: 'Namsangol Hanok Village', kind: 'village', text: 'Five restored noble houses and a time capsule buried for Seoul\'s 600th anniversary. Free entry.' },
       { key: 'tower', bg: 'towernight', ko: 'N서울타워', en: 'N Seoul Tower', kind: 'night', text: 'The tower on Namsan (243 m) – love locks on the fence and the city glittering below.', bus: { no: '01A', color: 'yellow', stops: ['명동역 Myeongdong Stn.', '남산케이블카 Cable Car', '국립극장 National Theater', '남산서울타워 N Seoul Tower'] } },
       { key: 'myeongdong', ko: '명동 야시장', en: 'Myeongdong night market', kind: 'market', text: 'Hundreds of stalls and shoppers – watch your bag and keep small notes ready.' },
     ],
@@ -181,9 +181,9 @@ export const SEOUL_MISSIONS: MissionDef[] = [
     hub: 'ICN', go: 'AREX to Seoul Station, then Line 3 to Dongnimmun', days: 2, nights: 1, diff: 2, fit: [5, 4, 4, 2], budget: 200000, season: 'autumn', stay: 'guesthouse', health: 'sprain',
     food: { place: ['서촌 토속촌', 'Seochon samgyetang house'], text: 'Whole young chicken stuffed with rice and ginseng, served bubbling – a hiker\'s favourite.', dishes: [['삼계탕', 'Ginseng chicken soup', 20000], ['전기구이 통닭', 'Rotisserie chicken', 18000], ['인삼주', 'Ginseng liquor shot', 3000]] },
     stops: [
-      { key: 'inwangsan', ko: '인왕산', en: 'Inwangsan', kind: 'mountain', text: 'A granite peak with shamanic shrines and a sunset view over Gyeongbokgung.' },
+      { key: 'inwangsan', bg: 'hanyangwall', ko: '인왕산', en: 'Inwangsan', kind: 'mountain', text: 'A granite peak with shamanic shrines and a sunset view over Gyeongbokgung.' },
       { key: 'bugaksan', bg: 'citywall', ko: '북악산 성곽길', en: 'Bugaksan wall trail', kind: 'mountain', text: 'Once closed for security, now open – steep stone steps along the wall behind the old Blue House.' },
-      { key: 'ihwa', ko: '이화 벽화마을', en: 'Ihwa Mural Village', kind: 'village', text: 'Hillside alleys with painted stairs and murals – residents ask visitors to keep quiet.' },
+      { key: 'ihwa', bg: 'hanyangwall', ko: '이화 벽화마을', en: 'Ihwa Mural Village', kind: 'village', text: 'Hillside alleys with painted stairs and murals – residents ask visitors to keep quiet.' },
     ],
   },
   {
