@@ -1,157 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, View, useWindowDimensions } from 'react-native';
 import { Text } from '../ui/Text';
-import Svg, { Circle, G, Line, Path, Polyline, Rect, Text as T } from 'react-native-svg';
 import { LINES, STATIONS, stationById, timetable, toMin, tr, type TrainRun } from '@kotoventure/shared';
 import { Btn, H, P, won } from '../ui/kit';
 import { C } from '../ui/theme';
+import { KtxMap } from './KtxMap';
 import { Box, DoneCard, Glass, Metal, OptBtn, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
 
 type S = 'map' | 'line' | 'home' | 'dest' | 'pax' | 'trains' | 'seat' | 'pay' | 'card' | 'print' | 'ticket' | 'board' | 'done';
-
-const MAP_W = 300;
-const MAP_H = 420;
-
-/** soft landmass of South Korea, drawn to fit the station positions (map units 300×420) */
-const LAND =
-  'M18 0 L300 0 L300 70 C296 96 290 120 288 150 C284 190 280 220 279 250 C278 282 276 300 268 318 C262 334 250 344 236 350 C220 356 204 360 188 364 C172 368 160 372 146 370 C132 368 120 362 106 364 C90 366 74 360 60 352 C46 344 34 336 30 322 C28 306 40 296 46 284 C52 272 50 260 60 248 C70 236 66 222 72 210 C78 196 88 186 86 172 C84 158 92 146 100 132 C108 118 98 104 104 92 C110 80 120 72 112 62 C104 52 94 50 84 44 C70 36 60 26 46 18 C36 12 26 6 18 0 Z';
-const MOUNTAINS: [number, number, number][] = [
-  [238, 104, 1.1], [258, 132, 1.3], [246, 168, 1.0], [262, 196, 1.15], [226, 140, 0.85], [200, 112, 0.8],
-  [128, 292, 1.2], [112, 274, 0.85], [176, 250, 0.9], [196, 286, 0.8], [106, 150, 0.7],
-];
-const FOREST: [number, number][] = [[214, 96], [272, 160], [230, 212], [168, 120], [120, 260], [90, 210], [190, 318], [218, 300], [70, 290]];
-const ISLANDS: [number, number, number][] = [[22, 334, 5], [34, 352, 3.5], [70, 372, 4], [120, 380, 3], [176, 380, 4], [212, 372, 3]];
-
-function Peak({ x, y, s }: { x: number; y: number; s: number }) {
-  return (
-    <G transform={`translate(${x},${y}) scale(${s})`}>
-      <Path d="M-14 6 L0 -12 L14 6 Z" fill="#B9A98A" />
-      <Path d="M0 -12 L14 6 L4 6 Z" fill="#A39376" />
-      <Path d="M-4.5 -6 L0 -12 L4.5 -6 L2 -4.5 L0 -6.5 L-2 -4.5 Z" fill="#F7F1E3" />
-    </G>
-  );
-}
-function Tree({ x, y }: { x: number; y: number }) {
-  return (
-    <G transform={`translate(${x},${y})`}>
-      <Path d="M0 -9 C4 -5 4 -1 0 2 C-4 -1 -4 -5 0 -9Z" fill="#5E8B6B" />
-      <Path d="M5 -6 C8 -3 8 0 5 2 C2 0 2 -3 5 -6Z" fill="#46705A" />
-      <Line x1="0" y1="2" x2="0" y2="5" stroke="#6B5640" strokeWidth="1" />
-    </G>
-  );
-}
-/** two-pass label: cream halo, then ink */
-function Label({ x, y, text, size, weight, color, anchor }: { x: number; y: number; text: string; size: number; weight: string; color: string; anchor: 'start' | 'middle' | 'end' }) {
-  return (
-    <G>
-      <T x={x} y={y} fontSize={size} fontWeight={weight} fill="#FBF6EA" stroke="#FBF6EA" strokeWidth={2.6} strokeLinejoin="round" textAnchor={anchor}>
-        {text}
-      </T>
-      <T x={x} y={y} fontSize={size} fontWeight={weight} fill={color} textAnchor={anchor}>
-        {text}
-      </T>
-    </G>
-  );
-}
-
-/** Illustrated KTX map (flat warm style, like the scene backgrounds) with tappable stations. */
-function RouteMap({ width, onTap, highlight }: { width: number; onTap?: (id: string) => void; highlight?: string }) {
-  const k = width / MAP_W;
-  return (
-    <View style={{ width, height: MAP_H * k }}>
-      <Svg width={width} height={MAP_H * k} viewBox={`0 0 ${MAP_W} ${MAP_H}`}>
-        {/* sea with soft wave strokes */}
-        <Rect x="0" y="0" width={MAP_W} height={MAP_H} rx="12" fill="#CFE3DF" />
-        {Array.from({ length: 16 }).map((_, i) => (
-          <Path key={i} d={`M${(i * 53) % 280} ${40 + ((i * 97) % 360)} q6 -3 12 0 t12 0`} stroke="#AFCFCA" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-        ))}
-        {/* land, coast line and a lighter inner band */}
-        <Path d={LAND} fill="#F1E6CD" stroke="#D9C7A2" strokeWidth="2" />
-        <Path d={LAND} fill="none" stroke="#FBF4E2" strokeWidth="1" transform="translate(150 190) scale(0.97) translate(-150 -190)" />
-        {/* green lowlands */}
-        <Path d="M92 150 C110 140 130 150 128 176 C126 200 104 214 86 204 C72 196 76 162 92 150Z" fill="#DDE6C4" />
-        <Path d="M60 260 C80 248 104 262 100 290 C96 316 66 320 54 304 C44 290 46 270 60 260Z" fill="#DDE6C4" />
-        <Path d="M150 214 C176 206 204 222 198 246 C192 268 160 270 148 252 C140 238 140 220 150 214Z" fill="#E4E9C9" />
-        {/* rivers: Han and Nakdong */}
-        <Path d="M214 70 C196 62 182 56 166 54 C150 52 136 50 118 52" stroke="#9CC6C8" strokeWidth="3" fill="none" strokeLinecap="round" />
-        <Path d="M206 150 C214 180 206 210 222 236 C232 254 226 284 234 306 C238 318 236 330 232 344" stroke="#9CC6C8" strokeWidth="2.6" fill="none" strokeLinecap="round" />
-        <Path d="M150 160 C140 176 128 190 118 214 C110 232 96 244 84 262" stroke="#9CC6C8" strokeWidth="2" fill="none" strokeLinecap="round" opacity={0.8} />
-        {/* mountains (Taebaek ridge, Jirisan…) and forests */}
-        {MOUNTAINS.map(([x, y, sc], i) => <Peak key={i} x={x} y={y} s={sc} />)}
-        {FOREST.map(([x, y], i) => <Tree key={i} x={x} y={y} />)}
-        {/* islands and Jeju */}
-        {ISLANDS.map(([x, y, r], i) => <Circle key={i} cx={x} cy={y} r={r} fill="#EADBB9" stroke="#D9C7A2" strokeWidth="1" />)}
-        <Path d="M66 402 C80 392 112 390 128 398 C136 404 126 412 106 414 C86 416 60 412 66 402Z" fill="#E6D7B4" stroke="#D2BF97" strokeWidth="1.2" />
-        <Peak x={97} y={402} s={0.6} />
-        <Label x={142} y={410} text="제주 Jeju" size={7} weight="800" color="#7A6A50" anchor="start" />
-        {/* seas */}
-        <T x="22" y="150" fontSize="8" fontWeight="800" fill="#7FA6A3" fontStyle="italic">서해</T>
-        <T x="22" y="160" fontSize="6" fontWeight="700" fill="#7FA6A3">Yellow Sea</T>
-        <T x="292" y="232" fontSize="8" fontWeight="800" fill="#7FA6A3" textAnchor="end">동해</T>
-        <T x="292" y="242" fontSize="6" fontWeight="700" fill="#7FA6A3" textAnchor="end">East Sea</T>
-        <T x="210" y="390" fontSize="8" fontWeight="800" fill="#7FA6A3">남해</T>
-        {/* compass */}
-        <G transform="translate(276,370)">
-          <Circle r="13" fill="#FBF6EA" stroke="#C8B48C" strokeWidth="1.2" />
-          <Path d="M0 -10 L3.5 0 L0 10 L-3.5 0Z" fill="#E9772F" />
-          <Path d="M0 0 L3.5 0 L0 10Z" fill="#C8B48C" />
-          <T x="0" y="-15" fontSize="7" fontWeight="900" fill="#7A6A50" textAnchor="middle">N</T>
-        </G>
-        {/* city silhouettes */}
-        <G opacity={0.55}>
-          {[0, 6, 11, 17, 22].map((dx, i) => <Rect key={i} x={160 + dx} y={22 - (i % 3) * 4} width="4.5" height={10 + (i % 3) * 4} fill="#B8A88A" />)}
-          {[0, 5, 10, 16].map((dx, i) => <Rect key={i} x={250 + dx} y={346 - (i % 2) * 4} width="4" height={8 + (i % 2) * 4} fill="#B8A88A" />)}
-        </G>
-        {/* KTX lines: light casing + colour */}
-        {LINES.map((l) => (
-          <Polyline key={l.id + 'c'} points={l.path.map((id) => `${stationById(id)!.x},${stationById(id)!.y}`).join(' ')} stroke="#FBF6EA" strokeWidth="8" fill="none" strokeLinejoin="round" strokeLinecap="round" />
-        ))}
-        {LINES.map((l) => (
-          <Polyline key={l.id} points={l.path.map((id) => `${stationById(id)!.x},${stationById(id)!.y}`).join(' ')} stroke={l.color} strokeWidth="4.5" fill="none" strokeLinejoin="round" strokeLinecap="round" />
-        ))}
-        <Line x1="150" y1="40" x2="122" y2="58" stroke="#8A7E68" strokeWidth="2" strokeDasharray="3 2" />
-        {STATIONS.map((s) => (
-          <G key={s.id}>
-            {s.id === highlight && <Circle cx={s.x} cy={s.y} r="11" fill="#FACC15" opacity={0.45} />}
-            <Circle cx={s.x} cy={s.y} r={s.line === 'hub' ? 6 : 4.5} fill={s.id === highlight ? '#FACC15' : '#FFFDF7'} stroke="#2B2620" strokeWidth="1.6" />
-            {(() => {
-              const lp = s.lp ?? (s.x > 230 ? 'l' : 'r');
-              const dx = lp === 'r' ? 7 : lp === 'l' ? -7 : 0;
-              const dy = lp === 't' ? -16 : lp === 'b' ? 13 : -3;
-              const anchor = lp === 'r' ? 'start' : lp === 'l' ? 'end' : 'middle';
-              return (
-                <G>
-                  <Label x={s.x + dx} y={s.y + dy} text={s.ko} size={8.5} weight="900" color="#2B2620" anchor={anchor} />
-                  <Label x={s.x + dx} y={s.y + dy + 8} text={s.en.replace(/ \(.*\)/, '')} size={6} weight="700" color="#6B6250" anchor={anchor} />
-                </G>
-              );
-            })()}
-          </G>
-        ))}
-        {/* legend card */}
-        <Rect x="6" y={MAP_H - 36} width="238" height="30" rx="6" fill="#FBF6EA" opacity={0.92} stroke="#D9C7A2" strokeWidth="1" />
-        {LINES.map((l, i) => (
-          <G key={l.id} transform={`translate(${12 + (i % 2) * 118},${MAP_H - 22 + Math.floor(i / 2) * 12})`}>
-            <Rect x="0" y="-6" width="14" height="5" rx="2" fill={l.color} />
-            <T x="18" y="-1" fontSize="7.5" fontWeight="800" fill="#2B2620">
-              {l.ko} {l.en}
-            </T>
-          </G>
-        ))}
-      </Svg>
-      {onTap &&
-        STATIONS.map((s) => (
-          <Pressable
-            key={s.id}
-            testID={`st-${s.id}`}
-            accessibilityLabel={s.en}
-            onPress={() => onTap(s.id)}
-            style={{ position: 'absolute', left: (s.x - 14) * k, top: (s.y - 12) * k, width: 28 * k, height: 24 * k, borderRadius: 12 * k }}
-          />
-        ))}
-    </View>
-  );
-}
 
 const seatTaken = (car: number, row: number, col: number) => (car * 7 + row * 3 + col * 5) % 4 === 0;
 
@@ -468,7 +324,7 @@ export function TrainSim({ step, ctx, onDone }: SimProps) {
           <P>{tr(step.intro, ctx.lang)}</P>
           <H size={16}>🗺️ Tap the KTX station where you should get off for {dest.en.match(/\((.*)\)/)?.[1] ?? dest.en}</H>
           <Box style={{ alignItems: 'center' }}>
-            <RouteMap
+            <KtxMap
               width={mapW}
               onTap={(id) => {
                 if (id === toId) {
@@ -495,7 +351,7 @@ export function TrainSim({ step, ctx, onDone }: SimProps) {
       {s === 'line' && (
         <>
           <Box style={{ alignItems: 'center' }}>
-            <RouteMap width={mapW} highlight={toId} />
+            <KtxMap width={mapW} highlight={toId} />
           </Box>
           <H size={16}>Which line takes you from Seoul to {dest.ko}?</H>
           {LINES.map((l, i) => (
