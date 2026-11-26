@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Linking, Modal, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 import Svg, { Circle, G, Path, Rect, Text as SvgText } from 'react-native-svg';
-import { tr, type Course } from '@kotoventure/shared';
+import { isBranchScene, mainScenes, tr, type Course } from '@kotoventure/shared';
 import { Text } from './Text';
 import { C, R, shadow } from './theme';
 
@@ -94,14 +94,15 @@ function MapSvg({ stops, width, big }: { stops: Stop[]; width: number; big?: boo
 
 function useStops(course: Course, lang: string): Stop[] {
   return useMemo(() => {
-    const last = course.scenes.length - 1;
-    return course.scenes.map((s, i) => ({
+    const scenes = mainScenes(course.scenes);
+    const last = scenes.length - 1;
+    return scenes.map((s, i) => ({
       n: i + 1,
       day: s.day,
       label: tr(s.location, lang) || tr(s.title, lang),
       ko: (s.location?.ko || s.title.ko || '').replace(/^[^\p{L}\p{N}]+/u, '').trim(),
       kind: kindOf(String(s.bg), i, last, s.title.en ?? ''),
-      optional: !!s.requires?.length,
+      optional: !!s.requires?.length && !isBranchScene(s),
     }));
   }, [course, lang]);
 }

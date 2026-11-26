@@ -90,8 +90,16 @@ export function sceneItems(scene: Scene, simSteps: SimStep[], party: PartyType):
   return out;
 }
 
+/** A scene that is one of several alternatives picked by an earlier choice ("go:…" flags, e.g. AREX / limousine / taxi). */
+export const isBranchScene = (s: Scene) => !!s.requires?.some((f) => f.startsWith('go:'));
+/** Scenes without the alternative branches (only the first of each group of alternatives) – for overviews and estimates. */
+export function mainScenes(scenes: Scene[]): Scene[] {
+  return scenes.filter((s, i) => !isBranchScene(s) || !(i > 0 && isBranchScene(scenes[i - 1])));
+}
+
 /** Whole-course estimate (all scenes, no conditions): total minutes per category and cost. */
-export function courseEstimate(scenes: Scene[], party: PartyType) {
+export function courseEstimate(allScenes: Scene[], party: PartyType) {
+  const scenes = mainScenes(allScenes);
   const byCat: Record<TimeCat, number> = { move: 0, walk: 0, meal: 0, visit: 0, task: 0, stay: 0 };
   let cost = 0;
   for (const sc of scenes) {

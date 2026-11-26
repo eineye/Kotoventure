@@ -14,6 +14,8 @@ export const ORIGINAL_EST: Record<string, SceneEst> = {
   /* Seoul Classic */
   'sc-1': { start: '10:00', items: [i(60, 'task', 'Immigration, baggage claim & customs', '입국심사·수하물·세관')] },
   'sc-2': { items: [i(70, 'move', 'AREX to Seoul Station + Line 4 to Myeongdong', '공항철도 → 서울역 → 4호선 명동', 4950)] },
+  'sc-2b': { items: [i(15, 'task', 'Buy a limousine-bus ticket', '리무진버스 승차권 구매'), i(75, 'move', 'Airport limousine bus to Myeongdong', '공항리무진버스로 명동')] },
+  'sc-2c': { items: [i(65, 'move', 'Taxi to Myeongdong', '택시로 명동')] },
   'sc-3': { items: [i(10, 'walk', 'Walk to the hotel', '숙소까지 도보'), i(30, 'task', 'Hotel check-in', '호텔 체크인'), i(90, 'visit', 'Myeongdong street food', '명동 길거리 음식', 8000), stay('Hotel in Myeongdong', '명동 호텔', 120000)] },
   'sc-4': { start: '18:00', items: [i(15, 'walk', 'Walk to Euljiro', '을지로까지 도보')] },
   'sc-5': { items: [i(10, 'walk', 'Walk to the noraebang', '노래방까지 도보'), i(120, 'visit', 'Noraebang (karaoke room)', '노래방', 12500), stay('Hotel in Myeongdong', '명동 호텔', 120000)] },

@@ -108,6 +108,8 @@ export const cardPhotoQuery = (card: KnowledgeCard): L => {
 export const SCENE_PHOTO: Record<string, [ko: string, en: string]> = {
   'sc-1': ['인천공항 제1터미널 입국장', 'Incheon Airport Terminal 1 arrivals'],
   'sc-2': ['공항철도 서울역 4호선 명동역', 'AREX Seoul Station Myeongdong station'],
+  'sc-2b': ['인천공항 리무진버스 6015 명동', 'Incheon Airport limousine bus 6015 Myeongdong'],
+  'sc-2c': ['인천공항 택시 승강장', 'Incheon Airport taxi rank'],
   'sc-3': ['명동 길거리 음식 야시장', 'Myeongdong street food'],
   'sc-4': ['을지로 삼겹살 고깃집', 'Euljiro samgyeopsal restaurant'],
   'sc-5': ['노래방 내부', 'Korean noraebang room'],

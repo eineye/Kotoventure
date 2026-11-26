@@ -141,7 +141,7 @@ export function DayPlanSim({ step, ctx, onDone }: SimProps) {
                   score: result.score,
                   effects: { money: -result.cost, energy: -Math.max(0, result.energy) },
                   log: [`Day plan: ${result.visited.length} places, ${hhmm(startMin)}–${hhmm(result.endMin)}`],
-                  flags: result.visited.map((id) => `visit:${id}`),
+                  flags: [...result.visited.map((id) => `visit:${id}`), ...result.visited.map((id) => `by:${id}:${result.modes[id]}`)],
                   startMin,
                   endMin: result.endMin,
                 })
