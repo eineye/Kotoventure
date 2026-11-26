@@ -54,7 +54,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'railbike', bg: 'railbike', ko: '가평 레일바이크', en: 'Gapyeong Rail Bike', kind: 'park', text: 'A four-seat pedal car on a disused railway along the river.', ticket: { adult: 40000, youth: 40000, child: 40000, senior: 40000, open: '09:00', last: '17:00', note: 'Price per bike (2–4 people).' } },
       { key: 'nami', bg: 'railbike', ko: '남이섬', en: 'Nami Island', kind: 'island', text: 'Tree-lined avenues made famous by a K-drama; arrive by ferry or by zip-wire.', ticket: { adult: 16000, youth: 13000, child: 10000, senior: 13000, open: '08:00', last: '21:00', note: 'Includes the ferry.' } },
-      { key: 'garden', bg: 'suncheonbay', ko: '아침고요수목원', en: 'Garden of Morning Calm', kind: 'park', text: 'A mountain garden – in winter it glows with a huge light festival.' },
+      { key: 'garden', bg: 'garden', ko: '아침고요수목원', en: 'Garden of Morning Calm', kind: 'park', text: 'A mountain garden – in winter it glows with a huge light festival.' },
     ],
     extra: 'recycle',
   },
@@ -160,7 +160,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'sungsimdang', bg: 'bakery', ko: '성심당 본점', en: 'Sungsimdang main store', kind: 'market', text: 'The queue snakes around the block – it moves fast. Grab a tray and tongs.' },
       { key: 'jungang', ko: '대전 중앙시장', en: 'Daejeon Jungang Market', kind: 'market', text: 'One of the largest traditional markets in central Korea.' },
-      { key: 'hanbat', bg: 'suncheonbay', ko: '한밭수목원', en: 'Hanbat Arboretum', kind: 'park', text: 'A huge free city arboretum next to the science park.' },
+      { key: 'hanbat', bg: 'garden', ko: '한밭수목원', en: 'Hanbat Arboretum', kind: 'park', text: 'A huge free city arboretum next to the science park.' },
     ],
     extra: 'kiosk',
   },
@@ -185,7 +185,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'paraglide', bg: 'paraglide', ko: '양방산 패러글라이딩', en: 'Yangbangsan paragliding', kind: 'mountain', text: 'A tandem pilot runs with you off the launch pad – 10 minutes of silence above the river.', ticket: { adult: 120000, youth: 120000, child: 120000, senior: 120000, open: '09:00', last: '16:00', note: 'Tandem flight with an instructor. Weather permitting.' } },
       { key: 'skywalk', bg: 'paraglide', ko: '만천하스카이워크', en: 'Mancheonha Skywalk', kind: 'night', text: 'A glass-floored lookout 80 m above the river.', ticket: { adult: 3000, open: '09:00', last: '17:00' } },
-      { key: 'gosu', bg: 'paraglide', ko: '고수동굴', en: 'Gosu Cave', kind: 'cave', text: 'A 1.7 km limestone cave with stalactites, narrow stairs and dripping water.', ticket: { adult: 11000, open: '09:00', last: '17:30' } },
+      { key: 'gosu', bg: 'cave', ko: '고수동굴', en: 'Gosu Cave', kind: 'cave', text: 'A 1.7 km limestone cave with stalactites, narrow stairs and dripping water.', ticket: { adult: 11000, open: '09:00', last: '17:30' } },
     ],
   },
   {
@@ -197,7 +197,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'cheongnamdae', bg: 'hallyeo', ko: '청남대', en: 'Cheongnamdae', kind: 'park', text: 'The former presidential villa on a lake, now a park with statues of every president.', ticket: { adult: 6000, open: '09:00', last: '16:30' } },
       { key: 'jikji', bg: 'jikji', ko: '청주고인쇄박물관', en: 'Cheongju Early Printing Museum', kind: 'museum', text: 'Jikji (1377) is the oldest surviving book printed with movable metal type – 78 years before Gutenberg.' },
-      { key: 'suamgol', bg: 'cafe', ko: '수암골', en: 'Suamgol Mural Village', kind: 'village', text: 'A hillside village with murals and cafés overlooking the city.' },
+      { key: 'suamgol', bg: 'suamgol', ko: '수암골', en: 'Suamgol Mural Village', kind: 'village', text: 'A hillside village with murals and cafés overlooking the city.' },
     ],
     extra: 'crosswalk',
   },
@@ -355,7 +355,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'seomun', bg: 'seomun', ko: '서문시장 야시장', en: 'Seomun Night Market', kind: 'market', text: 'Korea\'s largest night market: 80 food stalls in a 350 m row.' },
       { key: 'kim', ko: '김광석 다시그리기길', en: 'Kim Gwang-seok Street', kind: 'street', text: 'A mural alley dedicated to a beloved folk singer.' },
-      { key: 'apsan', bg: 'seomun', ko: '앞산 전망대', en: 'Apsan Observatory', kind: 'night', text: 'A cable car to a lookout over the glittering city.', ticket: { adult: 12000, open: '10:00', last: '21:30' } },
+      { key: 'apsan', bg: 'apsan', ko: '앞산 전망대', en: 'Apsan Observatory', kind: 'night', text: 'A cable car to a lookout over the glittering city.', ticket: { adult: 12000, open: '10:00', last: '21:30' } },
     ],
   },
   {
@@ -390,7 +390,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     food: { place: ['부산 밀면집', 'Busan milmyeon house'], text: 'Busan\'s cold wheat noodles – created by refugees during the Korean War.', dishes: [['물밀면', 'Cold milmyeon in broth', 9000], ['비빔밀면', 'Spicy milmyeon', 9000, 0, 2], ['왕만두', 'Big dumplings', 6000]] },
     stops: [
       { key: 'igidae', bg: 'igidae', ko: '이기대 해안산책로', en: 'Igidae Coastal Walk', kind: 'mountain', text: 'A 4.7 km cliff trail with views of Gwangan Bridge, ending at the glass Oryukdo Skywalk.' },
-      { key: 'taejongdae', bg: 'hallyeo', ko: '태종대', en: 'Taejongdae', kind: 'park', text: 'Pine-covered cliffs and a lighthouse at the southern tip of Yeongdo.' },
+      { key: 'taejongdae', bg: 'taejongdae', ko: '태종대', en: 'Taejongdae', kind: 'park', text: 'Pine-covered cliffs and a lighthouse at the southern tip of Yeongdo.' },
       { key: 'songdo', ko: '송도해상케이블카', en: 'Songdo Marine Cable Car', kind: 'beach', text: 'Korea\'s first beach, with a cable car flying over the sea.', ticket: { adult: 17000, youth: 12000, child: 12000, senior: 12000, open: '09:00', last: '21:00' } },
     ],
     extra: 'recycle',

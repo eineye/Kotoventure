@@ -944,6 +944,11 @@ const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   'airport-pus': require('../../assets/bg/airport-pus.webp'),
   'airport-gmp': require('../../assets/bg/airport-gmp.webp'),
   hanyangwall: require('../../assets/bg/hanyangwall.webp'),
+  garden: require('../../assets/bg/garden.webp'),
+  suamgol: require('../../assets/bg/suamgol.webp'),
+  cave: require('../../assets/bg/cave.webp'),
+  apsan: require('../../assets/bg/apsan.webp'),
+  taejongdae: require('../../assets/bg/taejongdae.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {
