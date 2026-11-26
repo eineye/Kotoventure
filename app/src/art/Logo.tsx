@@ -54,7 +54,7 @@ export function Logo({ width = 300, sub = true }: { width?: number; sub?: boolea
         <TSpan fill="#E5383B">venture</TSpan>
       </SvgText>
       <SvgText x="106" y="78" fontSize="12.5" fontWeight="800" fill="#5A6283" letterSpacing="1.6">
-        KOREA TOURING GAME ADVENTURE
+        KOREA TOURING MISSION ADVENTURE
       </SvgText>
       {sub && (
         <SvgText x="106" y="104" fontSize="14" fontWeight="700" fill="#1D4ED8">

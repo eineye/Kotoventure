@@ -308,7 +308,7 @@ const BANK: Record<Kind, Q[]> = {
   ],
 };
 /** revision of the generated content (season-aware steps, guidebook cards for SIM/bus/subway/toilets/ordering) */
-const GEN_REV = 2;
+const GEN_REV = 3;
 
 const KIND_BG: Record<Kind, string> = {
   palace: 'palace', temple: 'temple', market: 'market', mountain: 'mountain', beach: 'beach', museum: 'museum', street: 'street', village: 'village',

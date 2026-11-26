@@ -31,7 +31,7 @@ export function Login({ onLogin }: { onLogin: (u: { email: string }) => void }) 
         <h1>
           Koto<span className="red">venture</span> Admin
         </h1>
-        <p className="dim">Korea Touring Game Adventure · 관리자</p>
+        <p className="dim">Korea Touring Mission Adventure · 관리자</p>
         <input placeholder="이메일" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" />
         <input placeholder="비밀번호" type="password" value={pw} onChange={(e) => setPw(e.target.value)} autoComplete="current-password" />
         {err && <div className="err">{err}</div>}

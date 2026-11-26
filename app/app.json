@@ -35,10 +35,10 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "name": "Kotoventure – Korea Touring Game Adventure"
+      "name": "Kotoventure – Korea Touring Mission Adventure"
     },
     "extra": {
-      "fullName": "Korea Touring Game Adventure"
+      "fullName": "Korea Touring Mission Adventure"
     }
   }
 }
