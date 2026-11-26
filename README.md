@@ -1,11 +1,11 @@
-# Kotoventure – Korea Touring Game Adventure
+# Kotoventure – Korea Touring Mission Adventure
 
 > 한국을 알고 싶거나 한국 여행을 계획하는 전 세계 사람들을 위한 **스마트폰 여행 서바이벌 게임**.
 > 공항/항구에 내리는 순간부터 귀국까지, 진행형 여행 코스를 따라가며 **교통·숙박·음식·돈·생활예절·법규·날씨·의료**를 터치로 결정하며 배웁니다.
 
 | | |
 |---|---|
-| 정식 명칭 | Korea Touring Game Adventure |
+| 정식 명칭 | Korea Touring Mission Adventure |
 | 퍼블리싱 명칭 | **Kotoventure** |
 | 플랫폼 | iOS · Android (Expo / React Native, 하나의 코드) |
 | 판매 | 유료 앱 **$0.99** (기본 미션 5개 포함) → 추가 미션은 **인앱 결제** |

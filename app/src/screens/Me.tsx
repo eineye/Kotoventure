@@ -110,7 +110,7 @@ export function Me() {
       <Btn kind="danger" label={L.signOut} onPress={() => signOut()} />
       {Platform.OS === 'android' && <Btn testID="exit-app" kind="ghost" label={lang === 'ko' ? '앱 종료' : 'Exit app'} onPress={() => confirmExit(lang)} />}
       <P dim style={{ textAlign: 'center', fontSize: 12 }}>
-        Kotoventure – Korea Touring Game Adventure v1.0.0{'\n'}
+        Kotoventure – Korea Touring Mission Adventure v1.0.0{'\n'}
         {lang === 'ko' ? '빌드' : 'Build'} {process.env.EXPO_PUBLIC_BUILD_ID || 'dev'}
       </P>
     </ScrollView>
