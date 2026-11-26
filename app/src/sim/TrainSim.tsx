@@ -4,7 +4,7 @@ import { Text } from '../ui/Text';
 import { LINES, STATIONS, stationById, timetable, toMin, tr, type TrainRun } from '@kotoventure/shared';
 import { Btn, H, P, won } from '../ui/kit';
 import { C } from '../ui/theme';
-import { KtxMap } from './KtxMap';
+import { KtxMapCard } from './KtxMap';
 import { Box, DoneCard, Glass, Metal, OptBtn, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
 
 type S = 'map' | 'line' | 'home' | 'dest' | 'pax' | 'trains' | 'seat' | 'pay' | 'card' | 'print' | 'ticket' | 'board' | 'done';
@@ -324,8 +324,9 @@ export function TrainSim({ step, ctx, onDone }: SimProps) {
           <P>{tr(step.intro, ctx.lang)}</P>
           <H size={16}>🗺️ Tap the KTX station where you should get off for {dest.en.match(/\((.*)\)/)?.[1] ?? dest.en}</H>
           <Box style={{ alignItems: 'center' }}>
-            <KtxMap
+            <KtxMapCard
               width={mapW}
+              lang={ctx.lang}
               onTap={(id) => {
                 if (id === toId) {
                   sc.ok(`Yes – ${dest.ko} (${dest.en}).`);
@@ -351,7 +352,7 @@ export function TrainSim({ step, ctx, onDone }: SimProps) {
       {s === 'line' && (
         <>
           <Box style={{ alignItems: 'center' }}>
-            <KtxMap width={mapW} highlight={toId} />
+            <KtxMapCard width={mapW} highlight={toId} lang={ctx.lang} />
           </Box>
           <H size={16}>Which line takes you from Seoul to {dest.ko}?</H>
           {LINES.map((l, i) => (
