@@ -205,6 +205,9 @@ function TrekModal({ init, isNew, onClose }: { init: Trek; isNew: boolean; onClo
         <Field label="정확한 주소 (한글)">
           <input value={t.addressKo} onChange={(e) => set({ addressKo: e.target.value })} placeholder="충청남도 태안군 이원면 내리 만대항" />
         </Field>
+        <Field label="주소 (영어 – 외국어 화면에 표시)" hint="예: Mandae Port, Nae-ri, Iwon-myeon, Taean-gun, Chungcheongnam-do">
+          <input value={t.address?.en ?? ''} onChange={(e) => set({ address: e.target.value ? { en: e.target.value, ko: t.addressKo } : undefined })} />
+        </Field>
         <Field label="지역">
           <Select value={t.area} onChange={(area) => set({ area })} options={AREAS.map((a) => [a.id, `${a.icon} ${a.name.ko}`] as [Area, string])} />
         </Field>
