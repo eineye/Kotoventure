@@ -26,8 +26,10 @@ export interface Trek {
   area: Area;
   /** e.g. "Course 1" */
   courseName: L;
-  /** exact address of the starting point (Korean) */
+  /** exact address of the starting point (Korean – for taxis and navigation) */
   addressKo: string;
+  /** the same address written for foreign visitors (romanised) */
+  address?: L;
   /** map search term for the start (Korean) */
   startSearch: string;
   /** map search term for the finish (Korean) */
@@ -53,16 +55,53 @@ export interface Trek {
 export const TREK_POINT_ICON: Record<TrekPointKind, string> = { start: '🚩', end: '🏁', view: '👀', beach: '🏖️', shop: '🏪', rest: '🪑', rock: '🪨', cave: '🕳️', spot: '📍' };
 export const TREK_MAX_PHOTOS = 4;
 
-/** Coarse outline of South Korea as [lng, lat] – enough to show roughly where a trek is. */
+/** Outline of mainland South Korea as [lng, lat] (DMZ in the north, then the coast clockwise). */
 export const KOREA_OUTLINE: [number, number][] = [
-  [126.62, 37.78], [127.05, 38.0], [127.6, 38.3], [128.35, 38.62], [128.6, 38.2], [128.9, 37.76], [129.12, 37.48], [129.38, 37.05],
-  [129.44, 36.6], [129.57, 36.08], [129.42, 35.5], [129.1, 35.1], [128.62, 34.86], [128.1, 34.9], [127.75, 34.72], [127.25, 34.55],
-  [126.55, 34.3], [126.32, 34.6], [126.35, 34.82], [126.42, 35.38], [126.68, 35.98], [126.52, 36.35], [126.32, 36.6], [126.14, 36.74],
-  [126.2, 36.98], [126.52, 37.0], [126.82, 37.02], [126.6, 37.45], [126.45, 37.72],
+  // DMZ, west → east
+  [126.68, 37.77], [126.9, 37.95], [127.15, 38.1], [127.5, 38.3], [127.9, 38.31], [128.2, 38.45], [128.36, 38.62],
+  // east coast, north → south
+  [128.47, 38.42], [128.6, 38.2], [128.65, 38.03], [128.88, 37.8], [128.96, 37.74], [129.05, 37.6], [129.12, 37.5], [129.2, 37.35],
+  [129.33, 37.12], [129.4, 36.9], [129.43, 36.6], [129.39, 36.4], [129.4, 36.15], [129.57, 36.08], [129.5, 35.95], [129.45, 35.78],
+  [129.45, 35.6], [129.4, 35.45], [129.3, 35.3], [129.24, 35.2], [129.15, 35.15], [129.05, 35.05], [128.95, 35.07],
+  // south coast, east → west
+  [128.8, 35.08], [128.62, 35.12], [128.45, 34.9], [128.3, 34.93], [128.05, 34.95], [127.82, 34.97], [127.7, 34.9], [127.73, 34.7],
+  [127.55, 34.68], [127.35, 34.5], [127.15, 34.56], [126.95, 34.45], [126.75, 34.36], [126.53, 34.3], [126.38, 34.45], [126.35, 34.62],
+  [126.35, 34.78],
+  // west coast, south → north
+  [126.4, 35.0], [126.3, 35.15], [126.4, 35.35], [126.48, 35.5], [126.6, 35.7], [126.5, 35.82], [126.6, 35.98], [126.62, 36.1],
+  [126.52, 36.35], [126.45, 36.5], [126.32, 36.62], [126.15, 36.75], [126.13, 36.86], [126.2, 36.94], [126.26, 37.0], [126.36, 36.95],
+  [126.45, 36.98], [126.6, 37.0], [126.85, 36.98], [126.75, 37.06], [126.65, 37.16], [126.7, 37.35], [126.6, 37.45], [126.55, 37.62],
+];
+/** larger islands as ellipses: [lng, lat, rx, ry] in degrees */
+export const KOREA_ISLANDS: [number, number, number, number][] = [
+  [126.45, 37.7, 0.1, 0.07], [128.62, 34.86, 0.1, 0.1], [127.93, 34.8, 0.08, 0.07], [126.27, 34.45, 0.12, 0.07], [126.36, 36.5, 0.04, 0.1],
+  [126.73, 34.32, 0.06, 0.04], [127.02, 34.58, 0.04, 0.03], [128.25, 34.76, 0.05, 0.03], [126.1, 34.7, 0.05, 0.04],
 ];
 /** Jeju as an ellipse: centre [lng, lat] and radii in degrees */
 export const JEJU = { lng: 126.55, lat: 33.38, rx: 0.37, ry: 0.17 };
-export const KOREA_BOUNDS = { minLng: 125.9, maxLng: 129.8, minLat: 33.0, maxLat: 38.8 };
+/** main cities for orientation */
+export const KOREA_CITIES: { ko: string; en: string; lng: number; lat: number; big?: boolean }[] = [
+  { ko: '서울', en: 'Seoul', lng: 126.98, lat: 37.57, big: true },
+  { ko: '인천', en: 'Incheon', lng: 126.7, lat: 37.46 },
+  { ko: '강릉', en: 'Gangneung', lng: 128.9, lat: 37.75 },
+  { ko: '대전', en: 'Daejeon', lng: 127.38, lat: 36.35 },
+  { ko: '전주', en: 'Jeonju', lng: 127.15, lat: 35.82 },
+  { ko: '대구', en: 'Daegu', lng: 128.6, lat: 35.87 },
+  { ko: '광주', en: 'Gwangju', lng: 126.85, lat: 35.16 },
+  { ko: '부산', en: 'Busan', lng: 129.07, lat: 35.18, big: true },
+  { ko: '제주', en: 'Jeju', lng: 126.53, lat: 33.5 },
+];
+/** mountain symbols: Seoraksan, the Taebaek ridge, Sobaek, Deogyu, Gaya, Jiri, Halla */
+export const KOREA_MOUNTAINS: [number, number][] = [
+  [128.45, 38.12], [128.62, 37.62], [128.72, 37.3], [128.85, 36.95], [128.45, 36.95], [128.1, 37.15], [127.75, 35.86], [128.1, 35.8], [127.73, 35.34], [126.53, 33.37],
+];
+/** Han, Nakdong and Geum rivers */
+export const KOREA_RIVERS: [number, number][][] = [
+  [[128.2, 37.45], [127.75, 37.45], [127.35, 37.55], [126.98, 37.53], [126.75, 37.62]],
+  [[128.75, 36.75], [128.45, 36.35], [128.4, 36.0], [128.48, 35.7], [128.65, 35.42], [128.95, 35.1]],
+  [[127.55, 36.25], [127.4, 36.5], [127.1, 36.45], [126.9, 36.25], [126.72, 36.02]],
+];
+export const KOREA_BOUNDS = { minLng: 125.85, maxLng: 129.8, minLat: 32.95, maxLat: 38.75 };
 
 /** Equirectangular projection into a w×h box (with latitude correction). */
 export function projectKorea(lng: number, lat: number, w: number, h: number) {
@@ -85,6 +124,7 @@ export const TREKS: Trek[] = [
     area: 'chungcheong',
     courseName: { en: 'Solhyanggi-gil Course 1, Iwon-myeon, Taean-gun, South Chungcheong', ko: '충남 태안군 이원면 솔향기길 1코스' },
     addressKo: '충청남도 태안군 이원면 내리 만대항',
+    address: { en: 'Mandae Port, Nae-ri, Iwon-myeon, Taean-gun, Chungcheongnam-do', ko: '충청남도 태안군 이원면 내리 만대항' },
     startSearch: '만대항',
     endSearch: '꾸지나무골해수욕장',
     notice: {

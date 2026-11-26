@@ -116,12 +116,17 @@ export function TrekDetail({ id, onBack }: { id: string; onBack: () => void }) {
           <Panel>
             <H size={17}>📍 {ko ? '위치와 출발지' : 'Where'}</H>
             <View style={{ flexDirection: 'row', gap: 12, marginTop: 8, alignItems: 'center' }}>
-              <KoreaPin trek={t} size={96} />
+              <KoreaPin trek={t} size={124} lang={lang} />
               <View style={{ flex: 1, gap: 6 }}>
-                <Text style={{ fontWeight: '900', color: C.ink }}>{t.addressKo}</Text>
+                <Text style={{ fontWeight: '900', color: C.ink }}>{ko ? t.addressKo : tr(t.address, lang) || t.addressKo}</Text>
+                {!ko && (
+                  <Text style={{ fontSize: 12, color: C.inkSoft }}>
+                    {'Korean address (show it to a taxi driver or type it into navigation):'} {t.addressKo}
+                  </Text>
+                )}
                 <Text style={{ fontSize: 12, color: C.inkSoft }}>
-                  {ko ? '출발' : 'Start'}: {t.startSearch}
-                  {t.endSearch ? ` · ${ko ? '도착' : 'Finish'}: ${t.endSearch}` : ''}
+                  {ko ? '출발' : 'Start'}: {tr(t.points[0]?.name, lang)}
+                  {t.points.length > 1 ? ` · ${ko ? '도착' : 'Finish'}: ${tr(t.points[t.points.length - 1].name, lang)}` : ''}
                 </Text>
                 <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
                   <MapBtn testID="trek-naver" label={`N ${ko ? '지도' : 'Map'}`} bg="#03C75A" color="#FFF" onPress={() => openMap('naver', t.startSearch)} />
