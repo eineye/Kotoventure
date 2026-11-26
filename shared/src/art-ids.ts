@@ -14,7 +14,7 @@ export const PROP_IDS = [
   // etiquette
   'walk-right', 'queue', 'quiet', 'priority-seat', 'trash-bins', 'shoes-off', 'two-hands', 'camera', 'hanbok',
   // law
-  'police', 'no-smoking', 'no-drugs', 'drone', 'alert-phone',
+  'toilet', 'police', 'no-smoking', 'no-drugs', 'drone', 'alert-phone',
   // weather
   'seasons', 'spring', 'summer', 'autumn', 'winter', 'heatwave', 'typhoon', 'umbrella', 'fine-dust',
   // medical

@@ -307,6 +307,9 @@ const BANK: Record<Kind, Q[]> = {
     ]),
   ],
 };
+/** revision of the generated content (season-aware steps, guidebook cards for SIM/bus/subway/toilets/ordering) */
+const GEN_REV = 1;
+
 const KIND_BG: Record<Kind, string> = {
   palace: 'palace', temple: 'temple', market: 'market', mountain: 'mountain', beach: 'beach', museum: 'museum', street: 'street', village: 'village',
   night: 'tower', park: 'river', island: 'coast', workshop: 'kitchen', river: 'river', memorial: 'tombs', cave: 'mountain', farm: 'village',
@@ -452,7 +455,8 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
       // weather for the player's travel month: month note + cards, and a question for that season
       ...monthSteps(),
       ...(Object.keys(SEASON) as (keyof typeof SEASON)[]).map((k) => ({ ...SEASON[k].q(), months: SEASON_MONTHS[k] }) as Step),
-      ...(['seoul', 'incheon', 'gyeonggi'].includes(def.area) ? [learn('tr-subway')] : []),
+      ...(hub.kind === 'airport' ? [learn('tr-sim'), learn('tr-airbus')] : []),
+      ...(['seoul', 'incheon', 'gyeonggi'].includes(def.area) ? [learn('tr-subway'), learn('tr-metro')] : []),
     ],
   });
 
@@ -478,6 +482,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
     if (s.tip) steps.push(talk('guide', s.tip));
     if (s.phrase) steps.push(talk('local', s.phrase[2], P(s.phrase[0], s.phrase[1], s.phrase[2])));
     if (s.ticket) steps.push(simulate('ticket', 'money', `${s.en} tickets`, `Buy tickets for your party at the ${s.en} ticket office${s.ticket.hanbok ? ' (you are all wearing hanbok today!)' : ''}, then scan in at the gate.`, { site: registerTicket(def, s), ...(s.ticket.hanbok ? { hanbok: true } : {}) }));
+    if (i === 0) steps.push(learn('et-toilet'));
     const bank = BANK[s.kind];
     steps.push(pick(bank, `${def.id}|${s.key}`)());
     if (def.cat === 'culture' || def.cat === 'sightseeing') {
@@ -515,6 +520,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
       const fsteps: Step[] = [
         say(f.text),
         menuSim(`${def.id}-food`, f, 'fo-bell'),
+        learn('fo-order'),
       ];
       if (f.tip) fsteps.push(talk('local', f.tip));
       fsteps.push(pick(mealQuiz(RESTAURANTS[`${def.id}-food`].kind ?? 'korean'), def.id + 'food')());
@@ -588,7 +594,9 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
     // all missions are currently free (included with the app); set access 'iap' + productId `pack_<area>` to sell them
     access: 'base',
     isPublished: true,
-    version: def.version ?? 1,
+    // + GEN_REV: bump when the generator's shared steps change, so apps prefer the bundled
+    // missions over older copies on the server
+    version: (def.version ?? 1) + GEN_REV,
     sortOrder,
     scenes,
   };

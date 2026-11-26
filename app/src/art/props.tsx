@@ -522,6 +522,21 @@ const PROPS: Record<PropId, React.ReactNode> = {
       {txt(84, 20, 'shh', 12, '#2D6CDF', '900')}
     </G>
   ),
+  toilet: (
+    <G>
+      <Rect x="14" y="10" width="72" height="80" rx="10" fill="#E3EEF4" />
+      <Rect x="22" y="16" width="56" height="22" rx="5" fill="#2D6CDF" />
+      {txt(50, 31, '화장실 WC', 10, '#FFFFFF', '900')}
+      <Rect x="30" y="44" width="18" height="10" rx="3" fill="#F8FAFC" stroke="#94A3B8" />
+      <Path d="M28 60 L64 60 Q66 76 50 80 L38 80 Q28 76 28 60Z" fill="#FFFFFF" stroke="#94A3B8" strokeWidth="1.5" />
+      <Ellipse cx="46" cy="60" rx="18" ry="5" fill="#F1F5F9" stroke="#94A3B8" strokeWidth="1.5" />
+      <Rect x="40" y="80" width="12" height="6" fill="#CBD5E1" />
+      <Rect x="66" y="46" width="12" height="24" rx="3" fill="#FFFFFF" stroke="#94A3B8" />
+      <Circle cx="72" cy="52" r="2.4" fill="#2D6CDF" />
+      <Circle cx="72" cy="59" r="2.4" fill="#16A34A" />
+      <Rect x="69.5" y="63.5" width="5" height="5" fill="#E5383B" />
+    </G>
+  ),
   'priority-seat': (
     <G>
       <Rect x="10" y="44" width="80" height="20" rx="6" fill="#F472B6" />
