@@ -30,7 +30,7 @@ export const gyeongjuHeritage: Course = {
   coverBg: 'temple',
   access: 'base',
   isPublished: true,
-  version: 4,
+  version: 5,
   sortOrder: 3,
   scenes: [
     {
@@ -76,7 +76,7 @@ export const gyeongjuHeritage: Course = {
       ],
     },
     {
-      id: 'gj-2', day: 1, bg: 'hanok',
+      id: 'gj-2', day: 1, bg: 'hanbokroom',
       title: { en: 'Hanok stay in Hwangnidan-gil', ko: '황리단길 한옥스테이' },
       location: { en: 'Hwangnidan-gil', ko: '황리단길' },
       steps: [
@@ -196,7 +196,7 @@ export const gyeongjuHeritage: Course = {
       ],
     },
     {
-      id: 'gj-7', day: 3, bg: 'mountain',
+      id: 'gj-7', day: 3, bg: 'temple',
       title: { en: 'Twisted ankle!', ko: '발목 부상' },
       location: { en: 'Gyeongju', ko: '경주' },
       steps: [
