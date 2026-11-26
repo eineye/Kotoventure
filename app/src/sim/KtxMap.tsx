@@ -1,4 +1,6 @@
-import { Pressable, View } from 'react-native';
+import { useState } from 'react';
+import { Modal, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
+import { Text } from '../ui/Text';
 import Svg, { Circle, Defs, Ellipse, G, LinearGradient, Line, Path, Rect, Stop, Text as T } from 'react-native-svg';
 import { JEJU, KOREA_ISLANDS, KOREA_MOUNTAINS, KOREA_OUTLINE, KOREA_RIVERS, LINES, STATIONS, stationById } from '@kotoventure/shared';
 
@@ -327,6 +329,79 @@ export function KtxMap({ width, onTap, highlight }: { width: number; onTap?: (id
             />
           );
         })}
+    </View>
+  );
+}
+
+/**
+ * The KTX map with a "zoom" button: opens a full-screen view (zoom 1×–3×, scroll in both directions)
+ * where stations can still be tapped – choosing one closes the view.
+ */
+export function KtxMapCard({ width, onTap, highlight, lang }: { width: number; onTap?: (id: string) => void; highlight?: string; lang: string }) {
+  const ko = lang === 'ko';
+  const { width: sw } = useWindowDimensions();
+  const [open, setOpen] = useState(false);
+  const [zoom, setZoom] = useState(1.6);
+  const fullW = Math.min(sw, 700) - 16;
+  return (
+    <View>
+      <KtxMap width={width} onTap={onTap} highlight={highlight} />
+      <Pressable
+        testID="ktx-zoom"
+        onPress={() => {
+          setZoom(1.6);
+          setOpen(true);
+        }}
+        accessibilityRole="button"
+        accessibilityLabel={ko ? '노선도 크게 보기' : 'Zoom the map'}
+        style={{ position: 'absolute', top: 8, left: 8, flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#1F2A44E6', borderRadius: 999, paddingHorizontal: 12, paddingVertical: 7 }}
+      >
+        <Text style={{ color: '#FFF', fontWeight: '900', fontSize: 13 }}>🔍 {ko ? '크게 보기' : 'Zoom'}</Text>
+      </Pressable>
+      <Modal visible={open} animationType="slide" onRequestClose={() => setOpen(false)}>
+        <View style={{ flex: 1, backgroundColor: '#1F2A44' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 12, paddingTop: 14, paddingBottom: 10 }}>
+            <Pressable testID="ktx-zoom-close" onPress={() => setOpen(false)} style={{ padding: 6 }} accessibilityRole="button" accessibilityLabel={ko ? '닫기' : 'Close'}>
+              <Text style={{ color: '#FFF', fontSize: 22, fontWeight: '900' }}>✕</Text>
+            </Pressable>
+            <Text style={{ flex: 1, color: '#FFF', fontWeight: '900', fontSize: 15 }} numberOfLines={1}>
+              🚄 {ko ? 'KTX 노선도' : 'KTX map'}
+            </Text>
+            {(
+              [
+                ['−', () => setZoom((z) => Math.max(1, +(z - 0.5).toFixed(1))), 'ktx-zoom-out'],
+                ['+', () => setZoom((z) => Math.min(3, +(z + 0.5).toFixed(1))), 'ktx-zoom-in'],
+              ] as const
+            ).map(([label, fn, id]) => (
+              <Pressable key={id} testID={id} onPress={fn} style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: '#FFFFFF22', alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button">
+                <Text style={{ color: '#FFF', fontSize: 22, fontWeight: '900' }}>{label}</Text>
+              </Pressable>
+            ))}
+            <Text style={{ color: '#CBD5E1', fontWeight: '800', width: 48, textAlign: 'right' }}>{Math.round(zoom * 100)}%</Text>
+          </View>
+          {onTap && (
+            <Text style={{ color: '#CBD5E1', fontSize: 12, paddingHorizontal: 14, paddingBottom: 6 }}>
+              {ko ? '내릴 역을 누르세요. 화면을 밀어서 지도를 움직일 수 있어요.' : 'Tap the station to get off at. Drag to move around the map.'}
+            </Text>
+          )}
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 8 }}>
+            <ScrollView horizontal contentContainerStyle={{ paddingRight: 8 }}>
+              <KtxMap
+                width={fullW * zoom}
+                highlight={highlight}
+                onTap={
+                  onTap
+                    ? (id) => {
+                        setOpen(false);
+                        onTap(id);
+                      }
+                    : undefined
+                }
+              />
+            </ScrollView>
+          </ScrollView>
+        </View>
+      </Modal>
     </View>
   );
 }
