@@ -65,6 +65,7 @@ export * from './art-ids';
 export * from './spots';
 export * from './treks';
 export * from './places';
+export { withEntryRoute } from './courses/routes';
 export * from './subway';
 export * from './dayplan';
 export * from './practice';

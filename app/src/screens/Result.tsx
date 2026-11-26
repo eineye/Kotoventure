@@ -12,13 +12,15 @@ import { C, R } from '../ui/theme';
 import { ChecklistPanel, buildChecklist, reviewItems } from '../ui/Checklist';
 
 /** Shown when a course is finished: score, grade, what was learned per topic, phrases, checklist. */
-export function Result({ id, onHome, onReplay }: { id: string; onHome: () => void; onReplay: () => void }) {
+export function Result({ id, onHome, onReplay, onBack }: { id: string; onHome: () => void; onReplay: () => void; /** opened again later from the mission page / travel kit */ onBack?: () => void }) {
   const { content, profile, progress } = useStore();
   const [openCard, setOpenCard] = useState<number | null>(null);
   const lang = profile?.lang ?? 'en';
   const L = t(lang);
   const course = content.courses.find((c) => c.id === id)!;
-  const p = progress[id];
+  const saved = progress[id];
+  // the last finished run (kept while the mission is being replayed)
+  const p = saved?.last ?? saved;
   const pop = useState(() => new Animated.Value(0))[0];
   useEffect(() => {
     Animated.timing(pop, { toValue: 1, duration: 700, easing: Easing.out(Easing.back(2)), useNativeDriver: true }).start();
@@ -39,7 +41,11 @@ export function Result({ id, onHome, onReplay }: { id: string; onHome: () => voi
       else byCat[it.cat] += it.min;
     }
   const active = Object.entries(byCat).reduce((a, [k, v]) => (k === 'stay' ? a : a + v), 0);
-  const spent = Math.max(0, course.startBudget - p.stats.money);
+  const spent = Math.max(0, (saved?.last?.startBudget ?? course.startBudget) - p.stats.money);
+  const entryCode = saved?.last?.entry ?? course.entry.code;
+  const exitCode = saved?.last?.exit ?? course.exit.code;
+  const icon = (code: string) => (code.endsWith('PORT') ? '⚓' : '✈');
+  const doneAt = saved?.last?.completedAt ?? saved?.completedAt;
   const nextCourse = [...content.courses]
     .filter((c) => c.isPublished && c.id !== course.id && !progress[c.id]?.completedAt)
     .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))[0];
@@ -47,12 +53,19 @@ export function Result({ id, onHome, onReplay }: { id: string; onHome: () => voi
   return (
     <ScrollView style={{ flex: 1, backgroundColor: C.paper }} contentContainerStyle={{ padding: 16, paddingBottom: 40, gap: 14 }}>
       <Animated.View style={{ alignItems: 'center', marginTop: 10, opacity: pop }}>
-        <Text style={{ fontSize: 15, fontWeight: '900', color: C.red }}>🏁 {ko ? '여행 시뮬레이션 완료' : 'Trip simulation complete'}</Text>
+        <Text style={{ fontSize: 15, fontWeight: '900', color: C.red }}>
+          {onBack ? `📊 ${ko ? '지난 여행 결과' : 'Your last result'}` : `🏁 ${ko ? '여행 시뮬레이션 완료' : 'Trip simulation complete'}`}
+        </Text>
+        {onBack && doneAt ? (
+          <P dim style={{ fontSize: 12 }}>
+            {ko ? '완료일' : 'Finished on'} {doneAt.slice(0, 10)}
+          </P>
+        ) : null}
         <H size={24} style={{ textAlign: 'center' }}>
           {tr(course.title, lang)}
         </H>
         <P dim>
-          {course.entry.kind === 'airport' ? '✈' : '⚓'} {course.entry.code} → {course.exit.kind === 'airport' ? '✈' : '⚓'} {course.exit.code} · {course.nights}
+          {icon(entryCode)} {entryCode} → {icon(exitCode)} {exitCode} · {course.nights}
           {ko ? '박' : 'N'} {course.days}
           {ko ? '일' : 'D'}
         </P>
@@ -160,7 +173,7 @@ export function Result({ id, onHome, onReplay }: { id: string; onHome: () => voi
       <ChecklistPanel
         title={`${tr(course.title, lang)} – ${ko ? '여행 준비' : 'trip checklist'}`}
         lang={lang}
-        list={buildChecklist({ lang, month: profile?.month, party, review: reviewItems(content.courses, [p], lang), course })}
+        list={buildChecklist({ lang, month: profile?.month, party, review: reviewItems(content.courses, [{ ...saved!, stats: p.stats }], lang), course })}
       />
 
       <Panel style={{ gap: 8 }}>
@@ -188,7 +201,7 @@ export function Result({ id, onHome, onReplay }: { id: string; onHome: () => voi
       </Panel>
 
       <Btn label={L.replay} kind="ghost" onPress={onReplay} />
-      <Btn label={L.backHome} onPress={onHome} />
+      {onBack ? <Btn testID="result-back" label={`← ${L.back}`} onPress={onBack} /> : <Btn label={L.backHome} onPress={onHome} />}
     </ScrollView>
   );
 }

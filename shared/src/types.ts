@@ -82,6 +82,8 @@ interface StepBase {
   chance?: number;
   /** Only show in these travel months (1–12). Undefined = all year. */
   months?: number[];
+  /** added by an entry route (removed again when another route is chosen) */
+  fromRoute?: boolean;
 }
 
 export interface NarrationStep extends StepBase {
@@ -284,6 +286,38 @@ export interface Course {
   version: number;
   sortOrder: number;
   scenes: Scene[];
+  /**
+   * Ways to get from the international arrival to the mission's region (regional missions).
+   * routes[0] is the default and is already built into the scenes; withEntryRoute() applies another.
+   */
+  routes?: EntryRoute[];
+}
+
+/** One way of arriving: fly straight to a regional airport, or land in Incheon and go on by train, bus or domestic flight. */
+export interface EntryRoute {
+  id: 'direct' | 'icn-rail' | 'icn-bus' | 'icn-air';
+  icon: string;
+  label: L;
+  /** pros and cons, shown when choosing */
+  note: L;
+  /** the international airport you land at */
+  via: Gateway;
+  bg: string;
+  /** correct answer to "How do you get to …?" in the arrival scene */
+  go: L;
+  /** arrival scene items after immigration */
+  legs: EstItem[];
+  /** extra arrival steps (e.g. the KTX ticket-machine simulation) */
+  steps?: Step[];
+  /** departure scene items before the airport check-in (only for round trips) */
+  back?: EstItem[];
+  /** where you leave the region from on the last day (taxi destination) */
+  station?: L;
+  /** door to door from landing to the first place: minutes and KRW per person (shown when choosing) */
+  min: number;
+  cost: number;
+  /** KRW per person the trip costs more than flying direct (added to the starting budget) */
+  extra: number;
 }
 
 export interface Product {
@@ -366,4 +400,20 @@ export interface CourseProgress {
   completedAt?: string;
   bestScore?: number;
   plays: number;
+  /** the last finished run, kept while the mission is replayed (shown again from the mission page) */
+  last?: LastRun;
+}
+
+/** Snapshot of a finished run – what the result screen shows. */
+export interface LastRun {
+  stats: RunStats;
+  cards: string[];
+  phrases: string[];
+  completedAt: string;
+  score: number;
+  startBudget: number;
+  entry: string;
+  exit: string;
+  /** entry route id (regional missions) */
+  route?: string;
 }

@@ -79,7 +79,7 @@ function enterScene(st: RunStats, course: Course, idx: number, party: PartyType,
 }
 
 export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: boolean; onQuit: () => void; onFinish: () => void }) {
-  const { content, profile, progress, saveProgress } = useStore();
+  const { content, profile, progress, saveProgress, entryRoutes } = useStore();
   const { width, height } = useWindowDimensions();
   const lang = profile?.lang ?? 'en';
   const L = t(lang);
@@ -133,6 +133,10 @@ export function Play({ id, restart, onQuit, onFinish }: { id: string; restart: b
       plays,
       completedAt: done ? new Date().toISOString() : prev?.completedAt,
       bestScore: done ? Math.max(pts, prev?.bestScore ?? 0) : prev?.bestScore,
+      // the finished run stays viewable while the mission is replayed
+      last: done
+        ? { stats: st, cards: cs, phrases: ps, completedAt: new Date().toISOString(), score: pts, startBudget: course.startBudget, entry: course.entry.code, exit: course.exit.code, route: entryRoutes[course.id] ?? course.routes?.[0]?.id }
+        : prev?.last,
     };
     saveProgress(p);
   };

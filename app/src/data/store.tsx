@@ -9,6 +9,9 @@ import {
   type PartyType,
   type Product,
   withRouteSpots,
+  withEntryRoute,
+  type LastRun,
+  type RunStats,
   type RouteSpot,
 } from '@kotoventure/shared';
 import { loadContent } from './content';
@@ -43,12 +46,15 @@ interface State {
   savedSpots: string[];
   /** Kachi's picks the player added to a mission route: courseId → picks */
   routeSpots: Record<string, RouteSpot[]>;
+  /** how the player arrives for regional missions: courseId → entry route id */
+  entryRoutes: Record<string, string>;
 }
 
 interface Api extends State {
   toggleSpot(id: string): void;
   /** add a pick to a mission on a day (day 0 removes it) */
   setRouteSpot(courseId: string, spotId: string, day: number): void;
+  setEntryRoute(courseId: string, routeId: string): void;
   saveTrip(t: TripSpec): void;
   deleteTrip(id: string): void;
   signUp(p: Omit<Profile, 'id' | 'lang'> & { lang?: Profile['lang'] }): Promise<void>;
@@ -62,13 +68,13 @@ interface Api extends State {
   signOut(): Promise<void>;
 }
 
-const K = { profile: 'kv.profile', progress: 'kv.progress', ent: 'kv.entitlements', trips: 'kv.trips', spots: 'kv.savedSpots', route: 'kv.routeSpots' };
+const K = { profile: 'kv.profile', progress: 'kv.progress', ent: 'kv.entitlements', trips: 'kv.trips', spots: 'kv.savedSpots', route: 'kv.routeSpots', entry: 'kv.entryRoutes' };
 const Ctx = createContext<Api | null>(null);
 
 const localId = () => 'local-' + Math.random().toString(36).slice(2, 10);
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
-  const [s, setS] = useState<State>({ ready: false, content: SEED_BUNDLE, profile: null, progress: {}, entitlements: ['app_base'], trips: [], savedSpots: [], routeSpots: {} });
+  const [s, setS] = useState<State>({ ready: false, content: SEED_BUNDLE, profile: null, progress: {}, entitlements: ['app_base'], trips: [], savedSpots: [], routeSpots: {}, entryRoutes: {} });
 
   /* boot: cached content + local profile, then remote sync */
   useEffect(() => {
@@ -80,7 +86,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const trips = (await getJSON<TripSpec[]>(K.trips)) ?? [];
       const savedSpots = (await getJSON<string[]>(K.spots)) ?? [];
       const routeSpots = (await getJSON<Record<string, RouteSpot[]>>(K.route)) ?? {};
-      setS({ ready: true, content, profile, progress, entitlements: ent, trips, savedSpots, routeSpots });
+      const entryRoutes = (await getJSON<Record<string, string>>(K.entry)) ?? {};
+      setS({ ready: true, content, profile, progress, entitlements: ent, trips, savedSpots, routeSpots, entryRoutes });
 
       if (supabase && profile) {
         const { data } = await supabase.auth.getSession();
@@ -98,10 +105,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
             if (!local || remoteAhead) {
               merged[r.course_id] = {
                 courseId: r.course_id,
-                courseVersion: r.course_version,
+                ...unpackStats(r.stats, r.course_version),
                 sceneIndex: r.scene_index,
                 stepIndex: r.step_index,
-                stats: r.stats,
                 cards: r.cards,
                 phrases: r.phrases,
                 completedAt: r.completed_at ?? undefined,
@@ -159,10 +165,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           .upsert({
             user_id: x.profile.id,
             course_id: p.courseId,
-            course_version: p.courseVersion,
+            // the column is an integer; route / added-pick variants keep their exact version in stats
+            course_version: Math.floor(p.courseVersion),
             scene_index: p.sceneIndex,
             step_index: p.stepIndex,
-            stats: p.stats,
+            stats: { ...p.stats, _v: p.courseVersion, ...(p.last ? { _last: p.last } : {}) },
             cards: p.cards,
             phrases: p.phrases,
             best_score: p.bestScore ?? null,
@@ -230,9 +237,21 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const content = useMemo(() => {
     const all = tripCourses.length ? [...s.content.courses, ...tripCourses] : s.content.courses;
     // picks the player added to a route become extra scenes of that mission
-    const courses = all.map((c) => (s.routeSpots[c.id]?.length ? withRouteSpots(c, s.routeSpots[c.id], s.content.spots) : c));
+    const courses = all.map((c0) => {
+      // the chosen way in (regional missions), then the picks the player added
+      const c = s.entryRoutes[c0.id] ? withEntryRoute(c0, s.entryRoutes[c0.id]) : c0;
+      return s.routeSpots[c.id]?.length ? withRouteSpots(c, s.routeSpots[c.id], s.content.spots) : c;
+    });
     return { ...s.content, courses };
-  }, [s.content, tripCourses, s.routeSpots]);
+  }, [s.content, tripCourses, s.routeSpots, s.entryRoutes]);
+
+  const setEntryRoute = useCallback((courseId: string, routeId: string) => {
+    setS((x) => {
+      const entryRoutes = { ...x.entryRoutes, [courseId]: routeId };
+      setJSON(K.entry, entryRoutes);
+      return { ...x, entryRoutes };
+    });
+  }, []);
 
   const toggleSpot = useCallback((id: string) => {
     setS((x) => {
@@ -254,12 +273,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const collectedCards = useMemo(() => new Set(Object.values(s.progress).flatMap((p) => p.cards)), [s.progress]);
 
-  const api: Api = { ...s, content, toggleSpot, setRouteSpot, saveTrip, deleteTrip, signUp, updateProfile, saveProgress, resetProgress, isUnlocked, productFor, purchase, collectedCards, signOut };
+  const api: Api = { ...s, content, toggleSpot, setRouteSpot, setEntryRoute, saveTrip, deleteTrip, signUp, updateProfile, saveProgress, resetProgress, isUnlocked, productFor, purchase, collectedCards, signOut };
   return (
     <Ctx.Provider value={api}>
       <LangContext.Provider value={s.profile?.lang ?? 'en'}>{children}</LangContext.Provider>
     </Ctx.Provider>
   );
+}
+
+/** Server rows keep the exact course version and the last finished run inside the stats JSON. */
+function unpackStats(raw: any, column: number): Pick<CourseProgress, 'stats' | 'courseVersion' | 'last'> {
+  const { _v, _last, ...stats } = raw ?? {};
+  return { stats: stats as RunStats, courseVersion: typeof _v === 'number' ? _v : column, ...(_last ? { last: _last as LastRun } : {}) };
 }
 
 export function useStore() {

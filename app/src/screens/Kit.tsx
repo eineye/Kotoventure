@@ -28,7 +28,7 @@ const ESSENTIALS = [
  * phrases to show staff (big text + audio), emergency numbers, collected cards
  * and a personal checklist. All data is on the phone, so it works offline.
  */
-export function Kit() {
+export function Kit({ openResult }: { openResult?: (id: string) => void }) {
   const { content, profile, progress, savedSpots } = useStore();
   const lang = profile?.lang ?? 'en';
   const ko = lang === 'ko';
@@ -90,6 +90,31 @@ export function Kit() {
             )}
           </Panel>
         );
+      })()}
+
+      {(() => {
+        const finished = runs.filter((p) => p.last || p.completedAt).map((p) => ({ p, c: content.courses.find((c) => c.id === p.courseId) })).filter((x) => !!x.c);
+        return finished.length && openResult ? (
+          <Panel style={{ gap: 6 }}>
+            <H size={17}>
+              📊 {ko ? '완료한 미션 결과' : 'Finished missions'} ({finished.length})
+            </H>
+            {finished.map(({ p, c }) => (
+              <Pressable key={p.courseId} testID={`kit-result-${p.courseId}`} onPress={() => openResult(p.courseId)} accessibilityRole="button" style={{ flexDirection: 'row', alignItems: 'center', gap: 8, borderTopWidth: 1, borderTopColor: C.line, paddingTop: 8 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontWeight: '900', color: C.ink }}>{tr(c!.title, lang)}</Text>
+                  <Text style={{ fontSize: 12, color: C.inkSoft }}>
+                    {(p.last?.completedAt ?? p.completedAt ?? '').slice(0, 10)}
+                    {p.bestScore != null ? ` · 🏆 ${p.bestScore}` : ''}
+                  </Text>
+                </View>
+                <Text style={{ color: C.blue, fontWeight: '900', fontSize: 13 }}>
+                  {ko ? '결과 보기' : 'View result'} ›
+                </Text>
+              </Pressable>
+            ))}
+          </Panel>
+        ) : null;
       })()}
 
       <ChecklistPanel title={ko ? '나의 한국 여행 준비' : 'My Korea trip checklist'} lang={lang} list={list} />
