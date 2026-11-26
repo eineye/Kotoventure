@@ -949,6 +949,10 @@ const PAINTED: Partial<Record<BackgroundId, ImageSourcePropType>> = {
   cave: require('../../assets/bg/cave.webp'),
   apsan: require('../../assets/bg/apsan.webp'),
   taejongdae: require('../../assets/bg/taejongdae.webp'),
+  soyang: require('../../assets/bg/soyang.webp'),
+  cheongnamdae: require('../../assets/bg/cheongnamdae.webp'),
+  sansuyu: require('../../assets/bg/sansuyu.webp'),
+  teafield: require('../../assets/bg/teafield.webp'),
 };
 
 export function Background({ id, width, height }: { id: string; width: number; height: number }) {

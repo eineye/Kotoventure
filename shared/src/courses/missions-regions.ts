@@ -195,7 +195,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'CJJ', go: 'Airport bus to downtown Cheongju', days: 2, nights: 1, diff: 1, fit: [4, 5, 4, 5], budget: 220000, season: 'spring', stay: 'hotel',
     food: { place: ['청주 삼겹살거리', 'Cheongju pork-belly street'], text: 'Cheongju claims the soy-dipped pork belly ("seogwa" style) – grilled on a tilted pan.', dishes: [['간장삼겹살', 'Soy-dipped pork belly', 15000, 2], ['김치찌개', 'Kimchi stew', 8000, 0, 1], ['냉면', 'Cold noodles', 8000]] },
     stops: [
-      { key: 'cheongnamdae', bg: 'hallyeo', ko: '청남대', en: 'Cheongnamdae', kind: 'park', text: 'The former presidential villa on a lake, now a park with statues of every president.', ticket: { adult: 6000, open: '09:00', last: '16:30' } },
+      { key: 'cheongnamdae', bg: 'cheongnamdae', ko: '청남대', en: 'Cheongnamdae', kind: 'park', text: 'The former presidential villa on a lake, now a park with statues of every president.', ticket: { adult: 6000, open: '09:00', last: '16:30' } },
       { key: 'jikji', bg: 'jikji', ko: '청주고인쇄박물관', en: 'Cheongju Early Printing Museum', kind: 'museum', text: 'Jikji (1377) is the oldest surviving book printed with movable metal type – 78 years before Gutenberg.' },
       { key: 'suamgol', bg: 'suamgol', ko: '수암골', en: 'Suamgol Mural Village', kind: 'village', text: 'A hillside village with murals and cafés overlooking the city.' },
     ],
@@ -226,7 +226,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'alley', bg: 'dakgalbi', ko: '춘천 명동 닭갈비골목', en: 'Dakgalbi alley', kind: 'street', text: 'Dozens of dakgalbi restaurants side by side – each claims to be the original.' },
       { key: 'makguksu', bg: 'dakgalbi', ko: '막국수체험박물관', en: 'Makguksu Museum', kind: 'workshop', text: 'Press your own buckwheat noodles with a traditional wooden press.', ticket: { adult: 1000, open: '10:00', last: '17:00' } },
-      { key: 'skywalk', bg: 'hallyeo', ko: '소양강 스카이워크', en: 'Soyang River Skywalk', kind: 'river', text: 'A glass-floored walkway 156 m over the river next to the famous mandarin-fish statue.' },
+      { key: 'skywalk', bg: 'soyang', ko: '소양강 스카이워크', en: 'Soyang River Skywalk', kind: 'river', text: 'A glass-floored walkway 156 m over the river next to the famous mandarin-fish statue.' },
     ],
   },
   {
@@ -301,7 +301,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     hub: 'MWX', go: 'Bus from Muan Airport to Gwangju, then intercity bus to Boseong', days: 3, nights: 2, diff: 1, fit: [4, 5, 4, 5], budget: 320000, season: 'spring', stay: 'pension',
     food: { place: ['벌교 꼬막정식', 'Beolgyo cockle restaurant'], text: 'Cockles from the mud flats: boiled, seasoned and mixed into bibimbap.', dishes: [['꼬막정식', 'Cockle set meal', 20000, 2], ['꼬막비빔밥', 'Cockle bibimbap', 13000, 0, 1], ['녹차 삼겹살', 'Green-tea pork belly', 16000, 2]] },
     stops: [
-      { key: 'tea', bg: 'suncheonbay', ko: '대한다원 녹차밭', en: 'Daehan Dawon tea plantation', kind: 'farm', text: 'Rows of tea bushes climb the hills. Pick young leaves, then roast them in a hot iron pan.', ticket: { adult: 4000, open: '09:00', last: '18:00' } },
+      { key: 'tea', bg: 'teafield', ko: '대한다원 녹차밭', en: 'Daehan Dawon tea plantation', kind: 'farm', text: 'Rows of tea bushes climb the hills. Pick young leaves, then roast them in a hot iron pan.', ticket: { adult: 4000, open: '09:00', last: '18:00' } },
       { key: 'bay', bg: 'suncheonbay', ko: '순천만 습지', en: 'Suncheon Bay Wetland', kind: 'park', text: 'Endless reeds, rare cranes in winter and a sunset viewpoint.', ticket: { adult: 10000, open: '08:00', last: '19:00', note: 'Combined ticket with the National Garden.' } },
       { key: 'garden', bg: 'suncheonbay', ko: '순천만국가정원', en: 'Suncheonman Bay National Garden', kind: 'park', text: 'Korea\'s first national garden with gardens from around the world.' },
     ],
@@ -315,7 +315,7 @@ export const REGION_MISSIONS: MissionDef[] = [
     stops: [
       { key: 'hwaeomsa', bg: 'haeinsa', ko: '화엄사', en: 'Hwaeomsa Temple', kind: 'temple', text: 'A temple founded in 544 with one of Korea\'s largest wooden halls.' },
       { key: 'nogodan', bg: 'nogodan', ko: '노고단', en: 'Nogodan Peak', kind: 'mountain', text: 'From Seongsamjae pass a 1.5-hour trail leads to the summit – the last part needs an online reservation.' },
-      { key: 'sansuyu', bg: 'suncheonbay', ko: '구례 산수유마을', en: 'Sansuyu Village', kind: 'village', text: 'In March the whole valley turns yellow with cornelian-cherry blossoms.' },
+      { key: 'sansuyu', bg: 'sansuyu', ko: '구례 산수유마을', en: 'Sansuyu Village', kind: 'village', text: 'In March the whole valley turns yellow with cornelian-cherry blossoms.' },
     ],
   },
   {
