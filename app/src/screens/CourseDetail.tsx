@@ -1,6 +1,6 @@
-import { Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
+import { Alert, Platform, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 import { Text } from '../ui/Text';
-import { PARTY_TYPES, TOPICS, courseEstimate, courseTopics, dur, spotsForCourse, tr } from '@kotoventure/shared';
+import { PARTY_TYPES, TOPICS, courseEstimate, courseTopics, dur, spotsForCourse, tr, type Course } from '@kotoventure/shared';
 import { SpotCard } from '../ui/SpotCard';
 import { Background } from '../art/backgrounds';
 import { useStore } from '../data/store';
@@ -9,8 +9,8 @@ import { Btn, H, P, Panel, Stars, TopicChip, won } from '../ui/kit';
 import { C, R } from '../ui/theme';
 import { RouteMap } from '../ui/RouteMap';
 
-export function CourseDetail({ id, onBack, onPlay, onEdit }: { id: string; onBack: () => void; onPlay: (restart: boolean) => void; onEdit?: () => void }) {
-  const { content, profile, progress, isUnlocked, productFor, purchase } = useStore();
+export function CourseDetail({ id, onBack, onPlay, onEdit, onResult }: { id: string; onBack: () => void; onPlay: (restart: boolean) => void; onEdit?: () => void; onResult?: () => void }) {
+  const { content, profile, progress, isUnlocked, productFor, purchase, entryRoutes, setEntryRoute } = useStore();
   const { width } = useWindowDimensions();
   const lang = profile?.lang ?? 'en';
   const L = t(lang);
@@ -55,7 +55,12 @@ export function CourseDetail({ id, onBack, onPlay, onEdit }: { id: string; onBac
                 );
               })()}
             </View>
+            {(p?.last || p?.completedAt) && onResult ? (
+              <Btn testID="course-result" small kind="ghost" label={lang === 'ko' ? '📊 지난 결과 다시 보기' : '📊 See my last result'} onPress={onResult} style={{ marginTop: 12, alignSelf: 'flex-start' }} />
+            ) : null}
           </Panel>
+
+          {c.routes?.length ? <EntryRoutes c={c} lang={lang} picked={entryRoutes[c.id] ?? c.routes[0].id} inProgress={!!inProgress} onPick={(r) => setEntryRoute(c.id, r)} /> : null}
 
           <Panel style={{ marginTop: 14 }}>
             <H size={17}>👥 {L.partyTip}</H>
@@ -154,5 +159,62 @@ function Info({ k, v }: { k: string; v: string }) {
       <Text style={{ fontSize: 11, fontWeight: '800', color: C.inkSoft, textTransform: 'uppercase' }}>{k}</Text>
       <Text style={{ fontSize: 14, fontWeight: '800', color: C.ink }}>{v}</Text>
     </View>
+  );
+}
+
+/** How to get there: fly straight to the regional airport, or land in Incheon and go on by train, bus or domestic flight. */
+function EntryRoutes({ c, lang, picked, inProgress, onPick }: { c: Course; lang: string; picked: string; inProgress: boolean; onPick: (id: string) => void }) {
+  const ko = lang === 'ko';
+  const routes = c.routes ?? [];
+  const pick = (id: string) => {
+    if (id === picked) return;
+    if (!inProgress) return onPick(id);
+    const msg = ko ? '진행 중인 미션은 입국 방법이 바뀌면 처음부터 다시 시작해요. 계속할까요?' : 'Changing how you arrive restarts the mission in progress. Continue?';
+    if (Platform.OS === 'web') {
+      if (typeof window !== 'undefined' && window.confirm(msg)) onPick(id);
+      return;
+    }
+    Alert.alert(ko ? '입국 방법 변경' : 'Change arrival', msg, [
+      { text: ko ? '아니오' : 'No', style: 'cancel' },
+      { text: ko ? '예' : 'Yes', onPress: () => onPick(id) },
+    ]);
+  };
+  return (
+    <Panel style={{ marginTop: 14, gap: 8 }}>
+      <H size={17}>🛬 {ko ? '어떻게 들어갈까요?' : 'How will you get there?'}</H>
+      <P dim style={{ fontSize: 12 }}>
+        {routes.some((r) => r.id === 'direct')
+          ? ko
+            ? '지방공항 직항은 빠르지만 노선이 적어요. 대부분의 국제선은 인천에 도착해요. 고른 방법에 따라 첫날·마지막 날 이동 시간과 교통비가 바뀌어요.'
+            : 'Direct flights to regional airports are quick but rare – most international flights land in Incheon. Your choice changes the travel time and fares on the first and last day.'
+          : ko
+            ? '이 지역 공항은 정기 국제선이 없어 인천으로 들어와 이동해요. 고른 방법에 따라 첫날·마지막 날 이동 시간과 교통비가 바뀌어요.'
+            : "This region's airport has no regular international flights, so you land in Incheon and travel on. Your choice changes the travel time and fares on the first and last day."}
+      </P>
+      {routes.map((r) => {
+        const on = r.id === picked;
+        return (
+          <Pressable
+            key={r.id}
+            testID={`route-${r.id}`}
+            onPress={() => pick(r.id)}
+            accessibilityRole="radio"
+            accessibilityState={{ selected: on }}
+            style={{ borderWidth: 2, borderColor: on ? C.blue : C.line, backgroundColor: on ? '#EEF4FF' : '#FFF', borderRadius: R.m, padding: 10, gap: 3 }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Text style={{ fontSize: 16 }}>{on ? '◉' : '○'}</Text>
+              <Text style={{ flex: 1, fontWeight: '900', color: C.ink }}>
+                {r.icon} {tr(r.label, lang)}
+              </Text>
+            </View>
+            <Text style={{ fontSize: 12, fontWeight: '800', color: C.blue }}>
+              ⏱ {dur(r.min, lang)} · 💰 {won(r.cost)} {ko ? '(1인)' : '(per person)'}
+            </Text>
+            <Text style={{ fontSize: 12, color: C.inkSoft }}>{tr(r.note, lang)}</Text>
+          </Pressable>
+        );
+      })}
+    </Panel>
   );
 }

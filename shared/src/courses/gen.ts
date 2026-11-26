@@ -12,6 +12,7 @@ import { monthSteps, SEASON_MONTHS } from '../seasons';
 import { CUISINES, TICKET_SITES, RESTAURANTS, inferCuisine, menuIntro, type BusColor, type CuisineKind, type MenuItem } from '../practice';
 import type { Area, ChoiceOption, Course, EstItem, PartyType, Scene, Step, TimeCat, TopicId } from '../types';
 import { ask, event, learn, M, no, ok, P, say, simulate, talk } from '../dsl';
+import { routesFor, withEntryRoute } from './routes';
 
 export type Kind =
   | 'palace' | 'temple' | 'market' | 'mountain' | 'beach' | 'museum' | 'street' | 'village'
@@ -308,7 +309,7 @@ const BANK: Record<Kind, Q[]> = {
   ],
 };
 /** revision of the generated content (season-aware steps, guidebook cards for SIM/bus/subway/toilets/ordering) */
-const GEN_REV = 4;
+const GEN_REV = 5;
 
 const KIND_BG: Record<Kind, string> = {
   palace: 'palace', temple: 'temple', market: 'market', mountain: 'mountain', beach: 'beach', museum: 'museum', street: 'street', village: 'village',
@@ -573,7 +574,11 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
     est: { items: [est(HUB_TIME[def.exit ?? def.hub][0], 'move', `Back to ${exit.en}`, `${exit.ko}까지 이동`, HUB_TIME[def.exit ?? def.hub][1]), exit.kind === 'airport' ? est(150, 'task', 'Airport: tax refund, check-in, security', '공항: 택스리펀드·체크인·보안검색') : est(60, 'task', 'Ferry check-in & departure', '여객선 수속·출국')] }, title: tl(def.end, `Back to ${exit.en.replace(' International', '')}`, `${exit.ko} 귀국`), location: { en: exit.en, ko: exit.ko }, steps: dsteps });
 
   const [solo, couple, friends, group] = def.fit;
-  return {
+  const routes = routesFor({
+    missionId: def.id, hub: def.hub, hubName: { en: hub.en, ko: hub.ko }, hubBg: hub.bg, first: [def.stops[0].en, def.stops[0].ko], go: def.go,
+    direct: HUB_TIME[def.hub], roundTrip: (def.exit ?? def.hub) === def.hub,
+  });
+  const course: Course = {
     id: def.id,
     categoryId: def.cat,
     area: def.area,
@@ -599,7 +604,13 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
     version: (def.version ?? 1) + GEN_REV,
     sortOrder,
     scenes,
+    ...(routes.length ? { routes } : {}),
   };
+  // the default way in (Muan and Yeosu have no regular international flights → via Incheon)
+  if (!routes.length) return course;
+  // built with the default way in; its extra fares are added to the budget
+  const built = withEntryRoute({ ...course, routes: routes.map((r, i) => (i ? r : { ...r, extra: 0 })) }, routes[0].id);
+  return { ...built, routes, startBudget: course.startBudget + routes[0].extra };
 }
 
 const AREA_NAME: Record<Area, [string, string]> = {

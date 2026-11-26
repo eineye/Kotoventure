@@ -30,7 +30,7 @@ type Route =
   | { name: 'home'; tab: Tab }
   | { name: 'course'; id: string }
   | { name: 'play'; id: string; restart: boolean }
-  | { name: 'result'; id: string }
+  | { name: 'result'; id: string; review?: boolean }
   | { name: 'planner'; tripId?: string }
   | { name: 'treks' }
   | { name: 'trek'; id: string };
@@ -81,10 +81,19 @@ function Router() {
           openCourse={(id) => push({ name: 'course', id })}
           openPlanner={() => push({ name: 'planner' })}
           openTreks={() => push({ name: 'treks' })}
+          openResult={(id) => push({ name: 'result', id, review: true })}
         />
       );
     case 'course':
-      return <CourseDetail id={route.id} onBack={pop} onPlay={(restart) => push({ name: 'play', id: route.id, restart })} onEdit={() => push({ name: 'planner', tripId: route.id })} />;
+      return (
+        <CourseDetail
+          id={route.id}
+          onBack={pop}
+          onPlay={(restart) => push({ name: 'play', id: route.id, restart })}
+          onEdit={() => push({ name: 'planner', tripId: route.id })}
+          onResult={() => push({ name: 'result', id: route.id, review: true })}
+        />
+      );
     case 'planner':
       return (
         <Planner
@@ -115,6 +124,7 @@ function Router() {
           id={route.id}
           onHome={() => reset({ name: 'home', tab: 'missions' })}
           onReplay={() => setStack((s) => [...s.slice(0, -1), { name: 'play', id: route.id, restart: true }])}
+          onBack={route.review ? pop : undefined}
         />
       );
   }

@@ -16,7 +16,7 @@ import { UpdateBanner } from '../update';
 
 export type Tab = 'missions' | 'guide' | 'kit' | 'me';
 
-export function Home({ tab, setTab, openCourse, openPlanner, openTreks }: { tab: Tab; setTab: (t: Tab) => void; openCourse: (id: string) => void; openPlanner: () => void; openTreks: () => void }) {
+export function Home({ tab, setTab, openCourse, openPlanner, openTreks, openResult }: { tab: Tab; setTab: (t: Tab) => void; openCourse: (id: string) => void; openPlanner: () => void; openTreks: () => void; openResult: (id: string) => void }) {
   const { profile } = useStore();
   const L = t(profile?.lang);
   return (
@@ -25,7 +25,7 @@ export function Home({ tab, setTab, openCourse, openPlanner, openTreks }: { tab:
       <View style={{ flex: 1 }}>
         {tab === 'missions' && <Missions openCourse={openCourse} openPlanner={openPlanner} openTreks={openTreks} />}
         {tab === 'guide' && <Guidebook />}
-        {tab === 'kit' && <Kit />}
+        {tab === 'kit' && <Kit openResult={openResult} />}
         {tab === 'me' && <Me />}
       </View>
       <View style={{ flexDirection: 'row', backgroundColor: '#FFF', borderTopWidth: 1, borderTopColor: C.line, paddingBottom: 6 }}>

@@ -78,7 +78,9 @@ async function fetchRemote(): Promise<ContentBundle> {
 export function mergeWithBundled(remote: ContentBundle): ContentBundle {
   const courses = remote.courses.map((c) => {
     const local = SEED_BUNDLE.courses.find((x) => x.id === c.id);
-    return local && local.version > c.version ? local : c;
+    if (local && local.version > c.version) return local;
+    // the server has no column for entry routes – keep the app's
+    return local?.routes && !c.routes ? { ...c, routes: local.routes } : c;
   });
   for (const local of SEED_BUNDLE.courses) if (!courses.some((c) => c.id === local.id)) courses.push(local);
   const cards = [...remote.cards];
