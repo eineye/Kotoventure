@@ -8,12 +8,27 @@ import { Prop } from '../art/props';
 import { Banknote, Coin } from '../art/Money';
 import { TmoneyCard } from '../art/TmoneyCard';
 import { SubwayMap } from '../sim/SubwayMap';
+import { BusMap } from '../sim/BusMap';
 
 /** Dev/design review page: every illustration id. Open the web build with ?gallery */
 export function ArtGallery() {
   const speakers = ['guide', 'local', 'staff', 'driver', 'police', 'doctor', 'pharmacist', 'elder', 'monk', 'haenyeo'] as const;
   return (
     <ScrollView contentContainerStyle={{ padding: 12, backgroundColor: '#FFF' }}>
+      {(
+        [
+          ['01A', 'yellow', ['명동역 Myeongdong Stn.', '남산케이블카 Cable Car', '국립극장 National Theater', '남산서울타워 N Seoul Tower']],
+          ['2016', 'green', ['성수역 Seongsu Stn.', '뚝섬역 Ttukseom Stn.', '서울숲 Seoul Forest']],
+          ['사하1-1', 'green', ['토성역 Toseong Stn.', '부산대병원 PNU Hospital', '감정초등학교 Gamjeong Elem.', '감천문화마을 Gamcheon Village']],
+          ['12', 'green', ['불국사 Bulguksa', '불국사 주차장 Bulguksa Parking', '토함산 고개 Tohamsan Pass', '석굴암 Seokguram']],
+          ['7', 'green', ['속초 시내 Sokcho', '물치 Mulchi', '설악동 Seorak-dong', '설악산 소공원 Seoraksan Park']],
+          ['246', 'blue', ['안동역 Andong Stn.', '병산 Byeongsan', '하회 입구 Hahoe Gate', '하회마을 Hahoe Village']],
+        ] as const
+      ).map(([no, c, st], i) => (
+        <View key={no} testID={`gal-bus-${i}`} style={{ marginBottom: 10, alignSelf: 'flex-start' }}>
+          <BusMap stops={[...st]} color={c} busNo={no} target={st[st.length - 1]} pos={i % 2 ? 1 : undefined} width={360} />
+        </View>
+      ))}
       {(['seoul', 'busan', 'incheon'] as const).map((n) => (
         <View key={n} testID={`gal-subway-${n}`} style={{ marginBottom: 10, alignSelf: 'flex-start' }}>
           <SubwayMap net={n} width={360} state={{ path: [], cur: '', goal: '', near: new Set() }} />

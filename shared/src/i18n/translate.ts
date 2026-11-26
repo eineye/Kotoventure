@@ -27,6 +27,8 @@ type Tpl = [RegExp, (m: RegExpMatchArray, t: (s: string) => string) => string];
 /** sentences assembled by the mission generator */
 export const TEMPLATES: Record<DictLang, Tpl[]> = {
   ja: [
+    [/^🚏 Stop map · bus (\S+)$/, (m) => `🚏 停留所の路線図・${m[1]}番バス`],
+    [/^🗺️ Bus (\S+) · where you are$/, (m) => `🗺️ ${m[1]}番バス・現在地`],
     // entry routes (courses/routes.ts)
     [/^Fly direct to (.+)$/, (m, t) => `${t(m[1])}へ直行便`],
     [/^Incheon \+ (KTX|KTX-Eum|ITX-Saemaeul)$/, (m) => `仁川 + ${m[1]}`],
@@ -89,6 +91,8 @@ export const TEMPLATES: Record<DictLang, Tpl[]> = {
     [/^(\d+) nights? \/ (\d+) days? · (\d+) places$/, (m) => `${m[1]}泊${m[2]}日 · ${m[3]}か所`],
   ],
   zh: [
+    [/^🚏 Stop map · bus (\S+)$/, (m) => `🚏 车站线路图·${m[1]}路`],
+    [/^🗺️ Bus (\S+) · where you are$/, (m) => `🗺️ ${m[1]}路·当前位置`],
     // entry routes (courses/routes.ts)
     [/^Fly direct to (.+)$/, (m, t) => `直飞${t(m[1])}`],
     [/^Incheon \+ (KTX|KTX-Eum|ITX-Saemaeul)$/, (m) => `仁川 + ${m[1]}`],
@@ -151,6 +155,8 @@ export const TEMPLATES: Record<DictLang, Tpl[]> = {
     [/^(\d+) nights? \/ (\d+) days? · (\d+) places$/, (m) => `${m[2]}天${m[1]}晚 · ${m[3]}个地点`],
   ],
   es: [
+    [/^🚏 Stop map · bus (\S+)$/, (m) => `🚏 Mapa de la parada · autobús ${m[1]}`],
+    [/^🗺️ Bus (\S+) · where you are$/, (m) => `🗺️ Autobús ${m[1]} · dónde estás`],
     // entry routes (courses/routes.ts)
     [/^Fly direct to (.+)$/, (m, t) => `Vuelo directo: ${t(m[1])}`],
     [/^Incheon \+ (KTX|KTX-Eum|ITX-Saemaeul)$/, (m) => `Incheon + ${m[1]}`],
