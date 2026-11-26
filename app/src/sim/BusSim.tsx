@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import { Text } from '../ui/Text';
 import { BUS_COLORS, BUS_FARE, tr, type BusColor } from '@kotoventure/shared';
 import { TmoneyCard } from '../art/TmoneyCard';
 import { H, P, won } from '../ui/kit';
 import { C } from '../ui/theme';
+import { BusMapCard } from './BusMap';
 import { Box, DoneCard, OptBtn, PARTY_SIZE, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
 
 type Stage = 'stop' | 'board' | 'ride' | 'exit' | 'done';
@@ -13,6 +14,8 @@ type Stage = 'stop' | 'board' | 'ride' | 'exit' | 'done';
 export function BusSim({ step, ctx, onDone }: SimProps) {
   const ko = ctx.lang === 'ko';
   const L = (k: string, e: string) => (ko ? k : e);
+  const { width } = useWindowDimensions();
+  const mapW = Math.min(width - 56, 420);
   const cfg = step.config ?? {};
   const busNo = cfg.busNo ?? '01A';
   const color = (cfg.busColor ?? 'yellow') as BusColor;
@@ -126,6 +129,9 @@ export function BusSim({ step, ctx, onDone }: SimProps) {
               </View>
             ))}
           </Box>
+          <Box>
+            <BusMapCard stops={stops} color={color} busNo={busNo} target={target} width={mapW} lang={ctx.lang} title={L(`🚏 정류장 노선도 · ${busNo}번`, `🚏 Stop map · bus ${busNo}`)} />
+          </Box>
           <H size={15}>
             {L(`목적지: ${target} – 어떤 버스를 탈까요?`, `Destination: ${target} – which bus do you take?`)}
           </H>
@@ -181,6 +187,9 @@ export function BusSim({ step, ctx, onDone }: SimProps) {
                 </Text>
               ))}
             </View>
+          </Box>
+          <Box>
+            <BusMapCard stops={stops} color={color} busNo={busNo} target={target} pos={pos} width={mapW} lang={ctx.lang} title={L(`🗺️ ${busNo}번 노선 · 지금 위치`, `🗺️ Bus ${busNo} · where you are`)} />
           </Box>
           <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
             <OptBtn testID="bus-bell" label={bell ? L('🔴 하차벨 켜짐', '🔴 STOP') : L('🔔 하차벨', '🔔 Stop bell')} selected={bell} color="#DC2626" onPress={ring} style={{ flex: 1, minHeight: 60 }} />
