@@ -143,10 +143,10 @@ export function PhotoLink({ q, lang, small, testID = 'photo-link' }: { q?: L; la
       </Pressable>
     );
   return (
-    <Pressable testID={testID} accessibilityRole="link" onPress={() => Linking.openURL(url)} style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', backgroundColor: pressed ? '#DBEAFE' : '#EEF4FF', borderRadius: 999, paddingVertical: 6, paddingHorizontal: 12, marginTop: 8 })}>
+    <Pressable testID={testID} accessibilityRole="link" onPress={() => Linking.openURL(url)} style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', maxWidth: '100%', backgroundColor: pressed ? '#DBEAFE' : '#EEF4FF', borderRadius: 16, paddingVertical: 6, paddingHorizontal: 12, marginTop: 8 })}>
       <Text style={{ fontSize: 14 }}>📷</Text>
-      <View>
-        <Text style={{ color: C.blue, fontWeight: '900', fontSize: 13 }}>{ko ? `실제 사진 보기: ${q?.ko ?? q?.en}` : `See real photos: ${q?.en}`}</Text>
+      <View style={{ flexShrink: 1 }}>
+        <Text style={{ color: C.blue, fontWeight: '900', fontSize: 13, lineHeight: 17 }} numberOfLines={3}>{ko ? `실제 사진 보기: ${q?.ko ?? q?.en}` : `See real photos: ${q?.en}`}</Text>
         <Text style={{ color: C.inkSoft, fontSize: 10 }}>🔗 {photoHost(lang)}</Text>
       </View>
     </Pressable>
