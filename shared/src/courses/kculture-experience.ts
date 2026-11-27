@@ -30,7 +30,7 @@ export const kcultureExperience: Course = {
   coverBg: 'stage',
   access: 'base',
   isPublished: true,
-  version: 5,
+  version: 6,
   sortOrder: 5,
   scenes: [
     {
@@ -40,7 +40,7 @@ export const kcultureExperience: Course = {
       steps: [
         say('You land at Gimpo, the city airport close to central Seoul with flights from Tokyo, Osaka, Shanghai and Taipei.'),
         ask('transport', 'Hongdae is on AREX/Line 2. Line 9 also runs from Gimpo – with red "Express" and grey "Local" trains. Which is true?', [
-          ok('Express trains skip stations – check that my stop is an express stop', 'Right! The board shows 급행 (express) or 일반 (local).', { energy: 5 }, 'subway-sign'),
+          ok('Express trains skip stations – check that my stop is an express stop', 'Right! The board shows 급행 (express) or 일반 (local).', { energy: 5 }, 'subway-train'),
           no('All trains stop everywhere', 'You zoom past your station on an express.', { energy: -10 }),
         ], 'tr-transfer'),
         simulate('tmoney', 'transport', 'Get your T-money at Gimpo', 'Subway gates only take transit cards. Buy a T-money card, top it up at the machine and ride Line 9 to Hongdae.', { buyCard: true }, 'tr-tmoney'),

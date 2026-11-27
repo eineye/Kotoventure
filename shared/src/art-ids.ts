@@ -6,7 +6,7 @@ export const PROP_IDS = [
   // money
   'krw-1000', 'krw-5000', 'krw-10000', 'krw-50000', 'krw-notes', 'coins', 'atm', 'exchange', 'exchange-rate', 'phone-pay', 'tax-refund', 'kiosk',
   // transport
-  'tmoney', 'arex', 'subway-sign', 'bus', 'taxi', 'ktx', 'bike', 'ferry', 'crosswalk', 'idp', 'passport',
+  'tmoney', 'arex', 'subway-sign', 'subway-train', 'bus', 'taxi', 'ktx', 'bike', 'ferry', 'crosswalk', 'idp', 'passport',
   // lodging
   'hotel', 'house', 'motel', 'jjimjilbang', 'hanok', 'temple', 'pension',
   // food

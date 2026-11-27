@@ -76,6 +76,9 @@ const OVERRIDE: Record<string, { rail?: Partial<Rail> | null; bus?: Partial<Bus>
   'gs-tongyeong': { local: [120, 15000], direct: [120, 15000] },
 };
 
+/** picture of the correct answer for each way in (direct keeps the mission's own) */
+const ROUTE_PROP: Partial<Record<EntryRoute['id'], string>> = { 'icn-rail': 'ktx', 'icn-bus': 'bus', 'icn-air': 'arex' };
+
 const ICN: Gateway = { kind: 'airport', code: 'ICN', name: { en: 'Incheon International Airport', ko: '인천국제공항' } };
 const e = (min: number, cat: TimeCat, en: string, ko: string, cost?: number): EstItem => ({ min, cat, label: { en, ko }, ...(cost ? { cost } : {}) });
 const short = (en: string) => en.replace(' International', '');
@@ -228,7 +231,7 @@ export function withEntryRoute(course: Course, id: string | undefined): Course {
   if (ti >= 0) {
     const ch = steps[ti] as ChoiceStep;
     const ci = ch.options.findIndex((o) => o.correct);
-    steps[ti] = { ...ch, options: ch.options.map((o, k) => (k === ci ? { ...o, text: r.go } : o)) };
+    steps[ti] = { ...ch, options: ch.options.map((o, k) => (k === ci ? { ...o, text: r.go, prop: ROUTE_PROP[r.id] ?? o.prop } : o)) };
     if (r.steps?.length) steps.splice(ti + 1, 0, ...r.steps.map((x) => ({ ...x, fromRoute: true })));
   }
   scenes[0] = {

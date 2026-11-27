@@ -234,6 +234,24 @@ const PROPS: Record<PropId, React.ReactNode> = {
       {txt(50, 92, 'colour + number = your line', 7, '#5A6283', '800')}
     </G>
   ),
+  'subway-train': (
+    <G>
+      {/* front of a Seoul metro train on the tracks: no text, so it can't be mistaken for a station sign */}
+      <Rect x="20" y="10" width="60" height="70" rx="12" fill="#E5E7EB" stroke="#475569" strokeWidth="2" />
+      <Rect x="26" y="18" width="48" height="26" rx="5" fill="#1F2937" />
+      <Path d="M30 22 L46 22 L40 40 L30 40 Z" fill="#334155" opacity={0.7} />
+      <Rect x="20" y="50" width="60" height="7" fill="#00A84D" />
+      <Rect x="40" y="12" width="20" height="5" rx="2" fill="#00A84D" />
+      <Circle cx="31" cy="66" r="4.5" fill="#FDE68A" stroke="#475569" strokeWidth="1.2" />
+      <Circle cx="69" cy="66" r="4.5" fill="#FDE68A" stroke="#475569" strokeWidth="1.2" />
+      <Rect x="42" y="62" width="16" height="10" rx="2" fill="#94A3B8" />
+      <Rect x="24" y="80" width="10" height="6" fill="#475569" />
+      <Rect x="66" y="80" width="10" height="6" fill="#475569" />
+      <Path d="M8 92 L38 84 M92 92 L62 84" stroke="#64748B" strokeWidth="3" strokeLinecap="round" />
+      <Path d="M18 89 L82 89" stroke="#94A3B8" strokeWidth="2" />
+      <Path d="M13 94 L87 94" stroke="#94A3B8" strokeWidth="2" />
+    </G>
+  ),
   bus: (
     <G>
       <Rect x="6" y="20" width="88" height="56" rx="10" fill="#2D6CDF" />

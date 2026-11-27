@@ -83,7 +83,8 @@ export function mergeWithBundled(remote: ContentBundle): ContentBundle {
     return local?.routes && !c.routes ? { ...c, routes: local.routes } : c;
   });
   for (const local of SEED_BUNDLE.courses) if (!courses.some((c) => c.id === local.id)) courses.push(local);
-  const cards = [...remote.cards];
+  // older server copies still show the station-sign picture on the subway cards
+  const cards = remote.cards.map((c) => (c.prop === 'subway-sign' && SEED_BUNDLE.cards.find((b) => b.id === c.id)?.prop === 'subway-train' ? { ...c, prop: 'subway-train' } : c));
   for (const card of SEED_BUNDLE.cards) if (!cards.some((c) => c.id === card.id)) cards.push(card);
   const spots = remote.spots && remote.spots.length ? remote.spots : SEED_BUNDLE.spots;
   const treks = remote.treks && remote.treks.length ? remote.treks : SEED_BUNDLE.treks;
