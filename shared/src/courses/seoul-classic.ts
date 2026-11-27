@@ -36,7 +36,7 @@ export const seoulClassic: Course = {
   coverBg: 'palace',
   access: 'base',
   isPublished: true,
-  version: 6,
+  version: 7,
   sortOrder: 1,
   scenes: [
     {
@@ -77,7 +77,7 @@ export const seoulClassic: Course = {
         learn('tr-subway'),
         say('At Seoul Station you must transfer from AREX to Subway Line 4 (sky-blue) towards Dangogae.'),
         ask('transport', 'How do you find the right platform?', [
-          ok('Follow the light-blue "4" signs and the direction (next station)', 'Yes! Every line has a colour and a number. Station numbers like 424 help too.', { manner: 3 }, 'subway-sign'),
+          ok('Follow the light-blue "4" signs and the direction (next station)', 'Yes! Every line has a colour and a number. Station numbers like 424 help too.', { manner: 3 }, 'subway-train'),
           no('Ask everyone loudly in English', 'People may help, but the signs are faster – and quieter.', { manner: -3 }),
         ], 'tr-transfer'),
         say('The train arrives. People are lined up at the sides of the doors.'),
@@ -391,7 +391,7 @@ export const seoulClassic: Course = {
           no('Nothing, it\'s too complicated', 'You leave the VAT refund on the table.', {}),
         ], 'mo-tax'),
         ask('transport', 'When should you arrive at Incheon for an international flight?', [
-          ok('About 3 hours before departure', 'Correct – security lines can be long.', { energy: 5 }, 'arex'),
+          ok('About 3 hours before departure', 'Correct – security lines can be long.', { energy: 5 }, 'passport'),
           no('30 minutes before', 'You sprint, sweat, and nearly miss the flight.', { energy: -25 }),
         ]),
         say('You spend your last coins at the convenience store – and remember the T-money balance can be refunded at convenience stores (small fee).'),
