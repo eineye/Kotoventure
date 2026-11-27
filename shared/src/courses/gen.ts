@@ -312,7 +312,7 @@ const BANK: Record<Kind, Q[]> = {
   ],
 };
 /** revision of the generated content (season-aware steps, guidebook cards for SIM/bus/subway/toilets/ordering) */
-const GEN_REV = 6;
+const GEN_REV = 7;
 
 const KIND_BG: Record<Kind, string> = {
   palace: 'palace', temple: 'temple', market: 'market', mountain: 'mountain', beach: 'beach', museum: 'museum', street: 'street', village: 'village',
@@ -362,6 +362,21 @@ const STAY_COST: Record<MissionDef['stay'], [number, boolean]> = {
 };
 
 /* ───────────── builder ───────────── */
+/** picture for a way of getting somewhere, from its description (bus, train, taxi, ferry, subway) */
+export function transportProp(go: string): string {
+  const g = go.replace(/\([^)]*\)/g, ''); // "(or KTX via Osong)" is only an alternative
+  if (/ferry|boat/i.test(g)) return 'ferry';
+  if (/KTX|ITX/i.test(g)) return 'ktx';
+  // bus and subway both mentioned: the first leg decides
+  const bus = g.search(/bus|limousine/i);
+  const rail = g.search(/subway|metro|Line \d|light rail/i);
+  if (bus >= 0 && (rail < 0 || bus < rail)) return 'bus';
+  if (rail >= 0) return 'subway-train';
+  if (/AREX/i.test(g)) return 'arex';
+  if (/taxi/i.test(g)) return 'taxi';
+  return 'subway-train';
+}
+
 const wrongGo = (h: HubId): ChoiceOption[] => [
   no('Accept a ride from a stranger offering a "taxi" in the arrivals hall', 'Unlicensed drivers overcharge and aren\'t insured – use official transport.', { money: -50000 }),
   no(HUBS[h].kind === 'port' ? 'Walk along the highway with my suitcase' : 'Rent a car with only my home licence', HUBS[h].kind === 'port' ? 'Unsafe and slow – use the shuttle, bus or taxi rank.' : 'Without an International Driving Permit you can\'t rent a car.', { energy: -12 }),
@@ -455,7 +470,7 @@ export function buildMission(def: MissionDef, sortOrder: number): Course {
       hub.kind === 'port'
         ? ask('law', 'At the ferry terminal arrival hall, what do you need?', [ok('My passport and entry approval – same as at an airport', 'Yes. Ports are international borders too.', { manner: 3 }, 'passport'), no('Only my ferry ticket', 'The ticket isn\'t ID – immigration needs your passport.', { energy: -8 })], 'tr-ferry')
         : ask('law', 'Customs asks if you have fresh fruit or meat in your bag.', [ok('Declare it honestly – many fresh foods can\'t be brought in', 'Correct. Undeclared food can be fined.', { manner: 4 }, 'passport'), no('Say no and hope', 'The detector dog finds the sausage – fine!', { money: -100000 })], 'la-safety'),
-      ask('transport', `How do you get to ${def.stops[0].en}?`, [ok(def.go, 'Good choice – easy and good value.', { money: -5000 }, 'subway-sign'), ...wrongGo(def.hub)], 'tr-transfer'),
+      ask('transport', `How do you get to ${def.stops[0].en}?`, [ok(def.go, 'Good choice – easy and good value.', { money: -5000 }, transportProp(def.go)), ...wrongGo(def.hub)], 'tr-transfer'),
       // weather for the player's travel month: month note + cards, and a question for that season
       ...monthSteps(),
       ...(Object.keys(SEASON) as (keyof typeof SEASON)[]).map((k) => ({ ...SEASON[k].q(), months: SEASON_MONTHS[k] }) as Step),

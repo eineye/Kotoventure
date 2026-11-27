@@ -25,7 +25,7 @@ export const CARDS: KnowledgeCard[] = [
     phrase: { hangul: '티머니 충전해 주세요', roman: 'Ti-meo-ni chung-jeon-hae ju-se-yo', meaning: 'Please top up my T-money' },
   },
   {
-    id: 'tr-transfer', topic: 'transport', prop: 'subway-sign',
+    id: 'tr-transfer', topic: 'transport', prop: 'subway-train',
     title: { en: 'Free transfers (환승)', ko: '환승 방법' },
     body: { en: 'Subway ↔ bus transfers are free or discounted if you transfer within about 30 minutes (longer late at night). The trick: you MUST tap your card when getting OFF the bus too, or you lose the transfer.', ko: '버스 하차 시에도 카드를 찍어야 환승 할인.' },
     phrase: { hangul: '환승입니다', roman: 'Hwan-seung-im-ni-da', meaning: '"Transfer" (the reader says this when you tap)' },
@@ -446,7 +446,7 @@ export const CARDS: KnowledgeCard[] = [
   },
   // ───────────── SUBWAY & CONVENIENCE STORES (guidebook additions) ─────────────
   {
-    id: 'tr-subway', topic: 'transport', prop: 'subway-sign',
+    id: 'tr-subway', topic: 'transport', prop: 'subway-train',
     title: { en: 'Subway: numbers, exits, music & queues', ko: '지하철: 번호·출구·안내 음악·줄서기' },
     body: { en: 'Every line has a number and a colour, and every station a number (e.g. 201 = Line 2, City Hall). Follow the colour and the number on the signs.', ko: '노선마다 번호와 색이 있고, 역에도 번호가 있어요 (예: 201 = 2호선 시청). 색과 번호를 따라가요.' },
     tips: [
@@ -483,7 +483,7 @@ export const CARDS: KnowledgeCard[] = [
     phrase: { hangul: '이 버스 명동 가요?', roman: 'I beo-seu Myeong-dong ga-yo?', meaning: 'Does this bus go to Myeongdong?' },
   },
   {
-    id: 'tr-metro', topic: 'transport', prop: 'subway-sign',
+    id: 'tr-metro', topic: 'transport', prop: 'subway-train',
     title: { en: 'Subway: express trains, riding & announcements', ko: '지하철 타는 법·급행·안내 방송' },
     body: { en: 'Tap your transit card at the gate, find the platform by the line colour and the direction sign ("…방면" = towards …), and tap again at the exit gate – the fare depends on the distance. Trains run about every 3–10 minutes from roughly 5:30 until around midnight.', ko: '개찰구에서 교통카드를 찍고, 노선 색과 방향 표지("○○ 방면")로 승강장을 찾은 뒤, 나갈 때 다시 찍어요. 요금은 거리에 따라 달라요. 열차는 새벽 5시 30분쯤부터 자정 무렵까지 3~10분마다 와요.' },
     tips: [
