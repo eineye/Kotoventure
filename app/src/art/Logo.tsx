@@ -53,7 +53,7 @@ export function Logo({ width = 300, sub = true }: { width?: number; sub?: boolea
         <TSpan fill="#1B2140">Koto</TSpan>
         <TSpan fill="#E5383B">venture</TSpan>
       </SvgText>
-      <SvgText x="106" y="78" fontSize="12.5" fontWeight="800" fill="#5A6283" letterSpacing="1.6">
+      <SvgText x="106" y="78" fontSize="11.5" fontWeight="800" fill="#5A6283" letterSpacing="1" textLength="266" lengthAdjust="spacingAndGlyphs">
         KOREA TOURING MISSION ADVENTURE
       </SvgText>
       {sub && (

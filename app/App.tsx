@@ -14,6 +14,7 @@ import { C } from './src/ui/theme';
 import { ArtGallery } from './src/screens/ArtGallery';
 import { Planner } from './src/screens/Planner';
 import { TrekDetail, TrekList } from './src/screens/Treks';
+import { setupFontPreview } from './src/fontPreview';
 
 // Web preview only: render SVG text with a sans-serif stack (native already uses the system font)
 if (Platform.OS === 'web' && typeof document !== 'undefined') {
@@ -22,6 +23,7 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
   document.head.appendChild(st);
 }
 
+setupFontPreview();
 const showGallery = Platform.OS === 'web' && typeof window !== 'undefined' && window.location.search.includes('gallery');
 
 type Route =
