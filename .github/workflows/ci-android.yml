@@ -141,5 +141,8 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
+      # the artifact list is eventually consistent: deploying right after the upload sometimes
+      # finds "no artifacts named github-pages" – give it a moment
+      - run: sleep 20
       - id: deploy
         uses: actions/deploy-pages@v4
