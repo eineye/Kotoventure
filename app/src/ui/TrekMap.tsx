@@ -1,4 +1,5 @@
-import Svg, { Circle, Ellipse, G, Path, Polygon, Rect, Text as T } from 'react-native-svg';
+import Svg, { Circle, Ellipse, G, Path, Polygon, Rect } from 'react-native-svg';
+import { SvgT as T } from './SvgText';
 import { JEJU, KOREA_CITIES, translateText, KOREA_ISLANDS, KOREA_MOUNTAINS, KOREA_OUTLINE, KOREA_RIVERS, TREK_POINT_ICON, projectKorea, tr, type Trek } from '@kotoventure/shared';
 
 const cut = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1) + '…' : s);

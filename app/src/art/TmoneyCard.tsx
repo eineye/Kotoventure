@@ -1,4 +1,5 @@
-import Svg, { Circle, Defs, G, LinearGradient, Path, Rect, Stop, Text as T } from 'react-native-svg';
+import Svg, { Circle, Defs, G, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
+import { SvgT as T } from '../ui/SvgText';
 
 const won = (n: number) => '₩' + Math.round(n).toLocaleString('en-US');
 

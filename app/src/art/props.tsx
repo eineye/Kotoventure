@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import Svg, { Circle, Defs, Ellipse, G, Line, LinearGradient, Path, RadialGradient, Rect, Stop, Text as T } from 'react-native-svg';
+import Svg, { Circle, Defs, Ellipse, G, Line, LinearGradient, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
+import { SvgT as T } from '../ui/SvgText';
 import { Banknote, Coin } from './Money';
 import { TmoneyCard } from './TmoneyCard';
 import type { PropId } from '@kotoventure/shared';

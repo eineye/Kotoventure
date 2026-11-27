@@ -252,6 +252,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
                   borderRadius: R.m,
                   padding: 14,
                   fontSize: 17,
+                  fontFamily: 'Pretendard-Regular',
                   borderWidth: 2,
                   borderColor: C.line,
                 }}

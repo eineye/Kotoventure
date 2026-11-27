@@ -1,9 +1,12 @@
 import { Children, createContext, useContext, type ComponentProps } from 'react';
-import { Text as RNText } from 'react-native';
+import { StyleSheet, Text as RNText } from 'react-native';
+import { fontFor } from './font';
 import { translateText } from '@kotoventure/shared';
 
 /** Current UI language (en, ko, ja, zh, es). Provided by the store; onboarding provides its own while choosing. */
 export const LangContext = createContext<string>('en');
+/** weight of the enclosing Text, so nested Text keeps it (each weight is its own font file) */
+const WeightContext = createContext<string | number | undefined>(undefined);
 
 /**
  * Text that translates its plain-string children for dictionary languages (ja, zh, es).
@@ -23,7 +26,17 @@ export function Text(props: ComponentProps<typeof RNText>) {
       }
     });
   }
-  if (lang === 'en' || lang === 'ko') return <RNText {...props} />;
-  const children = Children.map(props.children, (c) => (typeof c === 'string' ? translateText(c, lang) : c));
-  return <RNText {...props}>{children}</RNText>;
+  // app typeface: the weight picks the Pretendard file (custom fonts can't be bolded synthetically on Android)
+  const parentWeight = useContext(WeightContext);
+  const flat = StyleSheet.flatten(props.style) ?? {};
+  const weight = flat.fontWeight ?? parentWeight;
+  const style = flat.fontFamily ? props.style : [props.style, { fontFamily: fontFor(weight), fontWeight: 'normal' as const }];
+  const children = lang === 'en' || lang === 'ko' ? props.children : Children.map(props.children, (c) => (typeof c === 'string' ? translateText(c, lang) : c));
+  return (
+    <WeightContext.Provider value={weight}>
+      <RNText {...props} style={style}>
+        {children}
+      </RNText>
+    </WeightContext.Provider>
+  );
 }
