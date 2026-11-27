@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Pressable, View, useWindowDimensions } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import { Text } from '../ui/Text';
 import { SUBWAY_LINES, SUBWAY_STATIONS, bestRoute, linesBetween, routeTime, stationOf, tr, netOf } from '@kotoventure/shared';
 import { Btn, H, P } from '../ui/kit';
