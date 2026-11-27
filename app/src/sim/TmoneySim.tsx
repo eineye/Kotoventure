@@ -5,7 +5,7 @@ import { addCash, tr, type Cash } from '@kotoventure/shared';
 import { Btn, H, P, won } from '../ui/kit';
 import { C } from '../ui/theme';
 import { TmoneyCard } from '../art/TmoneyCard';
-import { Box, DoneCard, Glass, Metal, OptBtn, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
+import { Box, DoneCard, DropTarget, Glass, Metal, OptBtn, Pulse, SimShell, Slot, WalletBar, useScore, type SimProps } from './kit';
 import { CashPicker } from './CashPay';
 
 const CARD_PRICE = 3000; // plain T-money card ≈ ₩2,500–4,000
@@ -55,6 +55,15 @@ export function TmoneySim({ step, ctx, onDone }: SimProps) {
   };
 
   /* ── machine hardware ── */
+  const gateTap = (g: { ok: boolean; msg: string }) => {
+    if (held !== 'tmoney') return sc.info('Select your T-money card first, then tap the reader.');
+    if (!g.ok) return sc.miss(g.msg);
+    setBalance((b) => b - FARE);
+    setSpent((x) => x + FARE);
+    sc.ok(`삑! ${won(FARE)} 차감 · Balance ${won(balance - FARE)}. Walk through.`);
+    add(`Entered through a green gate (−${won(FARE)})`);
+    setS('exit');
+  };
   const tapPad = () => {
     if (s === 'place') {
       if (held === 'tmoney') {
@@ -211,15 +220,19 @@ export function TmoneySim({ step, ctx, onDone }: SimProps) {
             </Glass>
             <View style={{ flexDirection: 'row', marginTop: 10, gap: 10, alignItems: 'flex-start' }}>
               {/* card pad */}
+              <DropTarget onDrop={tapPad} style={{ flex: 1 }}>
+              <Pulse on={s === 'place' && !cardOnPad}>
               <Pressable
                 testID="pad"
                 onPress={tapPad}
-                style={{ flex: 1, height: 96, borderRadius: 10, backgroundColor: '#FDE68A', borderWidth: 3, borderColor: s === 'place' || s === 'charged' ? '#22C55E' : '#B45309', alignItems: 'center', justifyContent: 'center' }}
+                style={{ height: 96, borderRadius: 10, backgroundColor: '#FDE68A', borderWidth: 3, borderColor: s === 'place' || s === 'charged' ? '#22C55E' : '#B45309', alignItems: 'center', justifyContent: 'center' }}
               >
                 {cardOnPad ? <TmoneyCard width={110} /> : <Text style={{ fontSize: 26 }}>📶</Text>}
                 <Text style={{ fontWeight: '900', fontSize: 10, color: '#78350F', marginTop: 2 }}>교통카드 올려놓는 곳</Text>
                 <Text style={{ fontWeight: '800', fontSize: 9, color: '#78350F' }}>Place card here</Text>
               </Pressable>
+              </Pulse>
+              </DropTarget>
               <View style={{ flex: 1, gap: 8, alignItems: 'center' }}>
                 <Slot testID="slot-bill" label="지폐 투입구 BILLS" sub="₩1,000·5,000·10,000·50,000" width={110} onPress={tapBillSlot} blink={s === 'cash'} />
                 <Slot testID="slot-coin" label="동전 COINS" width={50} height={20} onPress={() => sc.info('Coins work too, but notes are faster here.')} />
@@ -254,22 +267,18 @@ export function TmoneySim({ step, ctx, onDone }: SimProps) {
                   <Text style={{ color: '#FFF', fontSize: 20, fontWeight: '900' }}>{g.sign}</Text>
                 </View>
                 <Text style={{ fontWeight: '900', fontSize: 10, textAlign: 'center', marginVertical: 4 }}>{g.label}</Text>
+                <DropTarget onDrop={() => gateTap(g)}>
+                <Pulse on={g.ok && held === 'tmoney'}>
                 <Pressable
                   testID={`reader-${g.id}`}
-                  onPress={() => {
-                    if (held !== 'tmoney') return sc.info('Select your T-money card first, then tap the reader.');
-                    if (!g.ok) return sc.miss(g.msg);
-                    setBalance((b) => b - FARE);
-                    setSpent((x) => x + FARE);
-                    sc.ok(`삑! ${won(FARE)} 차감 · Balance ${won(balance - FARE)}. Walk through.`);
-                    add(`Entered through a green gate (−${won(FARE)})`);
-                    setS('exit');
-                  }}
+                  onPress={() => gateTap(g)}
                   style={{ width: 56, height: 46, borderRadius: 8, backgroundColor: '#FDE68A', borderWidth: 2, borderColor: '#92400E', alignItems: 'center', justifyContent: 'center' }}
                 >
                   <Text style={{ fontSize: 16 }}>📶</Text>
                   <Text style={{ fontSize: 8, fontWeight: '900' }}>TAP</Text>
                 </Pressable>
+                </Pulse>
+                </DropTarget>
               </View>
             ))}
           </View>
