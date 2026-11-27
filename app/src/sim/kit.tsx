@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs -- drag & drop: PanResponder handlers and measured layouts live in refs by design */
 import React, { createContext, useContext, useEffect, useId, useMemo, useRef, useState } from 'react';
 import Svg, { Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
 import { Animated, Easing, PanResponder, Pressable, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
@@ -84,7 +85,6 @@ const DragCtx = createContext<DragApi | null>(null);
 function useDragLayer(setScroll: (on: boolean) => void) {
   const targets = useRef(new Map<string, DropTargetEntry>()).current;
   const rects = useRef(new Map<string, DRect>());
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const layer = useRef<any>(null);
   const origin = useRef({ x: 0, y: 0 });
   const [ghost, setGhost] = useState<{ label: string; x: number; y: number } | null>(null);
@@ -145,7 +145,6 @@ function useDragLayer(setScroll: (on: boolean) => void) {
 export function DropTarget({ onDrop, children, style }: { onDrop: () => void; children: React.ReactNode; style?: StyleProp<ViewStyle> }) {
   const ctx = useContext(DragCtx);
   const id = useId();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ref = useRef<any>(null);
   const latest = useRef(onDrop);
   latest.current = onDrop;
@@ -454,7 +453,6 @@ function WalletItem({ it, selected, onSelect }: { it: { id: string; label: strin
           if (c?.dragging) c.end(-1, -1);
         },
       }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [label],
   );
   return (
