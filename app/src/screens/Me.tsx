@@ -95,7 +95,7 @@ export function Me() {
             value={amount}
             onChangeText={(v) => setAmount(v.replace(/[^0-9.]/g, ''))}
             keyboardType="decimal-pad"
-            style={{ borderWidth: 2, borderColor: C.line, borderRadius: R.s, padding: 8, width: 100, fontSize: 16, backgroundColor: '#FFF' }}
+            style={{ borderWidth: 2, borderColor: C.line, borderRadius: R.s, padding: 8, width: 100, fontSize: 16, fontFamily: 'Pretendard-Regular', backgroundColor: '#FFF' }}
           />
           <Text style={{ fontWeight: '800', color: C.ink }}>{cur} ≈</Text>
           <Text style={{ fontWeight: '900', color: C.green, fontSize: 18 }}>{won((parseFloat(amount) || 0) * rate)}</Text>

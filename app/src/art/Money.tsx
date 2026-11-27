@@ -1,4 +1,5 @@
-import Svg, { ClipPath, Circle, Defs, Ellipse, G, Line, LinearGradient, Path, RadialGradient, Rect, Stop, Text as T } from 'react-native-svg';
+import Svg, { ClipPath, Circle, Defs, Ellipse, G, Line, LinearGradient, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
+import { SvgT as T } from '../ui/SvgText';
 import { KRW_COINS, KRW_NOTES } from '@kotoventure/shared';
 
 /**

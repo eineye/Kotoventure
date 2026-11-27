@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Pressable, View, useWindowDimensions } from 'react-native';
 import { Text } from '../ui/Text';
-import Svg, { Circle, G, Line, Path, Polyline, Rect, Text as T } from 'react-native-svg';
+import Svg, { Circle, G, Line, Path, Polyline, Rect } from 'react-native-svg';
+import { SvgT as T } from '../ui/SvgText';
 import {
   MODE_ICON,
   MODE_NAME,

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import Svg, { Circle, ClipPath, Defs, Ellipse, G, Path, Text as SvgText } from 'react-native-svg';
+import Svg, { Circle, ClipPath, Defs, Ellipse, G, Path } from 'react-native-svg';
+import { SvgT as SvgText } from '../ui/SvgText';
 import type { PartyType, Speaker } from '@kotoventure/shared';
 import { GH, GW, PixelRuns, bake, clear, ellipse, newGrid, px, rect, rrect, type Palette, type Run } from './Pixel';
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Modal, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
-import Svg, { Circle, G, Path, Rect, Text as T } from 'react-native-svg';
+import Svg, { Circle, G, Path, Rect } from 'react-native-svg';
+import { SvgT as T } from '../ui/SvgText';
 import { BUS_COLORS, type BusColor } from '@kotoventure/shared';
 import { Text } from '../ui/Text';
 import { smooth } from './KtxMap';

@@ -1,4 +1,5 @@
-import Svg, { Circle, Defs, G, LinearGradient, Path, Stop, TSpan, Text as SvgText } from 'react-native-svg';
+import Svg, { Circle, Defs, G, LinearGradient, Path, Stop, TSpan } from 'react-native-svg';
+import { SvgT as SvgText } from '../ui/SvgText';
 
 /**
  * Kotoventure logo: a taegeuk-inspired compass (red/blue swirl) with a paper-plane needle,

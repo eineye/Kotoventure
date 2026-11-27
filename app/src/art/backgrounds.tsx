@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, type ImageSourcePropType } from 'react-native';
-import Svg, { Circle, Defs, Ellipse, G, Line, LinearGradient, Path, RadialGradient, Rect, Stop, Text as T } from 'react-native-svg';
+import Svg, { Circle, Defs, Ellipse, G, Line, LinearGradient, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
+import { SvgT as T } from '../ui/SvgText';
 import type { BackgroundId } from '@kotoventure/shared';
 
 /**

@@ -14,16 +14,9 @@ import { C } from './src/ui/theme';
 import { ArtGallery } from './src/screens/ArtGallery';
 import { Planner } from './src/screens/Planner';
 import { TrekDetail, TrekList } from './src/screens/Treks';
-import { setupFontPreview } from './src/fontPreview';
+import { useFonts } from 'expo-font';
+import { FONT_FILES } from './src/ui/font';
 
-// Web preview only: render SVG text with a sans-serif stack (native already uses the system font)
-if (Platform.OS === 'web' && typeof document !== 'undefined') {
-  const st = document.createElement('style');
-  st.textContent = 'svg text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR","Apple SD Gothic Neo",sans-serif}';
-  document.head.appendChild(st);
-}
-
-setupFontPreview();
 const showGallery = Platform.OS === 'web' && typeof window !== 'undefined' && window.location.search.includes('gallery');
 
 type Route =
@@ -133,6 +126,14 @@ function Router() {
 }
 
 export default function App() {
+  // Pretendard (bundled) – if it fails to load the app still starts with the system font
+  const [fontsLoaded, fontError] = useFonts(FONT_FILES);
+  if (!fontsLoaded && !fontError)
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: C.paper }}>
+        <ActivityIndicator color={C.red} size="large" />
+      </View>
+    );
   if (showGallery) return <ArtGallery />;
   return (
     <SafeAreaProvider>

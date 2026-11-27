@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Linking, Modal, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
-import Svg, { Circle, G, Path, Rect, Text as SvgText } from 'react-native-svg';
+import Svg, { Circle, G, Path, Rect } from 'react-native-svg';
+import { SvgT as SvgText } from './SvgText';
 import { isBranchScene, mainScenes, tr, type Course } from '@kotoventure/shared';
 import { Text } from './Text';
 import { C, R, shadow } from './theme';

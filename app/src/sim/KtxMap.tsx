@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Modal, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 import { Text } from '../ui/Text';
-import Svg, { Circle, Defs, Ellipse, G, LinearGradient, Line, Path, Rect, Stop, Text as T } from 'react-native-svg';
+import Svg, { Circle, Defs, Ellipse, G, LinearGradient, Line, Path, Rect, Stop } from 'react-native-svg';
+import { SvgT as T } from '../ui/SvgText';
 import { JEJU, KOREA_ISLANDS, KOREA_MOUNTAINS, KOREA_OUTLINE, KOREA_RIVERS, LINES, STATIONS, stationById } from '@kotoventure/shared';
 
 /**
